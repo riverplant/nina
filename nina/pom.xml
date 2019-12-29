@@ -31,12 +31,12 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter</artifactId>
-		    <exclusions>
-		    <exclusion>
-		    <groupId>org.springframework.boot</groupId>
-		    <artifactId>spring-boot-starter-logging</artifactId>
-		    </exclusion>
-		    </exclusions>
+<!-- 		    <exclusions> -->
+<!-- 		    <exclusion> -->
+<!-- 		    <groupId>org.springframework.boot</groupId> -->
+<!-- 		    <artifactId>spring-boot-starter-logging</artifactId> -->
+<!-- 		    </exclusion> -->
+<!-- 		    </exclusions> -->
 		</dependency>
 		<!-- springboot web -->
 		<dependency>
@@ -49,6 +49,36 @@
 			<artifactId>spring-boot-configuration-processor</artifactId>
 			<optional>true </optional>
 		</dependency>
+		 <dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-jdbc</artifactId>
+		</dependency>
+		<!-- aop -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-aop</artifactId>
+		</dependency>
+		<!-- JPA -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-data-jpa</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>mysql</groupId>
+			<artifactId>mysql-connector-java</artifactId>
+			<version>5.1.8</version>
+		</dependency>
+		<!-- Hikari 数据源管理 -->
+		<dependency>
+			<groupId>com.zaxxer</groupId>
+			<artifactId>HikariCP</artifactId>
+			<scope>compile</scope>
+		</dependency>
+		<!-- cache -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-cache</artifactId>
+		</dependency>
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
@@ -60,6 +90,7 @@
 			<artifactId>spring-boot-devtools</artifactId>
 		</dependency>
 	</dependencies>
+	
 	<modules>
 		<module>nina-commons</module>
 		<module>nina-pojo</module>

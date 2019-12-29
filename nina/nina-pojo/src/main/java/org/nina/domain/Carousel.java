@@ -1,7 +1,11 @@
 package org.nina.domain;
 
+import java.util.Set;
+
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.OneToMany;
 
 /**
  * 
@@ -52,6 +56,17 @@ public class Carousel extends DomainImpl {
 	@Column(name = "is_show")
 	private Integer isShow;
 
+	@OneToMany(cascade = CascadeType.REMOVE,mappedBy = "carousel")
+	//@OrderBy("carousel.id ASC")设置排序方式
+	private Set<ItemsCarouselAssociation> items;
+	
+	public Set<ItemsCarouselAssociation> getItems() {
+		return items;
+	}
+
+	public void setItems(Set<ItemsCarouselAssociation> items) {
+		this.items = items;
+	}
 	public String getImageUrl() {
 		return imageUrl;
 	}

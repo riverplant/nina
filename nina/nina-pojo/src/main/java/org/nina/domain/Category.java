@@ -1,7 +1,11 @@
 package org.nina.domain;
 
+import java.util.Set;
+
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.OneToMany;
 import javax.persistence.Transient;
 /**
  * 
@@ -54,11 +58,25 @@ public class Category extends DomainImpl {
 	 */
 	@Column(name = "bg_color")
 	private String bgColor;
-     
+    /**
+     * mappedBy = "category":一对多关系的维护交给many端的category来维护
+     */
+	@OneToMany(cascade = CascadeType.REMOVE,mappedBy = "category")
+	private Set<Items> carousel;
+	
+	
 	//使用了该注解的字段将不会被同步到数据库
 	@Transient
 	private String xxx;
 	
+	public Set<Items> getCarousel() {
+		return carousel;
+	}
+
+	public void setCarousel(Set<Items> carousel) {
+		this.carousel = carousel;
+	}
+
 	public String getName() {
 		return name;
 	}

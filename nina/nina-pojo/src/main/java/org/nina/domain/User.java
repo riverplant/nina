@@ -2,6 +2,7 @@ package org.nina.domain;
 
 import java.util.Date;
 import java.util.List;
+
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
@@ -9,6 +10,7 @@ import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.validation.constraints.Email;
 
 @Entity
 public class User extends DomainImpl {
@@ -51,6 +53,7 @@ public class User extends DomainImpl {
 	/**
 	 * 邮箱地址 邮箱地址
 	 */
+	@Email
 	private String email;
 
 	/**

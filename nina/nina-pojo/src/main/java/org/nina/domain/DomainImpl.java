@@ -3,12 +3,13 @@ package org.nina.domain;
 import java.io.Serializable;
 import java.util.Date;
 
-import javax.persistence.Column;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.MappedSuperclass;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 /**
  * 
  * @author riverplant
@@ -32,13 +33,13 @@ public class DomainImpl implements Serializable {
 	 /**
      * 创建时间 创建时间
      */
-    @Column(name = "created_time")
-    private Date createdTime;
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date createdTime = new Date();
 
     /**
      * 更新时间 更新时间
      */
-    @Column(name = "updated_time")
+    @Temporal(TemporalType.TIMESTAMP)
     private Date updatedTime;
 
 	public Date getCreatedTime() {
