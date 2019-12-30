@@ -1,5 +1,6 @@
 package org.nina.dto;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
@@ -10,7 +11,10 @@ import org.nina.domain.Sex;
 
 import com.fasterxml.jackson.annotation.JsonView;
 
-public class UserInfo {
+public class UserInfo implements Serializable{
+
+	private static final long serialVersionUID = 1L;
+
 	public interface UserListView{};
 	
 	public interface UserDetailView extends UserListView{};

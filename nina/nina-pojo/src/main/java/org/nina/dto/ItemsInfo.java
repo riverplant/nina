@@ -1,5 +1,7 @@
 package org.nina.dto;
 
+import java.io.Serializable;
+
 import javax.validation.constraints.NotBlank;
 
 import org.nina.domain.Category;
@@ -11,7 +13,10 @@ import com.fasterxml.jackson.annotation.JsonView;
  * @author riverplant
  *
  */
-public class ItemsInfo {
+public class ItemsInfo implements Serializable{
+	
+	private static final long serialVersionUID = 1L;
+
 	public interface ItemsListView{};
 	public interface ItemsDetailView extends ItemsListView{};
 	
