@@ -1,7 +1,11 @@
 package org.nina.api.controller;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 import javax.validation.Valid;
 
@@ -22,6 +26,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.context.request.async.DeferredResult;
 
 import com.fasterxml.jackson.annotation.JsonView;
 
@@ -34,6 +39,7 @@ import com.fasterxml.jackson.annotation.JsonView;
 @RequestMapping("/items")
 public class ItemsController {
 
+	private ConcurrentMap<Long, DeferredResult<ItemsInfo>> map = new ConcurrentHashMap<>() ;
 	// @GetMapping()
 	// public List<ItemsInfo> query(@RequestParam(value = "name",defaultValue =
 	// "炸鸡")String name ,
@@ -62,6 +68,52 @@ public class ItemsController {
 		return new ItemsInfo();
 	}
 	
+	/**
+     * {id:\\d}:只能有一位
+     * @param id
+     * @return
+     */
+	@GetMapping("/{id:\\d+}")
+	@JsonView(ItemsDetailView.class)
+	public Callable<ItemsInfo> getInfoAsyn(@PathVariable Long id, @CookieValue String token, @RequestHeader String auth) {
+		long start = new Date().getTime();
+		System.out.println(Thread.currentThread().getName()+ "开始");
+		Callable<ItemsInfo> result = () ->{
+			System.out.println(Thread.currentThread().getName()+ "开始");
+			//模拟调用远程服务需要一秒时间
+			Thread.sleep(1000);
+			ItemsInfo itemsInfo = new ItemsInfo();
+			itemsInfo.setItemName("订购水果");
+			System.out.println(Thread.currentThread().getName()+ "线程返回耗时:"+(new Date().getTime()-start));
+			return itemsInfo;
+		};
+		System.out.println(Thread.currentThread().getName()+ "耗时:"+(new Date().getTime()-start));
+		return result;
+	}
+	
+	/**
+     * {id:\\d}:只能有一位
+     * @param id
+     * @return
+     */
+	@GetMapping("/{id:\\d+}")
+	@JsonView(ItemsDetailView.class)
+	public DeferredResult<ItemsInfo> getDeferredResult(@PathVariable Long id, @CookieValue String token, @RequestHeader String auth) {
+		long start = new Date().getTime();
+		DeferredResult<ItemsInfo> result = new DeferredResult<>();
+		System.out.println(Thread.currentThread().getName()+ "开始");
+		map.put(id, result);
+		System.out.println(Thread.currentThread().getName()+ "耗时:"+(new Date().getTime()-start));
+		return result;
+	}
+	/**
+	 * 
+	 * @param itemsInfo
+	 */
+	@SuppressWarnings("unused")
+	private void listenMessage(ItemsInfo itemsInfo) {
+		map.get(itemsInfo.getId()).setResult(itemsInfo);
+	}
 	/**
 	 * 
 	 * @param info

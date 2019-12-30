@@ -8,7 +8,9 @@ import javax.persistence.criteria.Root;
 import javax.transaction.Transactional;
 
 import org.nina.domain.User;
+import org.nina.dto.UserInfo;
 import org.nina.repository.UserRepository;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -18,7 +20,7 @@ import org.springframework.stereotype.Service;
  * @author riverplant
  *
  */
-@Service
+@Service("userService")
 @Transactional
 public class UserServiceImpl implements UserService {
 
@@ -53,6 +55,13 @@ public class UserServiceImpl implements UserService {
 		};
 		//transactionManager.commit(statu);
 		return userRepository.findOne(spec);
+	}
+	@Override
+	public UserInfo getInfo(Long id) {
+		User user = userRepository.findById(id).orElse(null);
+		UserInfo info = new UserInfo();
+		BeanUtils.copyProperties(user, info);
+		return info;
 	}
 
 }
