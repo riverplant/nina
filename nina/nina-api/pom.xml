@@ -18,6 +18,10 @@
 			<artifactId>spring-boot-starter-test</artifactId>
 		</dependency>
 		<dependency>
+			<groupId>org.springframework.data</groupId>
+			<artifactId>spring-data-commons</artifactId>
+		</dependency>
+		<dependency>
 			<groupId>com.riverplant</groupId>
 			<artifactId>nina-service</artifactId>
 			<version>${nina.version}</version>
