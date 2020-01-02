@@ -9,6 +9,9 @@ import org.nina.dto.ItemsCondition;
 import org.nina.dto.ItemsInfo;
 import org.nina.dto.ItemsInfo.ItemsDetailView;
 import org.nina.dto.ItemsInfo.ItemsListView;
+import org.nina.service.ItemsService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.validation.BindingResult;
@@ -34,6 +37,7 @@ import com.fasterxml.jackson.annotation.JsonView;
 @RequestMapping("/items")
 public class ItemsController {
 
+	@Autowired private ItemsService itemsService;
 	// @GetMapping()
 	// public List<ItemsInfo> query(@RequestParam(value = "name",defaultValue =
 	// "炸鸡")String name ,
@@ -43,11 +47,11 @@ public class ItemsController {
 
 	@GetMapping
 	@JsonView(ItemsListView.class)
-	public List<ItemsInfo> query(ItemsCondition condition, @PageableDefault(size = 10) Pageable pageable) {
+	public Page<ItemsInfo> query(ItemsCondition condition, @PageableDefault(size = 10) Pageable pageable) {
 		System.out.println(pageable.getPageNumber());
 		System.out.println(pageable.getPageSize());
 		System.out.println(pageable.getSort());
-		return new ArrayList<ItemsInfo>();
+		return itemsService.query(condition, pageable);
 	}
     /**
      * {id:\\d}:只能有一位
@@ -73,10 +77,9 @@ public class ItemsController {
 		if(result.hasErrors()) {
 			result.getAllErrors().stream().forEach(System.out::println);
 			throw new RuntimeException(result.toString());
-		}
-		info.setId(1L);
-		System.out.println(info.getItemName());
-		return info;
+		}	
+		//System.out.println(info.getItemName());
+		return itemsService.create(info);
 	}
 	
 	@PutMapping("/{id\\d+}")
@@ -85,12 +88,13 @@ public class ItemsController {
 			result.getAllErrors().stream().forEach(System.out::println);
 			throw new RuntimeException(result.toString());
 		}
-		System.out.println(info.getItemName());
-		return info;
+		//System.out.println(info.getItemName());
+		return itemsService.update(info);
 	}
 	
 	@DeleteMapping("/{id\\d+}")
 	public void delete(@PathVariable Long id) {
 		System.out.println(id);
+		itemsService.delete(id);
 	}
 }
