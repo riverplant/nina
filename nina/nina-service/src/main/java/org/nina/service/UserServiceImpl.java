@@ -1,12 +1,14 @@
 package org.nina.service;
 
 import java.util.Optional;
+
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import javax.transaction.Transactional;
 
+import org.nina.commons.aop.ServiceLog;
 import org.nina.domain.User;
 import org.nina.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +27,7 @@ public class UserServiceImpl implements UserService {
 	@Autowired private UserRepository userRepository;
 	//@Autowired private PlatformTransactionManager transactionManager;
 	@Override
+	@ServiceLog//通过该注解触发aop
 	public Optional<User> queryByCondition(String username, String email, Pageable sort) {
 		//TransactionStatus statu = transactionManager.getTransaction(new DefaultTransactionDefinition());
 		Specification<User> spec = new Specification<User>() {

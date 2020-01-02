@@ -22,6 +22,11 @@
       <artifactId>nina-repository</artifactId>
       <version>${nina.version}</version>
     </dependency>
+    <dependency>
+      <groupId>com.riverplant</groupId>
+      <artifactId>nina-commons</artifactId>
+      <version>${nina.version}</version>
+    </dependency>
   </dependencies>
   <build>
 		<plugins>

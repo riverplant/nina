@@ -11,6 +11,9 @@ public class Application
 {
     public static void main( String[] args )
     {
-    	SpringApplication.run(Application.class, args);
+    	SpringApplication application = new SpringApplication(Application.class);
+    	//激活日志配置，开启控制台打印
+    	application.setAdditionalProfiles("dev");
+    	application.run(args);
     }
 }

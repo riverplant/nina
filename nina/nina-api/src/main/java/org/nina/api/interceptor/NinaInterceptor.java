@@ -5,6 +5,7 @@ import java.util.Date;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.jboss.logging.MDC;
 import org.springframework.stereotype.Component;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
@@ -46,6 +47,7 @@ public class NinaInterceptor implements HandlerInterceptor{
 		System.out.println(((HandlerMethod)handler).getMethod().getName());
 		//记录请求进来的时间
 		request.setAttribute("startTime", new Date().getTime());
+		MDC.put("userId", "123456");
 		return HandlerInterceptor.super.preHandle(request, response, handler);
 	}
 

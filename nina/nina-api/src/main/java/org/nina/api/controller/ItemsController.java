@@ -10,6 +10,8 @@ import org.nina.dto.ItemsInfo;
 import org.nina.dto.ItemsInfo.ItemsDetailView;
 import org.nina.dto.ItemsInfo.ItemsListView;
 import org.nina.service.ItemsService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -36,7 +38,7 @@ import com.fasterxml.jackson.annotation.JsonView;
 @RestController
 @RequestMapping("/items")
 public class ItemsController {
-
+   private Logger logger = LoggerFactory.getLogger(ItemsController.class);
 	@Autowired private ItemsService itemsService;
 	// @GetMapping()
 	// public List<ItemsInfo> query(@RequestParam(value = "name",defaultValue =
@@ -48,6 +50,7 @@ public class ItemsController {
 	@GetMapping
 	@JsonView(ItemsListView.class)
 	public Page<ItemsInfo> query(ItemsCondition condition, @PageableDefault(size = 10) Pageable pageable) {
+		logger.info("这是日志!!!!");
 		System.out.println(pageable.getPageNumber());
 		System.out.println(pageable.getPageSize());
 		System.out.println(pageable.getSort());

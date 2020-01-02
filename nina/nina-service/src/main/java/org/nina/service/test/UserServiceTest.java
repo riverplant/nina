@@ -8,7 +8,7 @@ import org.nina.repository.spec.UserSpec;
 import org.springframework.beans.factory.annotation.Autowired;
 
 public class UserServiceTest extends BaseTest{
-	 @Autowired UserRepository userRepository;
+	 //@Autowired UserRepository userRepository;
 	 
 	 @Test
 	 public void test1() {
@@ -17,7 +17,7 @@ public class UserServiceTest extends BaseTest{
 		 condition.setAge(16);
 		 condition.setAgeTo(42);
 		 condition.setSex(Sex.MAN);
-		 userRepository.findAll(new UserSpec(condition));
+		 //userRepository.findAll(new UserSpec(condition));
 		 //Assert.assertEquals(info.getItemName(), itemsRepository.getOne(info.getId()).getItemName());
 	 }
 }

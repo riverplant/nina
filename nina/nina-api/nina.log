@@ -1,0 +1,304 @@
+2020-01-02 12:14:25.326  INFO 15852 --- [restartedMain] org.nina.Application                     : Starting Application on riverplant-PC with PID 15852 (J:\riverplant\nina\nina-api\target\classes started by riverplant in J:\riverplant\nina\nina-api)
+2020-01-02 12:14:25.340  INFO 15852 --- [restartedMain] org.nina.Application                     : No active profile set, falling back to default profiles: default
+2020-01-02 12:14:25.574  INFO 15852 --- [restartedMain] .e.DevToolsPropertyDefaultsPostProcessor : Devtools property defaults active! Set 'spring.devtools.add-properties' to 'false' to disable
+2020-01-02 12:14:25.575  INFO 15852 --- [restartedMain] .e.DevToolsPropertyDefaultsPostProcessor : For additional web related logging consider setting the 'logging.level.web' property to 'DEBUG'
+2020-01-02 12:14:28.433  WARN 15852 --- [restartedMain] ConfigServletWebServerApplicationContext : Exception encountered during context initialization - cancelling refresh attempt: org.springframework.beans.factory.BeanDefinitionStoreException: IOException parsing XML document from class path resource [provider.xml]; nested exception is java.io.FileNotFoundException: class path resource [provider.xml] cannot be opened because it does not exist
+2020-01-02 12:14:28.483  INFO 15852 --- [restartedMain] ConditionEvaluationReportLoggingListener : 
+
+Error starting ApplicationContext. To display the conditions report re-run your application with 'debug' enabled.
+2020-01-02 12:14:28.601 ERROR 15852 --- [restartedMain] o.s.boot.SpringApplication               : Application run failed
+
+org.springframework.beans.factory.BeanDefinitionStoreException: IOException parsing XML document from class path resource [provider.xml]; nested exception is java.io.FileNotFoundException: class path resource [provider.xml] cannot be opened because it does not exist
+	at org.springframework.beans.factory.xml.XmlBeanDefinitionReader.loadBeanDefinitions(XmlBeanDefinitionReader.java:344) ~[spring-beans-5.1.7.RELEASE.jar:5.1.7.RELEASE]
+	at org.springframework.beans.factory.xml.XmlBeanDefinitionReader.loadBeanDefinitions(XmlBeanDefinitionReader.java:304) ~[spring-beans-5.1.7.RELEASE.jar:5.1.7.RELEASE]
+	at org.springframework.beans.factory.support.AbstractBeanDefinitionReader.loadBeanDefinitions(AbstractBeanDefinitionReader.java:188) ~[spring-beans-5.1.7.RELEASE.jar:5.1.7.RELEASE]
+	at org.springframework.beans.factory.support.AbstractBeanDefinitionReader.loadBeanDefinitions(AbstractBeanDefinitionReader.java:224) ~[spring-beans-5.1.7.RELEASE.jar:5.1.7.RELEASE]
+	at org.springframework.beans.factory.support.AbstractBeanDefinitionReader.loadBeanDefinitions(AbstractBeanDefinitionReader.java:195) ~[spring-beans-5.1.7.RELEASE.jar:5.1.7.RELEASE]
+	at org.springframework.context.annotation.ConfigurationClassBeanDefinitionReader.lambda$loadBeanDefinitionsFromImportedResources$0(ConfigurationClassBeanDefinitionReader.java:358) ~[spring-context-5.1.7.RELEASE.jar:5.1.7.RELEASE]
+	at java.util.LinkedHashMap.forEach(LinkedHashMap.java:684) ~[na:1.8.0_172]
+	at org.springframework.context.annotation.ConfigurationClassBeanDefinitionReader.loadBeanDefinitionsFromImportedResources(ConfigurationClassBeanDefinitionReader.java:325) ~[spring-context-5.1.7.RELEASE.jar:5.1.7.RELEASE]
+	at org.springframework.context.annotation.ConfigurationClassBeanDefinitionReader.loadBeanDefinitionsForConfigurationClass(ConfigurationClassBeanDefinitionReader.java:144) ~[spring-context-5.1.7.RELEASE.jar:5.1.7.RELEASE]
+	at org.springframework.context.annotation.ConfigurationClassBeanDefinitionReader.loadBeanDefinitions(ConfigurationClassBeanDefinitionReader.java:117) ~[spring-context-5.1.7.RELEASE.jar:5.1.7.RELEASE]
+	at org.springframework.context.annotation.ConfigurationClassPostProcessor.processConfigBeanDefinitions(ConfigurationClassPostProcessor.java:327) ~[spring-context-5.1.7.RELEASE.jar:5.1.7.RELEASE]
+	at org.springframework.context.annotation.ConfigurationClassPostProcessor.postProcessBeanDefinitionRegistry(ConfigurationClassPostProcessor.java:232) ~[spring-context-5.1.7.RELEASE.jar:5.1.7.RELEASE]
+	at org.springframework.context.support.PostProcessorRegistrationDelegate.invokeBeanDefinitionRegistryPostProcessors(PostProcessorRegistrationDelegate.java:275) ~[spring-context-5.1.7.RELEASE.jar:5.1.7.RELEASE]
+	at org.springframework.context.support.PostProcessorRegistrationDelegate.invokeBeanFactoryPostProcessors(PostProcessorRegistrationDelegate.java:95) ~[spring-context-5.1.7.RELEASE.jar:5.1.7.RELEASE]
+	at org.springframework.context.support.AbstractApplicationContext.invokeBeanFactoryPostProcessors(AbstractApplicationContext.java:705) ~[spring-context-5.1.7.RELEASE.jar:5.1.7.RELEASE]
+	at org.springframework.context.support.AbstractApplicationContext.refresh(AbstractApplicationContext.java:531) ~[spring-context-5.1.7.RELEASE.jar:5.1.7.RELEASE]
+	at org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext.refresh(ServletWebServerApplicationContext.java:142) ~[spring-boot-2.1.5.RELEASE.jar:2.1.5.RELEASE]
+	at org.springframework.boot.SpringApplication.refresh(SpringApplication.java:775) [spring-boot-2.1.5.RELEASE.jar:2.1.5.RELEASE]
+	at org.springframework.boot.SpringApplication.refreshContext(SpringApplication.java:397) [spring-boot-2.1.5.RELEASE.jar:2.1.5.RELEASE]
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:316) [spring-boot-2.1.5.RELEASE.jar:2.1.5.RELEASE]
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1260) [spring-boot-2.1.5.RELEASE.jar:2.1.5.RELEASE]
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1248) [spring-boot-2.1.5.RELEASE.jar:2.1.5.RELEASE]
+	at org.nina.Application.main(Application.java:14) [classes/:na]
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method) ~[na:1.8.0_172]
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62) ~[na:1.8.0_172]
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43) ~[na:1.8.0_172]
+	at java.lang.reflect.Method.invoke(Method.java:498) ~[na:1.8.0_172]
+	at org.springframework.boot.devtools.restart.RestartLauncher.run(RestartLauncher.java:49) [spring-boot-devtools-2.1.5.RELEASE.jar:2.1.5.RELEASE]
+Caused by: java.io.FileNotFoundException: class path resource [provider.xml] cannot be opened because it does not exist
+	at org.springframework.core.io.ClassPathResource.getInputStream(ClassPathResource.java:180) ~[spring-core-5.1.7.RELEASE.jar:5.1.7.RELEASE]
+	at org.springframework.beans.factory.xml.XmlBeanDefinitionReader.loadBeanDefinitions(XmlBeanDefinitionReader.java:330) ~[spring-beans-5.1.7.RELEASE.jar:5.1.7.RELEASE]
+	... 27 common frames omitted
+
+2020-01-02 12:15:57.257  INFO 15556 --- [restartedMain] org.nina.Application                     : Starting Application on riverplant-PC with PID 15556 (J:\riverplant\nina\nina-api\target\classes started by riverplant in J:\riverplant\nina\nina-api)
+2020-01-02 12:15:57.260  INFO 15556 --- [restartedMain] org.nina.Application                     : No active profile set, falling back to default profiles: default
+2020-01-02 12:15:57.301  INFO 15556 --- [restartedMain] .e.DevToolsPropertyDefaultsPostProcessor : Devtools property defaults active! Set 'spring.devtools.add-properties' to 'false' to disable
+2020-01-02 12:15:57.301  INFO 15556 --- [restartedMain] .e.DevToolsPropertyDefaultsPostProcessor : For additional web related logging consider setting the 'logging.level.web' property to 'DEBUG'
+2020-01-02 12:15:58.019  INFO 15556 --- [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data repositories in DEFAULT mode.
+2020-01-02 12:15:58.165  INFO 15556 --- [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 139ms. Found 2 repository interfaces.
+2020-01-02 12:15:58.189  INFO 15556 --- [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data repositories in DEFAULT mode.
+2020-01-02 12:15:58.219  WARN 15556 --- [restartedMain] ConfigServletWebServerApplicationContext : Exception encountered during context initialization - cancelling refresh attempt: org.springframework.beans.factory.support.BeanDefinitionOverrideException: Invalid bean definition with name 'itemsRepository' defined in null: Cannot register bean definition [Root bean: class [org.springframework.data.jpa.repository.support.JpaRepositoryFactoryBean]; scope=; abstract=false; lazyInit=false; autowireMode=0; dependencyCheck=0; autowireCandidate=true; primary=false; factoryBeanName=null; factoryMethodName=null; initMethodName=null; destroyMethodName=null] for bean 'itemsRepository': There is already [Root bean: class [org.springframework.data.jpa.repository.support.JpaRepositoryFactoryBean]; scope=; abstract=false; lazyInit=false; autowireMode=0; dependencyCheck=0; autowireCandidate=true; primary=false; factoryBeanName=null; factoryMethodName=null; initMethodName=null; destroyMethodName=null] bound.
+2020-01-02 12:15:58.227  INFO 15556 --- [restartedMain] ConditionEvaluationReportLoggingListener : 
+
+Error starting ApplicationContext. To display the conditions report re-run your application with 'debug' enabled.
+2020-01-02 12:15:58.259 ERROR 15556 --- [restartedMain] o.s.b.d.LoggingFailureAnalysisReporter   : 
+
+***************************
+APPLICATION FAILED TO START
+***************************
+
+Description:
+
+The bean 'itemsRepository', defined in null, could not be registered. A bean with that name has already been defined in null and overriding is disabled.
+
+Action:
+
+Consider renaming one of the beans or enabling overriding by setting spring.main.allow-bean-definition-overriding=true
+
+2020-01-02 12:19:46.112  INFO 17280 --- [restartedMain] org.nina.Application                     : Starting Application on riverplant-PC with PID 17280 (J:\riverplant\nina\nina-api\target\classes started by riverplant in J:\riverplant\nina\nina-api)
+2020-01-02 12:19:46.114  INFO 17280 --- [restartedMain] org.nina.Application                     : No active profile set, falling back to default profiles: default
+2020-01-02 12:19:46.155  INFO 17280 --- [restartedMain] .e.DevToolsPropertyDefaultsPostProcessor : Devtools property defaults active! Set 'spring.devtools.add-properties' to 'false' to disable
+2020-01-02 12:19:46.155  INFO 17280 --- [restartedMain] .e.DevToolsPropertyDefaultsPostProcessor : For additional web related logging consider setting the 'logging.level.web' property to 'DEBUG'
+2020-01-02 12:19:46.869  INFO 17280 --- [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data repositories in DEFAULT mode.
+2020-01-02 12:19:46.942  INFO 17280 --- [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 66ms. Found 2 repository interfaces.
+2020-01-02 12:19:46.945  INFO 17280 --- [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data repositories in DEFAULT mode.
+2020-01-02 12:19:46.976  WARN 17280 --- [restartedMain] ConfigServletWebServerApplicationContext : Exception encountered during context initialization - cancelling refresh attempt: org.springframework.beans.factory.support.BeanDefinitionOverrideException: Invalid bean definition with name 'userRepository' defined in null: Cannot register bean definition [Root bean: class [org.springframework.data.jpa.repository.support.JpaRepositoryFactoryBean]; scope=; abstract=false; lazyInit=false; autowireMode=0; dependencyCheck=0; autowireCandidate=true; primary=false; factoryBeanName=null; factoryMethodName=null; initMethodName=null; destroyMethodName=null] for bean 'userRepository': There is already [Root bean: class [org.springframework.data.jpa.repository.support.JpaRepositoryFactoryBean]; scope=; abstract=false; lazyInit=false; autowireMode=0; dependencyCheck=0; autowireCandidate=true; primary=false; factoryBeanName=null; factoryMethodName=null; initMethodName=null; destroyMethodName=null] bound.
+2020-01-02 12:19:46.983  INFO 17280 --- [restartedMain] ConditionEvaluationReportLoggingListener : 
+
+Error starting ApplicationContext. To display the conditions report re-run your application with 'debug' enabled.
+2020-01-02 12:19:46.985 ERROR 17280 --- [restartedMain] o.s.b.d.LoggingFailureAnalysisReporter   : 
+
+***************************
+APPLICATION FAILED TO START
+***************************
+
+Description:
+
+The bean 'userRepository', defined in null, could not be registered. A bean with that name has already been defined in null and overriding is disabled.
+
+Action:
+
+Consider renaming one of the beans or enabling overriding by setting spring.main.allow-bean-definition-overriding=true
+
+2020-01-02 12:24:14.988  INFO 5628 --- [restartedMain] org.nina.Application                     : Starting Application on riverplant-PC with PID 5628 (J:\riverplant\nina\nina-api\target\classes started by riverplant in J:\riverplant\nina\nina-api)
+2020-01-02 12:24:14.990  INFO 5628 --- [restartedMain] org.nina.Application                     : No active profile set, falling back to default profiles: default
+2020-01-02 12:24:15.050  INFO 5628 --- [restartedMain] .e.DevToolsPropertyDefaultsPostProcessor : Devtools property defaults active! Set 'spring.devtools.add-properties' to 'false' to disable
+2020-01-02 12:24:15.050  INFO 5628 --- [restartedMain] .e.DevToolsPropertyDefaultsPostProcessor : For additional web related logging consider setting the 'logging.level.web' property to 'DEBUG'
+2020-01-02 12:24:15.816  INFO 5628 --- [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data repositories in DEFAULT mode.
+2020-01-02 12:24:15.896  INFO 5628 --- [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 72ms. Found 2 repository interfaces.
+2020-01-02 12:24:15.899  INFO 5628 --- [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data repositories in DEFAULT mode.
+2020-01-02 12:24:15.929  WARN 5628 --- [restartedMain] ConfigServletWebServerApplicationContext : Exception encountered during context initialization - cancelling refresh attempt: org.springframework.beans.factory.support.BeanDefinitionOverrideException: Invalid bean definition with name 'userRepository' defined in null: Cannot register bean definition [Root bean: class [org.springframework.data.jpa.repository.support.JpaRepositoryFactoryBean]; scope=; abstract=false; lazyInit=false; autowireMode=0; dependencyCheck=0; autowireCandidate=true; primary=false; factoryBeanName=null; factoryMethodName=null; initMethodName=null; destroyMethodName=null] for bean 'userRepository': There is already [Root bean: class [org.springframework.data.jpa.repository.support.JpaRepositoryFactoryBean]; scope=; abstract=false; lazyInit=false; autowireMode=0; dependencyCheck=0; autowireCandidate=true; primary=false; factoryBeanName=null; factoryMethodName=null; initMethodName=null; destroyMethodName=null] bound.
+2020-01-02 12:24:15.937  INFO 5628 --- [restartedMain] ConditionEvaluationReportLoggingListener : 
+
+Error starting ApplicationContext. To display the conditions report re-run your application with 'debug' enabled.
+2020-01-02 12:24:15.939 ERROR 5628 --- [restartedMain] o.s.b.d.LoggingFailureAnalysisReporter   : 
+
+***************************
+APPLICATION FAILED TO START
+***************************
+
+Description:
+
+The bean 'userRepository', defined in null, could not be registered. A bean with that name has already been defined in null and overriding is disabled.
+
+Action:
+
+Consider renaming one of the beans or enabling overriding by setting spring.main.allow-bean-definition-overriding=true
+
+2020-01-02 12:27:36.979  INFO 2608 --- [restartedMain] org.nina.Application                     : Starting Application on riverplant-PC with PID 2608 (J:\riverplant\nina\nina-api\target\classes started by riverplant in J:\riverplant\nina\nina-api)
+2020-01-02 12:27:36.981  INFO 2608 --- [restartedMain] org.nina.Application                     : No active profile set, falling back to default profiles: default
+2020-01-02 12:27:37.020  INFO 2608 --- [restartedMain] .e.DevToolsPropertyDefaultsPostProcessor : Devtools property defaults active! Set 'spring.devtools.add-properties' to 'false' to disable
+2020-01-02 12:27:37.021  INFO 2608 --- [restartedMain] .e.DevToolsPropertyDefaultsPostProcessor : For additional web related logging consider setting the 'logging.level.web' property to 'DEBUG'
+2020-01-02 12:27:37.710  INFO 2608 --- [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data repositories in DEFAULT mode.
+2020-01-02 12:27:37.777  INFO 2608 --- [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 60ms. Found 2 repository interfaces.
+2020-01-02 12:27:37.780  INFO 2608 --- [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data repositories in DEFAULT mode.
+2020-01-02 12:27:37.842  INFO 2608 --- [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 62ms. Found 2 repository interfaces.
+2020-01-02 12:27:39.137  INFO 2608 --- [restartedMain] trationDelegate$BeanPostProcessorChecker : Bean 'org.springframework.transaction.annotation.ProxyTransactionManagementConfiguration' of type [org.springframework.transaction.annotation.ProxyTransactionManagementConfiguration$$EnhancerBySpringCGLIB$$ac1e5317] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2020-01-02 12:27:40.141  INFO 2608 --- [restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port(s): 9020 (http)
+2020-01-02 12:27:40.257  INFO 2608 --- [restartedMain] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2020-01-02 12:27:40.258  INFO 2608 --- [restartedMain] org.apache.catalina.core.StandardEngine  : Starting Servlet engine: [Apache Tomcat/9.0.19]
+2020-01-02 12:27:40.555  INFO 2608 --- [restartedMain] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2020-01-02 12:27:40.555  INFO 2608 --- [restartedMain] o.s.web.context.ContextLoader            : Root WebApplicationContext: initialization completed in 3534 ms
+2020-01-02 12:27:40.619  INFO 2608 --- [restartedMain] o.s.boot.web.servlet.RegistrationBean    : Filter characterEncodingFilter was not registered (possibly already registered?)
+2020-01-02 12:27:41.131  INFO 2608 --- [restartedMain] com.zaxxer.hikari.HikariDataSource       : DateSourceHikariCP - Starting...
+2020-01-02 12:27:42.078  INFO 2608 --- [restartedMain] com.zaxxer.hikari.pool.PoolBase          : DateSourceHikariCP - Driver does not support get/set network timeout for connections. (com.mysql.jdbc.JDBC4Connection.getNetworkTimeout()I)
+2020-01-02 12:27:42.129  INFO 2608 --- [restartedMain] com.zaxxer.hikari.HikariDataSource       : DateSourceHikariCP - Start completed.
+2020-01-02 12:27:42.380  INFO 2608 --- [restartedMain] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [
+	name: default
+	...]
+2020-01-02 12:27:42.785  INFO 2608 --- [restartedMain] org.hibernate.Version                    : HHH000412: Hibernate Core {5.3.10.Final}
+2020-01-02 12:27:42.801  INFO 2608 --- [restartedMain] org.hibernate.cfg.Environment            : HHH000206: hibernate.properties not found
+2020-01-02 12:27:43.730  INFO 2608 --- [restartedMain] o.hibernate.annotations.common.Version   : HCANN000001: Hibernate Commons Annotations {5.0.4.Final}
+2020-01-02 12:27:44.302  INFO 2608 --- [restartedMain] org.hibernate.dialect.Dialect            : HHH000400: Using dialect: org.hibernate.dialect.MySQL5Dialect
+2020-01-02 12:27:44.432  INFO 2608 --- [restartedMain] o.h.e.j.e.i.LobCreatorBuilderImpl        : HHH000423: Disabling contextual LOB creation as JDBC driver reported JDBC version [3] less than 4
+2020-01-02 12:27:48.452  INFO 2608 --- [restartedMain] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2020-01-02 12:27:48.578  INFO 2608 --- [restartedMain] o.s.b.d.a.OptionalLiveReloadServer       : LiveReload server is running on port 35729
+2020-01-02 12:27:50.105  INFO 2608 --- [restartedMain] o.s.s.concurrent.ThreadPoolTaskExecutor  : Initializing ExecutorService 'applicationTaskExecutor'
+2020-01-02 12:27:50.162  WARN 2608 --- [restartedMain] aWebConfiguration$JpaWebMvcConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2020-01-02 12:27:50.233  INFO 2608 --- [restartedMain] o.s.b.a.w.s.WelcomePageHandlerMapping    : Adding welcome page: class path resource [resources/index.html]
+2020-01-02 12:27:50.318  INFO 2608 --- [restartedMain] o.s.s.c.ThreadPoolTaskScheduler          : Initializing ExecutorService 'taskScheduler'
+2020-01-02 12:27:50.606  INFO 2608 --- [restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port(s): 9020 (http) with context path ''
+2020-01-02 12:27:50.610  INFO 2608 --- [restartedMain] org.nina.Application                     : Started Application in 13.968 seconds (JVM running for 14.588)
+2020-01-02 12:38:01.036  INFO 2608 --- [RMI TCP Connection(2)-127.0.0.1] inMXBeanRegistrar$SpringApplicationAdmin : Application shutdown requested.
+2020-01-02 12:38:01.039  INFO 2608 --- [RMI TCP Connection(2)-127.0.0.1] o.s.s.c.ThreadPoolTaskScheduler          : Shutting down ExecutorService 'taskScheduler'
+2020-01-02 12:38:01.040  INFO 2608 --- [RMI TCP Connection(2)-127.0.0.1] o.s.s.concurrent.ThreadPoolTaskExecutor  : Shutting down ExecutorService 'applicationTaskExecutor'
+2020-01-02 12:38:01.042  INFO 2608 --- [RMI TCP Connection(2)-127.0.0.1] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2020-01-02 12:38:01.045  INFO 2608 --- [RMI TCP Connection(2)-127.0.0.1] com.zaxxer.hikari.HikariDataSource       : DateSourceHikariCP - Shutdown initiated...
+2020-01-02 12:38:01.049  INFO 2608 --- [RMI TCP Connection(2)-127.0.0.1] com.zaxxer.hikari.HikariDataSource       : DateSourceHikariCP - Shutdown completed.
+2020-01-02 12:51:41.243  INFO 18436 --- [restartedMain] org.nina.Application                     : Starting Application on riverplant-PC with PID 18436 (J:\riverplant\nina\nina-api\target\classes started by riverplant in J:\riverplant\nina\nina-api)
+2020-01-02 12:51:41.245  INFO 18436 --- [restartedMain] org.nina.Application                     : The following profiles are active: dev
+2020-01-02 12:51:41.285  INFO 18436 --- [restartedMain] .e.DevToolsPropertyDefaultsPostProcessor : Devtools property defaults active! Set 'spring.devtools.add-properties' to 'false' to disable
+2020-01-02 12:51:41.285  INFO 18436 --- [restartedMain] .e.DevToolsPropertyDefaultsPostProcessor : For additional web related logging consider setting the 'logging.level.web' property to 'DEBUG'
+2020-01-02 12:51:42.024  INFO 18436 --- [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data repositories in DEFAULT mode.
+2020-01-02 12:51:42.090  INFO 18436 --- [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 60ms. Found 2 repository interfaces.
+2020-01-02 12:51:42.094  INFO 18436 --- [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data repositories in DEFAULT mode.
+2020-01-02 12:51:42.125  INFO 18436 --- [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 31ms. Found 2 repository interfaces.
+2020-01-02 12:51:42.568  INFO 18436 --- [restartedMain] trationDelegate$BeanPostProcessorChecker : Bean 'org.springframework.transaction.annotation.ProxyTransactionManagementConfiguration' of type [org.springframework.transaction.annotation.ProxyTransactionManagementConfiguration$$EnhancerBySpringCGLIB$$1bb1640d] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2020-01-02 12:51:42.916  INFO 18436 --- [restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port(s): 9020 (http)
+2020-01-02 12:51:42.939  INFO 18436 --- [restartedMain] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2020-01-02 12:51:42.939  INFO 18436 --- [restartedMain] org.apache.catalina.core.StandardEngine  : Starting Servlet engine: [Apache Tomcat/9.0.19]
+2020-01-02 12:51:43.073  INFO 18436 --- [restartedMain] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2020-01-02 12:51:43.073  INFO 18436 --- [restartedMain] o.s.web.context.ContextLoader            : Root WebApplicationContext: initialization completed in 1788 ms
+2020-01-02 12:51:43.105  INFO 18436 --- [restartedMain] o.s.boot.web.servlet.RegistrationBean    : Filter characterEncodingFilter was not registered (possibly already registered?)
+2020-01-02 12:51:43.226  INFO 18436 --- [restartedMain] com.zaxxer.hikari.HikariDataSource       : DateSourceHikariCP - Starting...
+2020-01-02 12:51:43.433  INFO 18436 --- [restartedMain] com.zaxxer.hikari.pool.PoolBase          : DateSourceHikariCP - Driver does not support get/set network timeout for connections. (com.mysql.jdbc.JDBC4Connection.getNetworkTimeout()I)
+2020-01-02 12:51:43.437  INFO 18436 --- [restartedMain] com.zaxxer.hikari.HikariDataSource       : DateSourceHikariCP - Start completed.
+2020-01-02 12:51:43.474  INFO 18436 --- [restartedMain] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [
+	name: default
+	...]
+2020-01-02 12:51:43.541  INFO 18436 --- [restartedMain] org.hibernate.Version                    : HHH000412: Hibernate Core {5.3.10.Final}
+2020-01-02 12:51:43.543  INFO 18436 --- [restartedMain] org.hibernate.cfg.Environment            : HHH000206: hibernate.properties not found
+2020-01-02 12:51:43.651  INFO 18436 --- [restartedMain] o.hibernate.annotations.common.Version   : HCANN000001: Hibernate Commons Annotations {5.0.4.Final}
+2020-01-02 12:51:43.788  INFO 18436 --- [restartedMain] org.hibernate.dialect.Dialect            : HHH000400: Using dialect: org.hibernate.dialect.MySQL5Dialect
+2020-01-02 12:51:43.815  INFO 18436 --- [restartedMain] o.h.e.j.e.i.LobCreatorBuilderImpl        : HHH000423: Disabling contextual LOB creation as JDBC driver reported JDBC version [3] less than 4
+2020-01-02 12:51:45.075  INFO 18436 --- [restartedMain] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2020-01-02 12:51:45.116  INFO 18436 --- [restartedMain] o.s.b.d.a.OptionalLiveReloadServer       : LiveReload server is running on port 35729
+2020-01-02 12:51:45.662  INFO 18436 --- [restartedMain] o.s.s.concurrent.ThreadPoolTaskExecutor  : Initializing ExecutorService 'applicationTaskExecutor'
+2020-01-02 12:51:45.702  WARN 18436 --- [restartedMain] aWebConfiguration$JpaWebMvcConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2020-01-02 12:51:45.758  INFO 18436 --- [restartedMain] o.s.b.a.w.s.WelcomePageHandlerMapping    : Adding welcome page: class path resource [resources/index.html]
+2020-01-02 12:51:45.801  INFO 18436 --- [restartedMain] o.s.s.c.ThreadPoolTaskScheduler          : Initializing ExecutorService 'taskScheduler'
+2020-01-02 12:51:45.888  INFO 18436 --- [restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port(s): 9020 (http) with context path ''
+2020-01-02 12:51:45.890  INFO 18436 --- [restartedMain] org.nina.Application                     : Started Application in 4.996 seconds (JVM running for 5.684)
+2020-01-02 12:53:18.944  INFO 18436 --- [Thread-7] o.s.s.c.ThreadPoolTaskScheduler          : Shutting down ExecutorService 'taskScheduler'
+2020-01-02 12:53:18.945  INFO 18436 --- [Thread-7] o.s.s.concurrent.ThreadPoolTaskExecutor  : Shutting down ExecutorService 'applicationTaskExecutor'
+2020-01-02 12:53:18.949  INFO 18436 --- [Thread-7] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2020-01-02 12:53:18.955  INFO 18436 --- [Thread-7] com.zaxxer.hikari.HikariDataSource       : DateSourceHikariCP - Shutdown initiated...
+2020-01-02 12:53:18.959  INFO 18436 --- [Thread-7] com.zaxxer.hikari.HikariDataSource       : DateSourceHikariCP - Shutdown completed.
+2020-01-02 12:53:19.290  INFO 18436 --- [restartedMain] org.nina.Application                     : Starting Application on riverplant-PC with PID 18436 (J:\riverplant\nina\nina-api\target\classes started by riverplant in J:\riverplant\nina\nina-api)
+2020-01-02 12:53:19.290  INFO 18436 --- [restartedMain] org.nina.Application                     : The following profiles are active: dev
+2020-01-02 12:53:19.656  INFO 18436 --- [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data repositories in DEFAULT mode.
+2020-01-02 12:53:19.678  INFO 18436 --- [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 22ms. Found 2 repository interfaces.
+2020-01-02 12:53:19.679  INFO 18436 --- [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data repositories in DEFAULT mode.
+2020-01-02 12:53:19.705  INFO 18436 --- [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 26ms. Found 2 repository interfaces.
+2020-01-02 12:53:19.800  INFO 18436 --- [restartedMain] trationDelegate$BeanPostProcessorChecker : Bean 'org.springframework.transaction.annotation.ProxyTransactionManagementConfiguration' of type [org.springframework.transaction.annotation.ProxyTransactionManagementConfiguration$$EnhancerBySpringCGLIB$$1bb1640d] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2020-01-02 12:53:19.891  INFO 18436 --- [restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port(s): 9020 (http)
+2020-01-02 12:53:19.892  INFO 18436 --- [restartedMain] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2020-01-02 12:53:19.892  INFO 18436 --- [restartedMain] org.apache.catalina.core.StandardEngine  : Starting Servlet engine: [Apache Tomcat/9.0.19]
+2020-01-02 12:53:19.914  INFO 18436 --- [restartedMain] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2020-01-02 12:53:19.914  INFO 18436 --- [restartedMain] o.s.web.context.ContextLoader            : Root WebApplicationContext: initialization completed in 621 ms
+2020-01-02 12:53:19.931  INFO 18436 --- [restartedMain] o.s.boot.web.servlet.RegistrationBean    : Filter characterEncodingFilter was not registered (possibly already registered?)
+2020-01-02 12:53:19.966  INFO 18436 --- [restartedMain] com.zaxxer.hikari.HikariDataSource       : DateSourceHikariCP - Starting...
+2020-01-02 12:53:19.971  INFO 18436 --- [restartedMain] com.zaxxer.hikari.pool.PoolBase          : DateSourceHikariCP - Driver does not support get/set network timeout for connections. (com.mysql.jdbc.JDBC4Connection.getNetworkTimeout()I)
+2020-01-02 12:53:19.971  INFO 18436 --- [restartedMain] com.zaxxer.hikari.HikariDataSource       : DateSourceHikariCP - Start completed.
+2020-01-02 12:53:19.978  INFO 18436 --- [restartedMain] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [
+	name: default
+	...]
+2020-01-02 12:53:19.988  INFO 18436 --- [restartedMain] org.hibernate.dialect.Dialect            : HHH000400: Using dialect: org.hibernate.dialect.MySQL5Dialect
+2020-01-02 12:53:19.990  INFO 18436 --- [restartedMain] o.h.e.j.e.i.LobCreatorBuilderImpl        : HHH000423: Disabling contextual LOB creation as JDBC driver reported JDBC version [3] less than 4
+2020-01-02 12:53:20.636  INFO 18436 --- [restartedMain] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2020-01-02 12:53:20.654  INFO 18436 --- [restartedMain] o.s.b.d.a.OptionalLiveReloadServer       : LiveReload server is running on port 35729
+2020-01-02 12:53:20.799  INFO 18436 --- [restartedMain] o.s.s.concurrent.ThreadPoolTaskExecutor  : Initializing ExecutorService 'applicationTaskExecutor'
+2020-01-02 12:53:20.806  WARN 18436 --- [restartedMain] aWebConfiguration$JpaWebMvcConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2020-01-02 12:53:20.832  INFO 18436 --- [restartedMain] o.s.b.a.w.s.WelcomePageHandlerMapping    : Adding welcome page: class path resource [resources/index.html]
+2020-01-02 12:53:20.849  INFO 18436 --- [restartedMain] o.s.s.c.ThreadPoolTaskScheduler          : Initializing ExecutorService 'taskScheduler'
+2020-01-02 12:53:20.891  INFO 18436 --- [restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port(s): 9020 (http) with context path ''
+2020-01-02 12:53:20.891  INFO 18436 --- [restartedMain] org.nina.Application                     : Started Application in 1.65 seconds (JVM running for 100.683)
+2020-01-02 12:53:20.894  INFO 18436 --- [restartedMain] .ConditionEvaluationDeltaLoggingListener : Condition evaluation unchanged
+2020-01-02 12:56:40.716  INFO 18436 --- [Thread-12] o.s.s.c.ThreadPoolTaskScheduler          : Shutting down ExecutorService 'taskScheduler'
+2020-01-02 12:56:40.718  INFO 18436 --- [Thread-12] o.s.s.concurrent.ThreadPoolTaskExecutor  : Shutting down ExecutorService 'applicationTaskExecutor'
+2020-01-02 12:56:40.719  INFO 18436 --- [Thread-12] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2020-01-02 12:56:40.720  INFO 18436 --- [Thread-12] com.zaxxer.hikari.HikariDataSource       : DateSourceHikariCP - Shutdown initiated...
+2020-01-02 12:56:40.723  INFO 18436 --- [Thread-12] com.zaxxer.hikari.HikariDataSource       : DateSourceHikariCP - Shutdown completed.
+2020-01-02 12:56:41.007  INFO 18436 --- [restartedMain] org.nina.Application                     : Starting Application on riverplant-PC with PID 18436 (J:\riverplant\nina\nina-api\target\classes started by riverplant in J:\riverplant\nina\nina-api)
+2020-01-02 12:56:41.008  INFO 18436 --- [restartedMain] org.nina.Application                     : The following profiles are active: dev
+2020-01-02 12:56:41.381  INFO 18436 --- [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data repositories in DEFAULT mode.
+2020-01-02 12:56:41.403  INFO 18436 --- [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 22ms. Found 2 repository interfaces.
+2020-01-02 12:56:41.403  INFO 18436 --- [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data repositories in DEFAULT mode.
+2020-01-02 12:56:41.432  INFO 18436 --- [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 29ms. Found 2 repository interfaces.
+2020-01-02 12:56:41.525  INFO 18436 --- [restartedMain] trationDelegate$BeanPostProcessorChecker : Bean 'org.springframework.transaction.annotation.ProxyTransactionManagementConfiguration' of type [org.springframework.transaction.annotation.ProxyTransactionManagementConfiguration$$EnhancerBySpringCGLIB$$1bb1640d] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2020-01-02 12:56:41.613  INFO 18436 --- [restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port(s): 9020 (http)
+2020-01-02 12:56:41.614  INFO 18436 --- [restartedMain] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2020-01-02 12:56:41.614  INFO 18436 --- [restartedMain] org.apache.catalina.core.StandardEngine  : Starting Servlet engine: [Apache Tomcat/9.0.19]
+2020-01-02 12:56:41.632  INFO 18436 --- [restartedMain] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2020-01-02 12:56:41.633  INFO 18436 --- [restartedMain] o.s.web.context.ContextLoader            : Root WebApplicationContext: initialization completed in 620 ms
+2020-01-02 12:56:41.648  INFO 18436 --- [restartedMain] o.s.boot.web.servlet.RegistrationBean    : Filter characterEncodingFilter was not registered (possibly already registered?)
+2020-01-02 12:56:41.683  INFO 18436 --- [restartedMain] com.zaxxer.hikari.HikariDataSource       : DateSourceHikariCP - Starting...
+2020-01-02 12:56:41.687  INFO 18436 --- [restartedMain] com.zaxxer.hikari.pool.PoolBase          : DateSourceHikariCP - Driver does not support get/set network timeout for connections. (com.mysql.jdbc.JDBC4Connection.getNetworkTimeout()I)
+2020-01-02 12:56:41.688  INFO 18436 --- [restartedMain] com.zaxxer.hikari.HikariDataSource       : DateSourceHikariCP - Start completed.
+2020-01-02 12:56:41.694  INFO 18436 --- [restartedMain] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [
+	name: default
+	...]
+2020-01-02 12:56:41.704  INFO 18436 --- [restartedMain] org.hibernate.dialect.Dialect            : HHH000400: Using dialect: org.hibernate.dialect.MySQL5Dialect
+2020-01-02 12:56:41.706  INFO 18436 --- [restartedMain] o.h.e.j.e.i.LobCreatorBuilderImpl        : HHH000423: Disabling contextual LOB creation as JDBC driver reported JDBC version [3] less than 4
+2020-01-02 12:56:42.551  INFO 18436 --- [restartedMain] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2020-01-02 12:56:42.576  INFO 18436 --- [restartedMain] o.s.b.d.a.OptionalLiveReloadServer       : LiveReload server is running on port 35729
+2020-01-02 12:56:42.720  INFO 18436 --- [restartedMain] o.s.s.concurrent.ThreadPoolTaskExecutor  : Initializing ExecutorService 'applicationTaskExecutor'
+2020-01-02 12:56:42.727  WARN 18436 --- [restartedMain] aWebConfiguration$JpaWebMvcConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2020-01-02 12:56:42.749  INFO 18436 --- [restartedMain] o.s.b.a.w.s.WelcomePageHandlerMapping    : Adding welcome page: class path resource [resources/index.html]
+2020-01-02 12:56:42.766  INFO 18436 --- [restartedMain] o.s.s.c.ThreadPoolTaskScheduler          : Initializing ExecutorService 'taskScheduler'
+2020-01-02 12:56:42.807  INFO 18436 --- [restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port(s): 9020 (http) with context path ''
+2020-01-02 12:56:42.807  INFO 18436 --- [restartedMain] org.nina.Application                     : Started Application in 1.847 seconds (JVM running for 302.594)
+2020-01-02 12:56:42.809  INFO 18436 --- [restartedMain] .ConditionEvaluationDeltaLoggingListener : Condition evaluation unchanged
+2020-01-02 12:58:03.588  INFO 18436 --- [Thread-19] o.s.s.c.ThreadPoolTaskScheduler          : Shutting down ExecutorService 'taskScheduler'
+2020-01-02 12:58:03.590  INFO 18436 --- [Thread-19] o.s.s.concurrent.ThreadPoolTaskExecutor  : Shutting down ExecutorService 'applicationTaskExecutor'
+2020-01-02 12:58:03.592  INFO 18436 --- [Thread-19] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2020-01-02 12:58:03.593  INFO 18436 --- [Thread-19] com.zaxxer.hikari.HikariDataSource       : DateSourceHikariCP - Shutdown initiated...
+2020-01-02 12:58:03.599  INFO 18436 --- [Thread-19] com.zaxxer.hikari.HikariDataSource       : DateSourceHikariCP - Shutdown completed.
+2020-01-02 12:58:03.875  INFO 18436 --- [restartedMain] org.nina.Application                     : Starting Application on riverplant-PC with PID 18436 (J:\riverplant\nina\nina-api\target\classes started by riverplant in J:\riverplant\nina\nina-api)
+2020-01-02 12:58:03.875  INFO 18436 --- [restartedMain] org.nina.Application                     : The following profiles are active: dev
+2020-01-02 12:58:04.242  INFO 18436 --- [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data repositories in DEFAULT mode.
+2020-01-02 12:58:04.263  INFO 18436 --- [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 21ms. Found 2 repository interfaces.
+2020-01-02 12:58:04.264  INFO 18436 --- [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data repositories in DEFAULT mode.
+2020-01-02 12:58:04.289  INFO 18436 --- [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 25ms. Found 2 repository interfaces.
+2020-01-02 12:58:04.378  INFO 18436 --- [restartedMain] trationDelegate$BeanPostProcessorChecker : Bean 'org.springframework.transaction.annotation.ProxyTransactionManagementConfiguration' of type [org.springframework.transaction.annotation.ProxyTransactionManagementConfiguration$$EnhancerBySpringCGLIB$$1bb1640d] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2020-01-02 12:58:04.464  INFO 18436 --- [restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port(s): 9020 (http)
+2020-01-02 12:58:04.465  INFO 18436 --- [restartedMain] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2020-01-02 12:58:04.465  INFO 18436 --- [restartedMain] org.apache.catalina.core.StandardEngine  : Starting Servlet engine: [Apache Tomcat/9.0.19]
+2020-01-02 12:58:04.484  INFO 18436 --- [restartedMain] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2020-01-02 12:58:04.484  INFO 18436 --- [restartedMain] o.s.web.context.ContextLoader            : Root WebApplicationContext: initialization completed in 605 ms
+2020-01-02 12:58:04.499  INFO 18436 --- [restartedMain] o.s.boot.web.servlet.RegistrationBean    : Filter characterEncodingFilter was not registered (possibly already registered?)
+2020-01-02 12:58:04.532  INFO 18436 --- [restartedMain] com.zaxxer.hikari.HikariDataSource       : DateSourceHikariCP - Starting...
+2020-01-02 12:58:04.536  INFO 18436 --- [restartedMain] com.zaxxer.hikari.pool.PoolBase          : DateSourceHikariCP - Driver does not support get/set network timeout for connections. (com.mysql.jdbc.JDBC4Connection.getNetworkTimeout()I)
+2020-01-02 12:58:04.537  INFO 18436 --- [restartedMain] com.zaxxer.hikari.HikariDataSource       : DateSourceHikariCP - Start completed.
+2020-01-02 12:58:04.543  INFO 18436 --- [restartedMain] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [
+	name: default
+	...]
+2020-01-02 12:58:04.554  INFO 18436 --- [restartedMain] org.hibernate.dialect.Dialect            : HHH000400: Using dialect: org.hibernate.dialect.MySQL5Dialect
+2020-01-02 12:58:04.555  INFO 18436 --- [restartedMain] o.h.e.j.e.i.LobCreatorBuilderImpl        : HHH000423: Disabling contextual LOB creation as JDBC driver reported JDBC version [3] less than 4
+2020-01-02 12:58:05.059  INFO 18436 --- [restartedMain] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2020-01-02 12:58:05.076  INFO 18436 --- [restartedMain] o.s.b.d.a.OptionalLiveReloadServer       : LiveReload server is running on port 35729
+2020-01-02 12:58:05.216  INFO 18436 --- [restartedMain] o.s.s.concurrent.ThreadPoolTaskExecutor  : Initializing ExecutorService 'applicationTaskExecutor'
+2020-01-02 12:58:05.223  WARN 18436 --- [restartedMain] aWebConfiguration$JpaWebMvcConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2020-01-02 12:58:05.246  INFO 18436 --- [restartedMain] o.s.b.a.w.s.WelcomePageHandlerMapping    : Adding welcome page: class path resource [resources/index.html]
+2020-01-02 12:58:05.266  INFO 18436 --- [restartedMain] o.s.s.c.ThreadPoolTaskScheduler          : Initializing ExecutorService 'taskScheduler'
+2020-01-02 12:58:05.307  INFO 18436 --- [restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port(s): 9020 (http) with context path ''
+2020-01-02 12:58:05.308  INFO 18436 --- [restartedMain] org.nina.Application                     : Started Application in 1.48 seconds (JVM running for 385.092)
+2020-01-02 12:58:05.309  INFO 18436 --- [restartedMain] .ConditionEvaluationDeltaLoggingListener : Condition evaluation unchanged
+2020-01-02 12:58:42.971  INFO 18436 --- [RMI TCP Connection(2)-127.0.0.1] inMXBeanRegistrar$SpringApplicationAdmin : Application shutdown requested.
+2020-01-02 12:58:42.974  INFO 18436 --- [RMI TCP Connection(2)-127.0.0.1] o.s.s.c.ThreadPoolTaskScheduler          : Shutting down ExecutorService 'taskScheduler'
+2020-01-02 12:58:42.974  INFO 18436 --- [RMI TCP Connection(2)-127.0.0.1] o.s.s.concurrent.ThreadPoolTaskExecutor  : Shutting down ExecutorService 'applicationTaskExecutor'
+2020-01-02 12:58:42.974  INFO 18436 --- [RMI TCP Connection(2)-127.0.0.1] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2020-01-02 12:58:42.976  INFO 18436 --- [RMI TCP Connection(2)-127.0.0.1] com.zaxxer.hikari.HikariDataSource       : DateSourceHikariCP - Shutdown initiated...
+2020-01-02 12:58:42.982  INFO 18436 --- [RMI TCP Connection(2)-127.0.0.1] com.zaxxer.hikari.HikariDataSource       : DateSourceHikariCP - Shutdown completed.

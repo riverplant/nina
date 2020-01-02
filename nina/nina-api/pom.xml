@@ -12,7 +12,7 @@
 	<name>nina-api</name>
 	<url>http://maven.apache.org</url>
 	<dependencies>
-	<!-- springboot test -->
+		<!-- springboot test -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
@@ -20,6 +20,11 @@
 		<dependency>
 			<groupId>org.springframework.data</groupId>
 			<artifactId>spring-data-commons</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.riverplant</groupId>
+			<artifactId>nina-commons</artifactId>
+			<version>${nina.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>com.riverplant</groupId>
@@ -42,5 +47,5 @@
 			</plugin>
 		</plugins>
 	</build>
-	
+
 </project>
