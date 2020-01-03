@@ -1,8 +1,8 @@
 package org.nina.service;
 
-import javax.transaction.Transactional;
 import javax.validation.Valid;
 
+import org.nina.commons.aop.ServiceLog;
 import org.nina.domain.Items;
 import org.nina.dto.ItemsCondition;
 import org.nina.dto.ItemsInfo;
@@ -15,6 +15,11 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.TransactionDefinition;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.DefaultTransactionDefinition;
 
 /**
  * 
@@ -22,30 +27,122 @@ import org.springframework.stereotype.Service;
  *
  */
 @Service("itemsService")
-@Transactional
+@Transactional(readOnly = true)
 public class ItemsServiceImpl implements ItemsService {
 	@Autowired
 	ItemsRepository itemsRepository;
+	// 通过编程控制事务
+	@Autowired
+	PlatformTransactionManager transactionManager;
 
 	@Override
+	@ServiceLog
 	public Page<ItemsInfo> query(ItemsCondition condition, Pageable pageable) {
 		Page<Items> result = itemsRepository.findAll(new ItemsSpec(condition), pageable);
-		Page<ItemsInfo> result2 = QueryResultConverter.convert(result, pageable,new AbstractDomain2InfoConverter<Items,ItemsInfo>(){
-            /**
-             * 调用该方法之前已经将相同的字段都拷贝了
-             */
-			@Override
-			protected void doConvert(Items domain, ItemsInfo info) throws Exception {
-				info.setItemName(domain.getItemName());
-			}
-			
-		});
-		//return QueryResultConverter.convert(result, ItemsInfo.class, pageable);
+		Page<ItemsInfo> result2 = QueryResultConverter.convert(result, pageable,
+				new AbstractDomain2InfoConverter<Items, ItemsInfo>() {
+					/**
+					 * 调用该方法之前已经将相同的字段都拷贝了
+					 */
+					@Override
+					protected void doConvert(Items domain, ItemsInfo info) throws Exception {
+						info.setItemName(domain.getItemName());
+					}
+
+				});
+		// return QueryResultConverter.convert(result, ItemsInfo.class, pageable);
 		return result2;
 	}
 
+	/**
+	 * 学习通过编程控制事务
+	 * 
+	 * @param condition
+	 * @param pageable
+	 * @return
+	 */
+	@ServiceLog
+	@Transactional
+	public Page<ItemsInfo> query2(ItemsCondition condition, Pageable pageable) {
+		/**
+		 * 开启一个事务
+		 */
+		DefaultTransactionDefinition definition = new DefaultTransactionDefinition();
+		/**
+		 * 因为方法上使用了@Transactional，所以当使用默认的事务传播级别PROPAGATION_REQUIRED，
+		 * 同一个事务中的数据库操作将一起成功提交或者一起失败回滚 如果使用PROPAGATION_NEW，将会谁成功就提交谁
+		 */
+		definition.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRED);
+		TransactionStatus status = transactionManager.getTransaction(definition);
+
+		try {
+			Page<Items> result = itemsRepository.findAll(new ItemsSpec(condition), pageable);
+			transactionManager.commit(status);// 提交事务
+			Page<ItemsInfo> result2 = QueryResultConverter.convert(result, pageable,
+					new AbstractDomain2InfoConverter<Items, ItemsInfo>() {
+						/**
+						 * 调用该方法之前已经将相同的字段都拷贝了
+						 */
+						@Override
+						protected void doConvert(Items domain, ItemsInfo info) throws Exception {
+							info.setItemName(domain.getItemName());
+						}
+
+					});
+			return result2;
+		} catch (Exception e) {
+			transactionManager.rollback(status);// 事务回滚
+		}
+		return null;
+	}
+
+	/**
+	 * 了解分布式业务中事务的管理
+	 * 各个服务来自不同的远程调用
+	 * @param condition
+	 * @param pageable
+	 */
+	@ServiceLog
+	@Transactional
+	public void fenbushiyewu(ItemsCondition condition, Pageable pageable) {
+		/**
+		 * 
+		 */
+		createOrder();
+		/**
+		 * updateStock服务应该监听一个消息队列，当收到订单异常，
+		 * 就查询数据库，如果之前已经修改过库存就将库存修改回来
+		 */
+		updateStock();
+		/**
+		 * updateUserBalance如果失败，抛出异常，并且往消息队列里
+		 * 写入订单异常信息，让updateStock服务捕获并且回滚
+		 */
+		updateUserBalance();
+
+	}
+
+	private void updateUserBalance() {
+		// TODO Auto-generated method stub
+
+	}
+
+	private void updateStock() {
+		// TODO Auto-generated method stub
+
+	}
+
+	private void createOrder() {
+		// TODO Auto-generated method stub
+
+	}
+
+	/**
+	 * 必须要外部类调用事务才会起作用!!!!! 本类的内部类调用事务无效
+	 */
 	@Override
 	@Modifying
+	@Transactional
 	public ItemsInfo update(@Valid ItemsInfo info) {
 		if (info.getId() == null) {
 			throw new RuntimeException("info's id is null...");
@@ -57,6 +154,7 @@ public class ItemsServiceImpl implements ItemsService {
 	}
 
 	@Override
+	@Transactional
 	public ItemsInfo create(@Valid ItemsInfo info) {
 		Items items = new Items();
 		items.setItemName(info.getItemName());
@@ -66,6 +164,7 @@ public class ItemsServiceImpl implements ItemsService {
 	}
 
 	@Override
+	@Transactional
 	public void delete(Long id) {
 		if (id == null) {
 			throw new RuntimeException(" id is null...");
