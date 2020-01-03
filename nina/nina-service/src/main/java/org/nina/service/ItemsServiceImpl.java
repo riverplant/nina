@@ -10,7 +10,13 @@ import org.nina.repository.ItemsRepository;
 import org.nina.repository.spec.ItemsSpec;
 import org.nina.repository.support.AbstractDomain2InfoConverter;
 import org.nina.repository.support.QueryResultConverter;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.Cache.ValueWrapper;
+import org.springframework.cache.CacheManager;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Modifying;
@@ -30,13 +36,21 @@ import org.springframework.transaction.support.DefaultTransactionDefinition;
 @Transactional(readOnly = true)
 public class ItemsServiceImpl implements ItemsService {
 	@Autowired
-	ItemsRepository itemsRepository;
+	private ItemsRepository itemsRepository;
 	// 通过编程控制事务
 	@Autowired
-	PlatformTransactionManager transactionManager;
+	private PlatformTransactionManager transactionManager;
+	// 编程式控制缓存
+	@Autowired
+	private CacheManager cacheManager;
 
+	/**
+	 * 使用condition.itemName作为缓存的key,只有itemName变化才存入缓存 缓存名称为items condition =
+	 * "#pageable.size > 0":当条件为真才开启缓存
+	 */
 	@Override
 	@ServiceLog
+	@Cacheable(cacheNames = "items", key = "#condition.itemName", condition = "#pageable.size > 0")
 	public Page<ItemsInfo> query(ItemsCondition condition, Pageable pageable) {
 		Page<Items> result = itemsRepository.findAll(new ItemsSpec(condition), pageable);
 		Page<ItemsInfo> result2 = QueryResultConverter.convert(result, pageable,
@@ -97,8 +111,8 @@ public class ItemsServiceImpl implements ItemsService {
 	}
 
 	/**
-	 * 了解分布式业务中事务的管理
-	 * 各个服务来自不同的远程调用
+	 * 了解分布式业务中事务的管理 各个服务来自不同的远程调用
+	 * 
 	 * @param condition
 	 * @param pageable
 	 */
@@ -110,13 +124,11 @@ public class ItemsServiceImpl implements ItemsService {
 		 */
 		createOrder();
 		/**
-		 * updateStock服务应该监听一个消息队列，当收到订单异常，
-		 * 就查询数据库，如果之前已经修改过库存就将库存修改回来
+		 * updateStock服务应该监听一个消息队列，当收到订单异常， 就查询数据库，如果之前已经修改过库存就将库存修改回来
 		 */
 		updateStock();
 		/**
-		 * updateUserBalance如果失败，抛出异常，并且往消息队列里
-		 * 写入订单异常信息，让updateStock服务捕获并且回滚
+		 * updateUserBalance如果失败，抛出异常，并且往消息队列里 写入订单异常信息，让updateStock服务捕获并且回滚
 		 */
 		updateUserBalance();
 
@@ -143,6 +155,7 @@ public class ItemsServiceImpl implements ItemsService {
 	@Override
 	@Modifying
 	@Transactional
+	@CachePut(cacheNames = "items", key = "#info.id")
 	public ItemsInfo update(@Valid ItemsInfo info) {
 		if (info.getId() == null) {
 			throw new RuntimeException("info's id is null...");
@@ -163,14 +176,48 @@ public class ItemsServiceImpl implements ItemsService {
 		return info;
 	}
 
+	/**
+	 * allEntries = true:删除调所有的缓存 beforeInvocation:是否在执行完方法后再请缓存
+	 */
 	@Override
 	@Transactional
+	@CacheEvict(cacheNames = "items", allEntries = true, beforeInvocation = false)
 	public void delete(Long id) {
 		if (id == null) {
 			throw new RuntimeException(" id is null...");
 		}
 
 		itemsRepository.deleteById(id);
+	}
+
+	/**
+	 * 使用redis做缓存
+	 */
+	@Override
+	@Cacheable(cacheNames = "items", key = "#id")
+	public ItemsInfo getInfo(Long id) {
+		Items items = itemsRepository.getOne(id);
+		ItemsInfo info = new ItemsInfo();
+		BeanUtils.copyProperties(items, info);
+		return info;
+	}
+
+	/**
+	 * 通过编程使用redis做缓存
+	 */
+	public ItemsInfo getInfo2(Long id) {
+		// 先判断缓存中是否已经存在,如果已经存在可以直接返回
+		ValueWrapper value = cacheManager.getCache("items").get(id);
+		if (value == null) {
+			Items items = itemsRepository.getOne(id);
+			ItemsInfo info = new ItemsInfo();
+			BeanUtils.copyProperties(items, info);
+			// 通过编程创建缓存
+			cacheManager.getCache("items").put(id, info);
+			return info;
+		} else {
+			return (ItemsInfo) value.get();
+		}
 	}
 
 }

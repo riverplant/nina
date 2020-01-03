@@ -2,8 +2,6 @@ package org.nina.dto;
 
 import java.io.Serializable;
 
-import javax.validation.constraints.NotBlank;
-
 import org.nina.domain.Category;
 
 import com.fasterxml.jackson.annotation.JsonView;
@@ -22,7 +20,6 @@ public class ItemsInfo implements Serializable{
 	
 	private Long id;
 
-	@NotBlank
 	private String itemName;
 
 	/**

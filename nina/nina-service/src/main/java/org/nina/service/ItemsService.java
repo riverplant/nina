@@ -12,6 +12,8 @@ public interface ItemsService {
 	Page<ItemsInfo> query(ItemsCondition condition, Pageable pageable);
 
 	ItemsInfo update(@Valid ItemsInfo info);
+	
+	ItemsInfo getInfo(Long id);
 
 	ItemsInfo create(@Valid ItemsInfo info);
 
