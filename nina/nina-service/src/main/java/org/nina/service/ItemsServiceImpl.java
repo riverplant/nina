@@ -37,6 +37,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionDefinition;
 import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.DefaultTransactionDefinition;
 
@@ -72,6 +73,7 @@ public class ItemsServiceImpl implements ItemsService {
 	@Override
 	@ServiceLog
 	@Cacheable(cacheNames = "items", key = "#condition.itemName", condition = "#pageable.size > 0")
+	@Transactional(propagation = Propagation.SUPPORTS)
 	public Page<ItemsInfo> query(ItemsCondition condition, Pageable pageable) {
 		Page<Items> result = itemsRepository.findAll(new ItemsSpec(condition), pageable);
 		Page<ItemsInfo> result2 = QueryResultConverter.convert(result, pageable,
