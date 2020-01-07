@@ -6,9 +6,11 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import org.nina.api.config.TestProperties;
 import org.nina.repository.support.NinaRepositoryImpl;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
@@ -16,9 +18,14 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.data.redis.cache.RedisCacheConfiguration;
 import org.springframework.data.redis.cache.RedisCacheManager;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
+import org.springframework.scheduling.annotation.EnableScheduling;
 @SpringBootApplication
 @EnableJpaRepositories(repositoryBaseClass = NinaRepositoryImpl.class)
 @EnableCaching
+//使用该注解，读取自己在配置文件中设置的配置项的配置类生效
+@EnableConfigurationProperties(value = TestProperties.class)
+@EnableScheduling
+//引入配置文件@ImportResource("classpath:consumer.xml")
 public class Application 
 {
     public static void main( String[] args )
@@ -57,12 +64,11 @@ public class Application
 //    	};
 //    }
     
-    /**
-	 * 自定义缓存管理器.相当于缓存的配置文件
-	 * 
-	 * @param redisTemplate
-	 * @return
-	 */
+   /**
+    * 自定义缓存管理器.相当于缓存的配置文件
+    * @param redisConnectionFactory
+    * @return
+    */
 	@Bean()  
 	public CacheManager cacheManager(RedisConnectionFactory redisConnectionFactory) {
 		 RedisCacheConfiguration redisCacheConfiguration = 

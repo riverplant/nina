@@ -124,12 +124,21 @@
 			<artifactId>commons-beanutils</artifactId>
 			<version>1.9.4</version>
 		</dependency>
-
-
 		<dependency>
 			<groupId>joda-time</groupId>
 			<artifactId>joda-time</artifactId>
 		</dependency>
+		<!-- 批处理框架，用于做定时任务 -->
+		<dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-batch</artifactId>
+      </dependency>
+      <!--  分布式锁，用于管理分布式定时任务-->
+		<dependency>
+        <groupId>org.redisson</groupId>
+        <artifactId>redisson</artifactId>
+        <version>3.2.4</version>
+      </dependency>
 	</dependencies>
 
 	<modules>
