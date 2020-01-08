@@ -9,7 +9,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
  * 
  * @author riverplant 用来读取propertie文件自己创建的配置项
  */
-@ConfigurationProperties(prefix = "xxx")
+//@ConfigurationProperties(prefix = "xxx")
 public class TestProperties {
 
 	private String h;
