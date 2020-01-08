@@ -1,1 +1,3 @@
-org\nina\commons\App.class
+org/nina/commons/App.class
+org/nina/commons/aop/ServiceLogAspect.class
+org/nina/commons/aop/ServiceLog.class

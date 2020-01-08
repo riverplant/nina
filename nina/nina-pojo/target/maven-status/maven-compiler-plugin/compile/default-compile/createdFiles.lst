@@ -1,9 +1,0 @@
-org\nina\domain\Items.class
-org\nina\domain\DomainImpl.class
-org\nina\domain\User.class
-org\nina\domain\Address.class
-org\nina\domain\Stu.class
-org\nina\domain\Sex.class
-org\nina\domain\support\riverNamingStrategy.class
-org\nina\domain\Carousel.class
-org\nina\domain\Category.class
