@@ -18,4 +18,10 @@ public interface ItemsService {
 	ItemsInfo create(@Valid ItemsInfo info);
 
 	void delete(Long id);
+	
+	/**
+	 * 用作定时任务的方法必须是无返回值，无参数
+	 */
+	void task();
+	
 }

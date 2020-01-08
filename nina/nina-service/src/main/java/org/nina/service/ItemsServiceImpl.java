@@ -1,5 +1,9 @@
 package org.nina.service;
 
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+
 import javax.validation.Valid;
 
 import org.nina.commons.aop.ServiceLog;
@@ -10,6 +14,14 @@ import org.nina.repository.ItemsRepository;
 import org.nina.repository.spec.ItemsSpec;
 import org.nina.repository.support.AbstractDomain2InfoConverter;
 import org.nina.repository.support.QueryResultConverter;
+import org.springframework.batch.core.Job;
+import org.springframework.batch.core.JobParameter;
+import org.springframework.batch.core.JobParameters;
+import org.springframework.batch.core.JobParametersInvalidException;
+import org.springframework.batch.core.launch.JobLauncher;
+import org.springframework.batch.core.repository.JobExecutionAlreadyRunningException;
+import org.springframework.batch.core.repository.JobInstanceAlreadyCompleteException;
+import org.springframework.batch.core.repository.JobRestartException;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.Cache.ValueWrapper;
@@ -20,6 +32,7 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionDefinition;
@@ -44,6 +57,14 @@ public class ItemsServiceImpl implements ItemsService {
 	// 编程式控制缓存
 	@Autowired
 	private CacheManager cacheManager;
+	/**
+	 * Job的运行器
+	 */
+	@Autowired
+	private JobLauncher jobLauncher;
+	
+	@Autowired
+	private Job job;
 
 	/**
 	 * 使用condition.itemName作为缓存的key,只有itemName变化才存入缓存 缓存名称为items condition =
@@ -219,6 +240,31 @@ public class ItemsServiceImpl implements ItemsService {
 			return info;
 		} else {
 			return (ItemsInfo) value.get();
+		}
+	}
+    /**
+     * 每隔三秒执行一次
+     */
+	@Override
+	@Scheduled(cron = "0/3*****")
+	public void task() {
+		System.out.println("task开始运行");
+		Map<String,JobParameter> paran = new HashMap<>();
+		paran.put("startTime", new JobParameter(new Date()));
+		try {
+			jobLauncher.run(job, new JobParameters(paran));
+		} catch (JobExecutionAlreadyRunningException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (JobRestartException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (JobInstanceAlreadyCompleteException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (JobParametersInvalidException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 	}
 
