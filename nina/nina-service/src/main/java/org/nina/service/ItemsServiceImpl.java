@@ -177,7 +177,7 @@ public class ItemsServiceImpl implements ItemsService {
 	 */
 	@Override
 	@Modifying
-	@Transactional
+	@Transactional(propagation = Propagation.REQUIRED)
 	@CachePut(cacheNames = "items", key = "#info.id")
 	public ItemsInfo update(@Valid ItemsInfo info) {
 		if (info.getId() == null) {
@@ -188,9 +188,12 @@ public class ItemsServiceImpl implements ItemsService {
 		itemsRepository.save(items);
 		return info;
 	}
-
+   /**
+    * 如果已经存在事务就使用现有的,
+    * 如果当前没有,就创建一个
+    */
 	@Override
-	@Transactional
+	@Transactional(propagation = Propagation.REQUIRED)
 	public ItemsInfo create(@Valid ItemsInfo info) {
 		Items items = new Items();
 		items.setItemName(info.getItemName());
@@ -203,7 +206,7 @@ public class ItemsServiceImpl implements ItemsService {
 	 * allEntries = true:删除调所有的缓存 beforeInvocation:是否在执行完方法后再请缓存
 	 */
 	@Override
-	@Transactional
+	@Transactional(propagation = Propagation.REQUIRED)
 	@CacheEvict(cacheNames = "items", allEntries = true, beforeInvocation = false)
 	public void delete(Long id) {
 		if (id == null) {

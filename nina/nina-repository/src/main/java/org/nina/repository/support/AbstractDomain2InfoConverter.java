@@ -10,7 +10,7 @@ public abstract class AbstractDomain2InfoConverter<T, I> implements Domain2InfoC
 		try {
 			@SuppressWarnings("unchecked")
 			Class<I> clazz = GenericUtils.getGenericClass(getClass(), 1);
-			info = clazz.newInstance();
+			info = clazz.getDeclaredConstructor().newInstance();
 			BeanUtils.copyProperties(domain, info);
 			doConvert(domain, info);
 		} catch (Exception e) {
