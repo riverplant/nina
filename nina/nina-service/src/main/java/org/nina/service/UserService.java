@@ -3,6 +3,7 @@ package org.nina.service;
 import java.util.Optional;
 
 import org.nina.domain.User;
+import org.nina.dto.UserInfo;
 import org.springframework.data.domain.Pageable;
 
 public interface UserService {
@@ -13,5 +14,7 @@ public interface UserService {
 	  * @return
 	  */
 	 boolean queryUsernameIsExist(String username); 
+	 
+	 UserInfo createUser(UserInfo userInfo);
 	
 }

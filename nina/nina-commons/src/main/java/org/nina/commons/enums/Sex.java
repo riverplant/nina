@@ -1,4 +1,4 @@
-package org.nina.domain;
+package org.nina.commons.enums;
 
 /**
  * 用枚举类表示性别
@@ -8,5 +8,6 @@ package org.nina.domain;
  */
 public enum Sex {
 	MAN,
-	WOMAN
+	WOMAN,
+	SECRET
 }

@@ -4,27 +4,38 @@ import java.util.Date;
 import java.util.List;
 
 import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
 
+import org.nina.commons.enums.Sex;
 import org.nina.domain.Address;
-import org.nina.domain.Sex;
 
 import com.fasterxml.jackson.annotation.JsonView;
 
 public class UserInfo {
-	public interface UserListView{};
-	
-	public interface UserDetailView extends UserListView{};
-	
+	public interface UserListView {
+	};
+
+	public interface UserDetailView extends UserListView {
+	};
+
 	private long id;
 	/**
 	 * 用户名 用户名
 	 */
+	@NotBlank
 	private String username;
 
 	/**
 	 * 密码 密码
 	 */
+	@NotBlank
 	private String password;
+
+	/**
+	 * 确认密码
+	 */
+	@NotBlank
+	private String confirmPassword;
 	/**
 	 * 年龄
 	 */
@@ -72,8 +83,8 @@ public class UserInfo {
 	private List<String> hobbies;
 
 	private List<Address> addresses;
-	
-    @JsonView(UserListView.class)
+
+	@JsonView(UserListView.class)
 	public long getId() {
 		return id;
 	}
@@ -81,6 +92,7 @@ public class UserInfo {
 	public void setId(long id) {
 		this.id = id;
 	}
+
 	@JsonView(UserListView.class)
 	public String getUsername() {
 		return username;
@@ -89,6 +101,7 @@ public class UserInfo {
 	public void setUsername(String username) {
 		this.username = username;
 	}
+
 	@JsonView(UserDetailView.class)
 	public String getPassword() {
 		return password;
@@ -97,6 +110,7 @@ public class UserInfo {
 	public void setPassword(String password) {
 		this.password = password;
 	}
+
 	@JsonView(UserDetailView.class)
 	public int getAge() {
 		return age;
@@ -105,6 +119,7 @@ public class UserInfo {
 	public void setAge(int age) {
 		this.age = age;
 	}
+
 	@JsonView(UserDetailView.class)
 	public String getNickname() {
 		return nickname;
@@ -113,6 +128,7 @@ public class UserInfo {
 	public void setNickname(String nickname) {
 		this.nickname = nickname;
 	}
+
 	@JsonView(UserDetailView.class)
 	public String getRealname() {
 		return realname;
@@ -121,6 +137,7 @@ public class UserInfo {
 	public void setRealname(String realname) {
 		this.realname = realname;
 	}
+
 	@JsonView(UserListView.class)
 	public String getFace() {
 		return face;
@@ -129,6 +146,7 @@ public class UserInfo {
 	public void setFace(String face) {
 		this.face = face;
 	}
+
 	@JsonView(UserListView.class)
 	public String getMobile() {
 		return mobile;
@@ -137,6 +155,7 @@ public class UserInfo {
 	public void setMobile(String mobile) {
 		this.mobile = mobile;
 	}
+
 	@JsonView(UserListView.class)
 	public String getEmail() {
 		return email;
@@ -145,6 +164,7 @@ public class UserInfo {
 	public void setEmail(String email) {
 		this.email = email;
 	}
+
 	@JsonView(UserDetailView.class)
 	public Sex getSex() {
 		return sex;
@@ -153,6 +173,7 @@ public class UserInfo {
 	public void setSex(Sex sex) {
 		this.sex = sex;
 	}
+
 	@JsonView(UserDetailView.class)
 	public Date getBirthday() {
 		return birthday;
@@ -161,6 +182,7 @@ public class UserInfo {
 	public void setBirthday(Date birthday) {
 		this.birthday = birthday;
 	}
+
 	@JsonView(UserDetailView.class)
 	public List<String> getHobbies() {
 		return hobbies;
@@ -169,6 +191,7 @@ public class UserInfo {
 	public void setHobbies(List<String> hobbies) {
 		this.hobbies = hobbies;
 	}
+
 	@JsonView(UserDetailView.class)
 	public List<Address> getAddresses() {
 		return addresses;
@@ -177,6 +200,13 @@ public class UserInfo {
 	public void setAddresses(List<Address> addresses) {
 		this.addresses = addresses;
 	}
-	
-	
+
+	public String getConfirmPassword() {
+		return confirmPassword;
+	}
+
+	public void setConfirmPassword(String confirmPassword) {
+		this.confirmPassword = confirmPassword;
+	}
+
 }

@@ -1,7 +1,7 @@
 package org.nina.service.test;
 
 import org.junit.Test;
-import org.nina.domain.Sex;
+import org.nina.commons.enums.Sex;
 import org.nina.dto.UserCondition;
 import org.nina.repository.UserRepository;
 import org.nina.repository.spec.UserSpec;

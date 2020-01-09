@@ -1,15 +1,22 @@
 package org.nina.service;
 
+import java.util.Date;
 import java.util.Optional;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
+import javax.validation.Valid;
 
 import org.nina.commons.aop.ServiceLog;
+import org.nina.commons.enums.Sex;
+import org.nina.commons.utils.DateUtil;
+import org.nina.commons.utils.MD5Utils;
 import org.nina.domain.User;
+import org.nina.dto.UserInfo;
 import org.nina.repository.UserRepository;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Pageable;
@@ -28,6 +35,8 @@ public class UserServiceImpl implements UserService {
 
 	@Autowired private UserRepository userRepository;
 	//@Autowired private PlatformTransactionManager transactionManager;
+	private static final String USER_FACE = "http://122.152.205.72:88/group1/M00/00/05/CpoxxFw_8_qAIlFXAAAcIhVPdSg994.png";
+
 	@Override
 	@ServiceLog//通过该注解触发aop
 	public Optional<User> queryByCondition(String username, String email, Pageable sort) {
@@ -66,6 +75,27 @@ public class UserServiceImpl implements UserService {
 		user.setUsername(username);
 		Example<User> userExemple = Example.of( user);
 		return userRepository.exists(userExemple);
+	}
+	@Transactional(propagation = Propagation.REQUIRED)
+	@Override
+	public UserInfo createUser(@Valid UserInfo userInfo) {
+		User user = new User();
+		BeanUtils.copyProperties(userInfo, user);
+		try {
+			String password = MD5Utils.getMD5Str(userInfo.getPassword());
+			user.setPassword(password);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		user.setFace(USER_FACE);
+		user.setSex(Sex.SECRET);
+		user.setBirthday(DateUtil.stringToDate("1900-01-01"));
+		user.setCreatedTime(new Date());
+        user.setUpdatedTime(new Date());
+        userRepository.save(user);
+        userInfo.setId(user.getId());
+		return userInfo;
 	}
 
 }

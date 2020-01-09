@@ -14,6 +14,8 @@ import javax.persistence.TemporalType;
 import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.Email;
 
+import org.nina.commons.enums.Sex;
+
 @Entity
 @Table(uniqueConstraints = {@UniqueConstraint(columnNames = {"email","mobile"})})
 public class User extends DomainImpl {

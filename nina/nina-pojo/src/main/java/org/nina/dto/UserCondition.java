@@ -1,7 +1,8 @@
 package org.nina.dto;
 
 import java.util.Date;
-import org.nina.domain.Sex;
+
+import org.nina.commons.enums.Sex;
 
 public class UserCondition {
 	/**
