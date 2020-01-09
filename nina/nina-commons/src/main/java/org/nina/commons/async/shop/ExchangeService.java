@@ -6,5 +6,5 @@ package org.nina.commons.async.shop;
  */
 public interface ExchangeService {
 
-	public double getRate(String souce, String target);
+	public double getRate(String souce, String target,Shop shop);
 }

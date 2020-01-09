@@ -106,11 +106,48 @@ public class PriceServiceImpl implements PriceService{
 						 * 将两个异步方法同时调用，第一个参数是第二个异步方法的调用CompletableFuture.supplyAsync
 						 * 第二个参数是将两个异步方法的返回值合并成一个quote
 						 */
-						.thenCombine(CompletableFuture.supplyAsync(()->ExchangeServiceImpl.getRateStatic("EURO", "CN"),threadPool), 
+						.thenCombine(CompletableFuture.supplyAsync(()->ExchangeServiceImpl.getRateStatic("EURO", "CN",shop),threadPool), 
 								(quote,rate)->new Quote(quote.getSHOP(),quote.getPrice()*rate,quote.getDiscount())))
 				//thenCompose:连接另外一个异步操作,当第一个完成返回后执行第二个异步
 				.map(future->future.thenCompose(quote->CompletableFuture.supplyAsync(()->DiscountServiceImpl.applyDiscountStatic(quote),threadPool)))
 				.collect(Collectors.toList());
 		return futurePrices.stream().map(CompletableFuture::join).collect(Collectors.toList());
+	}
+	
+	
+	/**
+	 * 添加价格单位转化，在查询价格的同时将欧元转成人民币
+	 * 同时发出两个请求，一个异步查汇率，一个异步查价格，
+	 * 当请求返回价格和折扣进行计算后，再与汇率进行计算最终价格返回给用户
+	 * 不等待所有的结果，根据不同的服务延时时间每得到一条消息就返回一条
+	 * future.thenAccept!!!!!!!!!!!!!
+	 * @param product
+	 * @return
+	 */
+	public void AsyncfindPricesAndDiscountAndExchange2WithDelay(String product) {
+		long start = System.currentTimeMillis();
+		ExecutorService threadPool = Executors.newFixedThreadPool(100);
+		//返回CompletableFuture数组
+		CompletableFuture<?>[] futurePrices =shops.stream()
+				//先通过CompletableFuture.supplyAsync异步调用获得价格的方法,获得字符串
+				.map(shop -> CompletableFuture.supplyAsync(
+						()->shop.getQuote(product),threadPool)
+						/**
+						 * 通过CompletableFuture.thenCombine( CompletionStage<? extends U> other, BiFunction<? super T,? super U,? extends V> fn)
+						 * 将两个异步方法同时调用，第一个参数是第二个异步方法的调用CompletableFuture.supplyAsync
+						 * 第二个参数是将两个异步方法的返回值合并成一个quote
+						 */
+						.thenCombine(CompletableFuture.supplyAsync(()->ExchangeServiceImpl.getRateStatic("EURO", "CN",shop),threadPool), 
+								(quote,rate)->new Quote(quote.getSHOP(),quote.getPrice()*rate,quote.getDiscount()))
+						)//map
+				//thenCompose:连接另外一个异步操作,当第一个完成返回后执行第二个异步
+				.map(future->future.thenCompose(quote->CompletableFuture.supplyAsync(()->DiscountServiceImpl.applyDiscountStatic(quote),threadPool)))
+				//future.thenAccept:最终处理CompletableFuture的返回结果,只要有返回就立刻处理
+				.map(future->future.thenAccept(content->System.out.println("执行"+content+"使用了"+(System.currentTimeMillis()-start)+"毫秒")))			
+				.toArray(size->new CompletableFuture[size]);
+		//使用CompletableFuture.allOf实现当所有的服务都处理完后进行的最后的操作
+		CompletableFuture.allOf(futurePrices).thenAccept((obj)->System.out.println("all done"));
+		//使用CompletableFuture.anyOf实现只要有一个服务返回就处理并且结束
+		CompletableFuture.anyOf(futurePrices).thenAccept((obj)->System.out.println("fastest done"));	
 	}
 }

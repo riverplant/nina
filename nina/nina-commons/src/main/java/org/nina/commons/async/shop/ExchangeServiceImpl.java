@@ -13,7 +13,7 @@ public class ExchangeServiceImpl implements ExchangeService {
 	}
 
 	@Override
-	public double getRate(String souce, String target) {
+	public double getRate(String souce, String target,Shop shop) {
 		// TODO Auto-generated method stub
 		return 0;
 	}
@@ -23,7 +23,7 @@ public class ExchangeServiceImpl implements ExchangeService {
 	 * @param target
 	 * @return
 	 */
-	public static double getRateStatic(String souce, String target) {
+	public static double getRateStatic(String souce, String target,Shop shop) {
 		delay();
 		return 10;
 	}

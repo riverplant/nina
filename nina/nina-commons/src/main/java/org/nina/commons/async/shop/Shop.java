@@ -21,14 +21,15 @@ public class Shop {
 		this.name = name;
 	}
 
-	Random random = new Random();
+	static Random random = new Random();
 
 	/**
 	 * 模拟远程调用
 	 */
 	public static void delay() {
+		int delay = 500 + random.nextInt(2000);
 		try {
-			Thread.sleep(1000L);
+			Thread.sleep(delay);
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
