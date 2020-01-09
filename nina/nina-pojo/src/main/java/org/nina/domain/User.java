@@ -8,11 +8,14 @@ import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.Email;
 
 @Entity
+@Table(uniqueConstraints = {@UniqueConstraint(columnNames = {"email","mobile"})})
 public class User extends DomainImpl {
 	private static final long serialVersionUID = 3113833638677119445L;
 
@@ -22,7 +25,7 @@ public class User extends DomainImpl {
 	private String username;
 
 	/**
-	 * 密码 密码
+	 * 密码 密码,需要MD5加密
 	 */
 	private String password;
 	/**

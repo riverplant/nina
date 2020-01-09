@@ -6,15 +6,17 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
-import javax.transaction.Transactional;
 
 import org.nina.commons.aop.ServiceLog;
 import org.nina.domain.User;
 import org.nina.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 /**
  * 通过定义transactionManager.commit来保持上下文的一致性
  * @author riverplant
@@ -41,9 +43,9 @@ public class UserServiceImpl implements UserService {
 				/**arg0:接收一个表达式，由root获取
 				 * arg1：具体的值
 				 */
-			Predicate p1 =	criteriaBuilder.equal(root.get("username"), "nina");
+			Predicate p1 =	criteriaBuilder.equal(root.get("username"), username);
 			//Predicate p2 = criteriaBuilder.equal(root.get("username").get(""), "nina");
-			Predicate p2 = criteriaBuilder.equal(root.get("password"), "123456");
+			Predicate p2 = criteriaBuilder.equal(root.get("email"), email);
 			Predicate p3 = criteriaBuilder.and(p1,p2);	
 			/**
 			 * 设置动态查询的抓取策略
@@ -56,6 +58,14 @@ public class UserServiceImpl implements UserService {
 		};
 		//transactionManager.commit(statu);
 		return userRepository.findOne(spec);
+	}
+	@Transactional(propagation = Propagation.SUPPORTS)
+	@Override
+	public boolean queryUsernameIsExist(String username) {
+		User user = new User();
+		user.setUsername(username);
+		Example<User> userExemple = Example.of( user);
+		return userRepository.exists(userExemple);
 	}
 
 }

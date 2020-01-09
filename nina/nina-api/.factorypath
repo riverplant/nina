@@ -113,19 +113,4 @@
     <factorypathentry kind="VARJAR" id="M2_REPO/net/bytebuddy/byte-buddy/1.9.12/byte-buddy-1.9.12.jar" enabled="true" runInBatchMode="false"/>
     <factorypathentry kind="VARJAR" id="M2_REPO/org/jodd/jodd-bean/3.7.1/jodd-bean-3.7.1.jar" enabled="true" runInBatchMode="false"/>
     <factorypathentry kind="VARJAR" id="M2_REPO/org/jodd/jodd-core/3.7.1/jodd-core-3.7.1.jar" enabled="true" runInBatchMode="false"/>
-    <factorypathentry kind="VARJAR" id="ECLIPSE_HOME/plugins/org.junit.jupiter.api_5.0.0.v20170910-2246.jar" enabled="true" runInBatchMode="false"/>
-    <factorypathentry kind="VARJAR" id="ECLIPSE_HOME/plugins/org.junit.jupiter.engine_5.0.0.v20170910-2246.jar" enabled="true" runInBatchMode="false"/>
-    <factorypathentry kind="VARJAR" id="ECLIPSE_HOME/plugins/org.junit.jupiter.migrationsupport_5.0.0.v20170910-2246.jar" enabled="true" runInBatchMode="false"/>
-    <factorypathentry kind="VARJAR" id="ECLIPSE_HOME/plugins/org.junit.jupiter.params_5.0.0.v20170910-2246.jar" enabled="true" runInBatchMode="false"/>
-    <factorypathentry kind="VARJAR" id="ECLIPSE_HOME/plugins/org.junit.platform.commons_1.0.0.v20170910-2246.jar" enabled="true" runInBatchMode="false"/>
-    <factorypathentry kind="VARJAR" id="ECLIPSE_HOME/plugins/org.junit.platform.engine_1.0.0.v20170910-2246.jar" enabled="true" runInBatchMode="false"/>
-    <factorypathentry kind="VARJAR" id="ECLIPSE_HOME/plugins/org.junit.platform.launcher_1.0.0.v20170910-2246.jar" enabled="true" runInBatchMode="false"/>
-    <factorypathentry kind="VARJAR" id="ECLIPSE_HOME/plugins/org.junit.platform.runner_1.0.0.v20170910-2246.jar" enabled="true" runInBatchMode="false"/>
-    <factorypathentry kind="VARJAR" id="ECLIPSE_HOME/plugins/org.junit.platform.suite.api_1.0.0.v20170910-2246.jar" enabled="true" runInBatchMode="false"/>
-    <factorypathentry kind="VARJAR" id="ECLIPSE_HOME/plugins/org.junit.vintage.engine_4.12.0.v20170910-2246.jar" enabled="true" runInBatchMode="false"/>
-    <factorypathentry kind="VARJAR" id="ECLIPSE_HOME/plugins/org.opentest4j_1.0.0.v20170910-2246.jar" enabled="true" runInBatchMode="false"/>
-    <factorypathentry kind="VARJAR" id="ECLIPSE_HOME/plugins/org.apiguardian_1.0.0.v20170910-2246.jar" enabled="true" runInBatchMode="false"/>
-    <factorypathentry kind="VARJAR" id="JUNIT_HOME/junit.jar" enabled="true" runInBatchMode="false"/>
-    <factorypathentry kind="VARJAR" id="ECLIPSE_HOME/plugins/org.hamcrest.core_1.3.0.v201303031735.jar" enabled="true" runInBatchMode="false"/>
-    <factorypathentry kind="PLUGIN" id="org.eclipse.jst.ws.annotations.core" enabled="true" runInBatchMode="false"/>
 </factorypath>

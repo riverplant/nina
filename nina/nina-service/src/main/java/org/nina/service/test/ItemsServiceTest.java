@@ -1,10 +1,8 @@
 package org.nina.service.test;
 
-import org.junit.Assert;
 import org.junit.Test;
 import org.nina.dto.ItemsInfo;
 import org.nina.repository.ItemsRepository;
-import org.nina.service.ItemsService;
 import org.springframework.beans.factory.annotation.Autowired;
 
 public class ItemsServiceTest extends BaseTest {
