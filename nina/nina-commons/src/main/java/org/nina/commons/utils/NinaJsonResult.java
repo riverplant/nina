@@ -1,7 +1,6 @@
 package org.nina.commons.utils;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * 
@@ -10,9 +9,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  *               502:拦截器拦截到Token错误 555:异常抛出信息 556:第三方校验异常
  */
 public class NinaJsonResult {
-	// 定义jackson对象
-	private static final ObjectMapper MAPPER = new ObjectMapper();
-
 	// 响应业务状态
 	private Integer status;
 

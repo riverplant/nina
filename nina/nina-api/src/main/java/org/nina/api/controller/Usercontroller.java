@@ -1,7 +1,11 @@
 package org.nina.api.controller;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
+import org.nina.commons.utils.CookieUtils;
+import org.nina.commons.utils.JsonUtils;
 import org.nina.commons.utils.NinaJsonResult;
 import org.nina.dto.UserInfo;
 import org.nina.service.UserService;
@@ -27,9 +31,9 @@ public class Usercontroller {
 	 * @param result:校验结果
 	 * @return
 	 */
-	@ApiOperation(value = "创建用户", notes = "创建用户", httpMethod = "POST")
+	@ApiOperation(value = "用户注册", notes = "用户注册", httpMethod = "POST")
 	@PostMapping
-	public NinaJsonResult create(@Valid @RequestBody UserInfo info,BindingResult result) {
+	public NinaJsonResult register(@Valid @RequestBody UserInfo info,HttpServletRequest request, HttpServletResponse response,BindingResult result) {
 		if(result.hasErrors()) {
 			result.getAllErrors().stream().forEach(System.out::println);
 			//throw new RuntimeException(result.toString());
@@ -45,6 +49,8 @@ public class Usercontroller {
 			return NinaJsonResult.erorMsg("用户名已经存在");
 		}
 		UserInfo resultData = userService.createUser(info);
+		//设置浏览器端Cookies
+	    CookieUtils.setCookie(request, response, "user", JsonUtils.objectToJson(resultData),true);
 		return NinaJsonResult.ok(resultData);
 	}
 	

@@ -10,6 +10,7 @@ import javax.persistence.criteria.Root;
 import javax.validation.Valid;
 
 import org.nina.commons.aop.ServiceLog;
+import org.nina.commons.aop.UserLoginLog;
 import org.nina.commons.enums.Sex;
 import org.nina.commons.utils.DateUtil;
 import org.nina.commons.utils.MD5Utils;
@@ -96,6 +97,28 @@ public class UserServiceImpl implements UserService {
         userRepository.save(user);
         userInfo.setId(user.getId());
 		return userInfo;
+	}
+	@Override
+	@UserLoginLog//通过该注解触发aop
+	@Transactional(propagation = Propagation.SUPPORTS)
+	public UserInfo queryUserForLogin(String username, String password) {
+		Specification<User> spec = new Specification<User>() {
+			private static final long serialVersionUID = 1L;
+			@Override
+			public Predicate toPredicate(Root<User> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
+			Predicate p1 =	criteriaBuilder.equal(root.get("username"), username);
+			Predicate p2 = criteriaBuilder.equal(root.get("password"), password);
+			Predicate p3 = criteriaBuilder.and(p1,p2);	
+			return p3;
+			};
+		};
+		User user = userRepository.findOne(spec).orElse(null);
+		UserInfo userInfo = new UserInfo();
+		if(user!=null) {
+			BeanUtils.copyProperties(user, userInfo);
+			return userInfo;
+		}
+		return null;
 	}
 
 }

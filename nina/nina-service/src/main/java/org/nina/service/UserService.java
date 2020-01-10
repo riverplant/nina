@@ -16,5 +16,7 @@ public interface UserService {
 	 boolean queryUsernameIsExist(String username); 
 	 
 	 UserInfo createUser(UserInfo userInfo);
+	 //用户登录
+	 UserInfo queryUserForLogin(String username, String password);
 	
 }
