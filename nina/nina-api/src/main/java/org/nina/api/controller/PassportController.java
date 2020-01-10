@@ -9,12 +9,16 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+@Api(value = "注册登录", tags = "用于注册登录的相关接口")
 @RestController
 @RequestMapping("/passport")
 public class PassportController {
 	@Autowired
 	private UserService userService;
 
+	@ApiOperation(value = "用户名是否存在", notes = "用户名是否存在", httpMethod = "GET")
 	@GetMapping
 	public NinaJsonResult usernameIsExist(@RequestParam String username) {
         //1.判断用户名是否为空

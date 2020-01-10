@@ -14,12 +14,13 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.data.redis.cache.RedisCacheConfiguration;
 import org.springframework.data.redis.cache.RedisCacheManager;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.scheduling.annotation.EnableScheduling;
+
+import springfox.documentation.swagger2.annotations.EnableSwagger2;
 @SpringBootApplication
 @EnableJpaRepositories(repositoryBaseClass = NinaRepositoryImpl.class)
 @EnableCaching
@@ -29,6 +30,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 //扫描所有包以及相关组件包
 //@ComponentScan(basePackages = {"",""})
 //引入配置文件@ImportResource("classpath:consumer.xml")
+@EnableSwagger2
 public class Application 
 {
     public static void main( String[] args )

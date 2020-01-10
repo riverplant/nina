@@ -6,35 +6,45 @@ import java.util.List;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 
+import org.hibernate.validator.constraints.Length;
 import org.nina.commons.enums.Sex;
 import org.nina.domain.Address;
 
 import com.fasterxml.jackson.annotation.JsonView;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+@ApiModel(value = "用户对象",description = "用户对象,与前端交互")
 public class UserInfo {
 	public interface UserListView {
 	};
 
 	public interface UserDetailView extends UserListView {
 	};
-
+    
+	@ApiModelProperty(value = "用户id", name = "id", example = "1L", required = false)
 	private long id;
 	/**
 	 * 用户名 用户名
 	 */
+	@ApiModelProperty(value = "用户名", name = "username", example = "riverplant", required = true)
 	@NotBlank
 	private String username;
 
 	/**
 	 * 密码 密码
 	 */
+	@ApiModelProperty(value = "密码", name = "password", example = "123456", required = true)
 	@NotBlank
+	@Length(min = 6,message="密码长度不正确!")
 	private String password;
 
 	/**
 	 * 确认密码
 	 */
+	@ApiModelProperty(value = "确认密码", name = "confirmPassword", example = "123456", required = true)
 	@NotBlank
+	@Length(min = 6,message="确认密码长度不正确!")
 	private String confirmPassword;
 	/**
 	 * 年龄
