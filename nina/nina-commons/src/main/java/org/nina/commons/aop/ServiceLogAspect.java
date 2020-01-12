@@ -1,8 +1,8 @@
 package org.nina.commons.aop;
 
 import org.aspectj.lang.ProceedingJoinPoint;
-import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
+import org.aspectj.lang.annotation.Pointcut;
 import org.nina.commons.utils.LogUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,7 +28,7 @@ public class ServiceLogAspect {
 	 *             service下面所有的子包中的任何一个类
 	 */
 	//通过注解来触发该切片，当方法上有该注解就会触发该切片方法
-	@Around("@annotaion(org.nina.commons.aop.ServiceLog)")
+	@Pointcut("@annotaion(org.nina.commons.aop.ServiceLog)")
 	//@Around("execution(* org.nina.service..*.*(..))")
 	public Object logServiceInvoke(ProceedingJoinPoint pjp) throws Throwable {
 		System.out.println("方法被调用");

@@ -72,23 +72,26 @@ public class ItemsServiceImpl implements ItemsService {
 	 */
 	@Override
 	@ServiceLog
-	@Cacheable(cacheNames = "items", key = "#condition.itemName", condition = "#pageable.size > 0")
+	@Cacheable(cacheNames = "items", key = "#condition.itemName") //condition = "#pageable.size > 0")
 	@Transactional(propagation = Propagation.SUPPORTS)
 	public Page<ItemsInfo> query(ItemsCondition condition, Pageable pageable) {
 		Page<Items> result = itemsRepository.findAll(new ItemsSpec(condition), pageable);
-		Page<ItemsInfo> result2 = QueryResultConverter.convert(result, pageable,
-				new AbstractDomain2InfoConverter<Items, ItemsInfo>() {
-					/**
-					 * 调用该方法之前已经将相同的字段都拷贝了
-					 */
-					@Override
-					protected void doConvert(Items domain, ItemsInfo info) throws Exception {
-						info.setItemName(domain.getItemName());
-					}
+		if(result != null && result.hasContent()) {
+			Page<ItemsInfo> result2 = QueryResultConverter.convert(result, pageable,
+					new AbstractDomain2InfoConverter<Items, ItemsInfo>() {
+						/**
+						 * 调用该方法之前已经将相同的字段都拷贝了
+						 */
+						@Override
+						protected void doConvert(Items domain, ItemsInfo info) throws Exception {
+							info.setItemName(domain.getItemName());
+						}
 
-				});
-		// return QueryResultConverter.convert(result, ItemsInfo.class, pageable);
-		return result2;
+					});
+			// return QueryResultConverter.convert(result, ItemsInfo.class, pageable);
+			return result2;
+		}
+		return null;
 	}
 
 	/**
@@ -248,27 +251,27 @@ public class ItemsServiceImpl implements ItemsService {
     /**
      * 每隔三秒执行一次
      */
-	@Override
-	@Scheduled(cron = "0/3*****")
-	public void task() {
-		System.out.println("task开始运行");
-		Map<String,JobParameter> paran = new HashMap<>();
-		paran.put("startTime", new JobParameter(new Date()));
-		try {
-			jobLauncher.run(job, new JobParameters(paran));
-		} catch (JobExecutionAlreadyRunningException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (JobRestartException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (JobInstanceAlreadyCompleteException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (JobParametersInvalidException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
+//	@Override
+//	@Scheduled(cron = "0/3*****")
+//	public void task() {
+//		System.out.println("task开始运行");
+//		Map<String,JobParameter> paran = new HashMap<>();
+//		paran.put("startTime", new JobParameter(new Date()));
+//		try {
+//			jobLauncher.run(job, new JobParameters(paran));
+//		} catch (JobExecutionAlreadyRunningException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		} catch (JobRestartException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		} catch (JobInstanceAlreadyCompleteException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		} catch (JobParametersInvalidException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+//	}
 
 }

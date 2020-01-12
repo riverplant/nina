@@ -17,7 +17,7 @@ import javax.validation.constraints.Email;
 import org.nina.commons.enums.Sex;
 
 @Entity
-@Table(uniqueConstraints = {@UniqueConstraint(columnNames = {"email","mobile"})})
+@Table(uniqueConstraints = {@UniqueConstraint(columnNames = {"river_email","river_mobile"})})
 public class User extends DomainImpl {
 	private static final long serialVersionUID = 3113833638677119445L;
 

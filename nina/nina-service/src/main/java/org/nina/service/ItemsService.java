@@ -22,6 +22,6 @@ public interface ItemsService {
 	/**
 	 * 用作定时任务的方法必须是无返回值，无参数
 	 */
-	void task();
+	//void task();
 	
 }

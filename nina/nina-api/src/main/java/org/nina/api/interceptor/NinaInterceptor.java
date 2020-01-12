@@ -21,8 +21,10 @@ public class NinaInterceptor implements HandlerInterceptor{
 	public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex)
 			throws Exception {
 		System.out.println("afterCompletion服务处理耗时:"+(new Date().getTime() - (Long)request.getAttribute("startTime"))+"毫秒");
-		System.out.println("ex:"+ex.getMessage());
-		//HandlerInterceptor.super.afterCompletion(request, response, handler, ex);
+		if(ex != null) {
+			System.out.println("ex:"+ex.getMessage());
+		}
+		HandlerInterceptor.super.afterCompletion(request, response, handler, ex);
 	}
 	/**
 	 * RestAPI成功返回后调用
@@ -32,7 +34,7 @@ public class NinaInterceptor implements HandlerInterceptor{
 			ModelAndView modelAndView) throws Exception {
 		
 		System.out.println("postHandle服务处理耗时:"+(new Date().getTime() - (Long)request.getAttribute("startTime"))+"毫秒");
-		//HandlerInterceptor.super.postHandle(request, response, handler, modelAndView);
+		HandlerInterceptor.super.postHandle(request, response, handler, modelAndView);
 	}
 
 	/**
