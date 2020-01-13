@@ -15,6 +15,7 @@ import org.nina.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -33,7 +34,7 @@ public class PassportController {
 	private UserService userService;
 
 	@ApiOperation(value = "用户名是否存在", notes = "用户名是否存在", httpMethod = "GET")
-	@GetMapping
+	@GetMapping(value = "/isexist",produces = {"application/json; charset=UTF-8"})
 	public NinaJsonResult usernameIsExist(@RequestParam String username) {
         //1.判断用户名是否为空
 		if(StringUtils.isBlank(username)) {
@@ -58,7 +59,7 @@ public class PassportController {
 	 */
 	@ApiOperation(value = "用户登录", notes = "用户登录", httpMethod = "POST")
 	@JsonView(UserListView.class)
-	@PostMapping
+	@PostMapping(value = "/login",produces = {"application/json; charset=UTF-8"})
 	public NinaJsonResult login(@Valid @RequestBody UserInfo info,HttpServletRequest request, HttpServletResponse response,BindingResult result) throws Exception {
 		if(result.hasErrors()) {
 			result.getAllErrors().stream().forEach(System.out::println);
@@ -77,5 +78,26 @@ public class PassportController {
 		//设置浏览器端Cookies
 		CookieUtils.setCookie(request, response, "user", JsonUtils.objectToJson(resultData),true);
 		return NinaJsonResult.ok(resultData);
+	}
+	/**
+	 * 
+	 * @param info
+	 * @param request
+	 * @param response
+	 * @param result
+	 * @return
+	 * @throws Exception
+	 */
+	@ApiOperation(value = "用户退出", notes = "用户退出登录", httpMethod = "POST")
+	@PostMapping(value = "/logout",produces = {"application/json; charset=UTF-8"})
+	public NinaJsonResult logOut(@RequestParam Long id ,HttpServletRequest request, HttpServletResponse response) throws Exception {
+
+		//清除浏览器端用户相关Cookies
+		CookieUtils.deleteCookie(request, response, "user");
+		//TODO 用户退出登录.需要清空购物车
+		
+		//分布会话中需要清除用户数据
+		
+		return NinaJsonResult.ok();
 	}
 }
