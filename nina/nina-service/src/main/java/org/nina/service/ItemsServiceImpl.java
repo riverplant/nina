@@ -1,9 +1,5 @@
 package org.nina.service;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-
 import javax.validation.Valid;
 
 import org.nina.commons.aop.ServiceLog;
@@ -15,13 +11,7 @@ import org.nina.repository.spec.ItemsSpec;
 import org.nina.repository.support.AbstractDomain2InfoConverter;
 import org.nina.repository.support.QueryResultConverter;
 import org.springframework.batch.core.Job;
-import org.springframework.batch.core.JobParameter;
-import org.springframework.batch.core.JobParameters;
-import org.springframework.batch.core.JobParametersInvalidException;
 import org.springframework.batch.core.launch.JobLauncher;
-import org.springframework.batch.core.repository.JobExecutionAlreadyRunningException;
-import org.springframework.batch.core.repository.JobInstanceAlreadyCompleteException;
-import org.springframework.batch.core.repository.JobRestartException;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.Cache.ValueWrapper;
@@ -32,7 +22,8 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Modifying;
-import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionDefinition;
@@ -75,6 +66,17 @@ public class ItemsServiceImpl implements ItemsService {
 	@Cacheable(cacheNames = "items", key = "#condition.itemName") //condition = "#pageable.size > 0")
 	@Transactional(propagation = Propagation.SUPPORTS)
 	public Page<ItemsInfo> query(ItemsCondition condition, Pageable pageable) {
+		/**
+		 * security
+		 */
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		if(authentication != null) {
+			//authentication.getPrincipal():拿到当前认证的用户信息
+			System.out.println(authentication.getPrincipal());
+		}
+		/**
+		 * ***************security****************************
+		 */
 		Page<Items> result = itemsRepository.findAll(new ItemsSpec(condition), pageable);
 		if(result != null && result.hasContent()) {
 			Page<ItemsInfo> result2 = QueryResultConverter.convert(result, pageable,
