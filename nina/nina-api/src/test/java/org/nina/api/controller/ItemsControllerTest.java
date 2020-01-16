@@ -7,7 +7,6 @@ import org.junit.Before;
  * @author riverplant
  *
  */
-import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.nina.Application;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,7 +33,7 @@ public class ItemsControllerTest {
 		mockMvc = MockMvcBuilders.webAppContextSetup(wac).build();
 	}
 	
-	@Test
+	//@Test
 	public void whenQuerySuccess() throws Exception {
 		mockMvc.perform(
 				MockMvcRequestBuilders.get("/items")
@@ -49,7 +48,7 @@ public class ItemsControllerTest {
 		        .andExpect(MockMvcResultMatchers.jsonPath("$.length()").value(3));
 	}
 	
-	@Test
+	//@Test
 	public void whenGetInfoSuccess() throws Exception {
 		String result = mockMvc.perform(
 				MockMvcRequestBuilders.get("/items/1")
@@ -60,7 +59,7 @@ public class ItemsControllerTest {
 		System.out.println(result);
 	}
 	
-	@Test
+	//@Test
 	public void whenCreateSuccess() throws Exception {
 		String content = "{\"id\":null,\"itemName\":\"水果\",\"createdTime\":\"2019-12-29\"}";
 		String result = mockMvc.perform(
@@ -73,7 +72,7 @@ public class ItemsControllerTest {
 		System.out.println(result);
 	}
 	
-	@Test
+	//@Test
 	public void whenUpdateSuccess() throws Exception {
 		String content = "{\"id\":1L,\"itemName\":\"大西瓜\",\"createdTime\":\"2019-12-29\"}";
 		String result = mockMvc.perform(
@@ -87,7 +86,7 @@ public class ItemsControllerTest {
 		System.out.println(result);
 	}
 	
-	@Test
+	//@Test
 	public void whenDeleteSuccess() throws Exception {
 		        mockMvc.perform(
 				MockMvcRequestBuilders.delete("/items/1")
@@ -95,7 +94,7 @@ public class ItemsControllerTest {
 		        .andExpect(MockMvcResultMatchers.status().isOk());	        
 	}
 	
-	@Test
+	//@Test
 	public void whenCookieOrHeaderExists() throws Exception {
 		        mockMvc.perform(
 				MockMvcRequestBuilders.get("/items/1")
