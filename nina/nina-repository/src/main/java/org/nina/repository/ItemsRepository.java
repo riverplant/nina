@@ -19,6 +19,6 @@ public interface ItemsRepository extends NinaRepository<Items>{
 	@EntityGraph(value = "Items.fetch.category.and.carousels")
 	Items findByItemName(String itemName);
 	
-	@Query("from Items where items.rootCatId = ?1")
+	@Query("from Items items where items.rootCatId = ?1")
 	List<Items> findByRootCatId(Long rootCatId);
 }

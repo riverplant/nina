@@ -9,6 +9,7 @@ import org.nina.dto.ItemsInfo;
 import org.nina.dto.ItemsParamInfo;
 import org.nina.dto.ItemsSpecInfo;
 import org.nina.dto.Items_imgInfo;
+import org.nina.dto.vo.CommentLevelCountsVO;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -50,4 +51,9 @@ public interface ItemsService {
 	 * @return
 	 */
 	 ItemsParamInfo queryItemParam(Long itemId);
+	 /**
+	  * 根据商品ID查询商品所有评价等级和数量
+	  * @param itemId
+	  */
+	 CommentLevelCountsVO queryCommentLevelsAndCounts(Long itemId);
 }

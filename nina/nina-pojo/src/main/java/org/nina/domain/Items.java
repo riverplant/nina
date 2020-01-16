@@ -27,10 +27,8 @@ import javax.persistence.Version;
  * 设置抓取信息，在查询Items的时候将相关联的category 和carousels信息一并抓取
  *
  */
-@NamedEntityGraph(name = "Items.fetch.category.and.carousels.and.spec", 
-              attributeNodes = { @NamedAttributeNode("category"),
-		                         @NamedAttributeNode("carousels"),
-		                         @NamedAttributeNode("spec")})
+@NamedEntityGraph(name = "Items.fetch.category.and.carousels.and.spec", attributeNodes = {
+		@NamedAttributeNode("category"), @NamedAttributeNode("carousels"), @NamedAttributeNode("spec") })
 public class Items extends DomainImpl {
 	private static final long serialVersionUID = 1L;
 
@@ -74,18 +72,23 @@ public class Items extends DomainImpl {
 	 */
 	@Column(name = "content")
 	private String content;
-	
+
 	@OneToMany(cascade = CascadeType.REMOVE, mappedBy = "items")
-	private ItemsSpec spec;
+	private Set<ItemsSpec> spec;
 	/**
 	 * 商品图片
 	 */
 	@OneToMany(cascade = CascadeType.REMOVE, mappedBy = "items")
 	private Set<Items_img> itemsImg;
-	
+
 	@OneToOne(mappedBy = "items")
 	private ItemsParam itemsParam;
-	
+	/**
+	 * 商品评价
+	 */
+	@OneToMany(cascade = CascadeType.REMOVE, mappedBy = "items")
+	private Set<ItemsComments> itemsComments;
+
 	public int getVersion() {
 		return version;
 	}
@@ -94,12 +97,28 @@ public class Items extends DomainImpl {
 		this.version = version;
 	}
 
-	public ItemsSpec getSpec() {
+	public Set<ItemsSpec> getSpec() {
 		return spec;
 	}
 
-	public void setSpec(ItemsSpec spec) {
+	public void setSpec(Set<ItemsSpec> spec) {
 		this.spec = spec;
+	}
+
+	public ItemsParam getItemsParam() {
+		return itemsParam;
+	}
+
+	public void setItemsParam(ItemsParam itemsParam) {
+		this.itemsParam = itemsParam;
+	}
+
+	public Set<ItemsComments> getItemsComments() {
+		return itemsComments;
+	}
+
+	public void setItemsComments(Set<ItemsComments> itemsComments) {
+		this.itemsComments = itemsComments;
 	}
 
 	public Set<ItemsCarouselAssociation> getCarousels() {

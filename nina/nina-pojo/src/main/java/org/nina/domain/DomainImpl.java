@@ -25,6 +25,7 @@ public class DomainImpl implements Serializable {
 	private static final long serialVersionUID = 1L;
 	@Id
 	@GeneratedValue
+	@Column(name = "id", unique = true, nullable = false)
 	private Long id;
 
 	public Long getId() {

@@ -2,12 +2,15 @@ package org.nina.domain;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -82,7 +85,12 @@ public class User extends DomainImpl {
 
 	@ElementCollection
 	private List<Address> addresses;
-
+    /**
+     * 商品评价
+     */
+	@OneToMany(cascade = CascadeType.REMOVE, mappedBy = "user")
+	private Set<ItemsComments> itemsComments;
+	
 	public List<String> getHobbies() {
 		return hobbies;
 	}

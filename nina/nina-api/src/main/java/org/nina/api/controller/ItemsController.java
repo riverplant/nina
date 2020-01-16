@@ -12,6 +12,7 @@ import org.nina.dto.ItemsInfo.ItemsListView;
 import org.nina.dto.ItemsParamInfo;
 import org.nina.dto.ItemsSpecInfo;
 import org.nina.dto.Items_imgInfo;
+import org.nina.dto.vo.CommentLevelCountsVO;
 import org.nina.dto.vo.ItemInfosVO;
 import org.nina.service.ItemsService;
 import org.slf4j.Logger;
@@ -75,7 +76,7 @@ public class ItemsController {
 	 * @return
 	 */
 	@ApiOperation(value = "查询商品详情", notes = "根据商品ID查询商品详情", httpMethod = "GET")
-	//@GetMapping("/{id:\\d+}")
+	// @GetMapping("/{id:\\d+}")
 	@JsonView(ItemsDetailView.class)
 	public ItemsInfo getInfo(@ApiParam(name = "id", value = "商品ID", required = true) @PathVariable Long id,
 			@CookieValue String token, @RequestHeader String auth) {
@@ -155,5 +156,23 @@ public class ItemsController {
 		itemInfosVO.setItemsParamInfo(itemsParamInfo);
 		itemInfosVO.setItemsSpecInfosList(itemsSpecInfosList);
 		return NinaJsonResult.ok(itemInfosVO);
+	}
+
+	/**
+	 * {id:\\d}:只能有一位
+	 * 
+	 * @param id
+	 * @return
+	 */
+	@ApiOperation(value = "根据商品ID查询商品所有评价等级和数量", notes = "根据商品ID查询商品所有评价等级和数量", httpMethod = "GET")
+	@GetMapping("/{id:\\d+}/commentLevelAndCount")
+	public NinaJsonResult queryCommentLevelsAndCounts(
+			@ApiParam(name = "id", value = "商品ID", required = true) @PathVariable Long id) {
+		if (id == null) {
+			return NinaJsonResult.erorMsg("id is null");
+		}
+		CommentLevelCountsVO commentLevelCountsVO = new CommentLevelCountsVO();
+		commentLevelCountsVO = itemsService.queryCommentLevelsAndCounts(id);
+		return NinaJsonResult.ok(commentLevelCountsVO);
 	}
 }

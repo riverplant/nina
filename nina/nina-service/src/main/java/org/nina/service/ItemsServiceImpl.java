@@ -5,7 +5,9 @@ import java.util.List;
 import javax.validation.Valid;
 
 import org.nina.commons.aop.ServiceLog;
+import org.nina.commons.enums.CommentLevel;
 import org.nina.domain.Items;
+import org.nina.domain.ItemsComments;
 import org.nina.domain.ItemsParam;
 import org.nina.domain.ItemsSpec;
 import org.nina.domain.Items_img;
@@ -14,6 +16,8 @@ import org.nina.dto.ItemsInfo;
 import org.nina.dto.ItemsParamInfo;
 import org.nina.dto.ItemsSpecInfo;
 import org.nina.dto.Items_imgInfo;
+import org.nina.dto.vo.CommentLevelCountsVO;
+import org.nina.repository.ItemsCommentRepository;
 import org.nina.repository.ItemsImgRepository;
 import org.nina.repository.ItemsParamRepository;
 import org.nina.repository.ItemsRepository;
@@ -60,6 +64,8 @@ public class ItemsServiceImpl implements ItemsService {
 	private ItemsSpecRepository itemsSpecRepository;
 	@Autowired
 	private ItemsParamRepository itemsParamRepository;
+	@Autowired
+	private ItemsCommentRepository itemsCommentRepository;
 	// 通过编程控制事务
 	@Autowired
 	private PlatformTransactionManager transactionManager;
@@ -353,6 +359,37 @@ public class ItemsServiceImpl implements ItemsService {
 			}
 		}
 		return null;
+	}
+
+	@Override
+	@Transactional(propagation = Propagation.SUPPORTS)
+	public CommentLevelCountsVO queryCommentLevelsAndCounts(Long itemId) {
+		Integer goodCount = getCommentCounts(itemId, CommentLevel.GOOD.type);
+		Integer normalCount = getCommentCounts(itemId, CommentLevel.NORMAL.type);
+		Integer badCount = getCommentCounts(itemId, CommentLevel.BAD.type);
+		CommentLevelCountsVO commentLevelCountsVO = new CommentLevelCountsVO();
+		commentLevelCountsVO.setBadCount(badCount);
+		commentLevelCountsVO.setGoodCount(goodCount);
+		commentLevelCountsVO.setNormalCount(normalCount);
+		commentLevelCountsVO.setTotalCount();
+		return commentLevelCountsVO;
+	}
+	/**
+	 * 
+	 * @param itemId
+	 * @param level
+	 * @return
+	 */
+	@Transactional(propagation = Propagation.SUPPORTS)
+	Integer getCommentCounts(Long itemId, Integer level) {
+		ItemsComments itemsComments = new ItemsComments();
+		itemsComments.setId(itemId);
+		if(level != null && level != 0) {
+			itemsComments.setComment_level(level);
+		}
+		Example<ItemsComments> example = Example.of(itemsComments);
+		Long result = itemsCommentRepository.count(example);
+		return result.intValue();
 	}
 
 }
