@@ -33,6 +33,11 @@
 		</dependency>
 		<dependency>
 			<groupId>com.riverplant</groupId>
+			<artifactId>nina-pojo</artifactId>
+			<version>${nina.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.riverplant</groupId>
 			<artifactId>nina-security</artifactId>
 			<version>${nina.version}</version>
 		</dependency>

@@ -6,8 +6,10 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 
 /**
+ * 轮播图
  * 
  * @author riverplant
  *
@@ -41,6 +43,12 @@ public class Carousel extends DomainImpl {
 	private String catId;
 
 	/**
+	 * 商品分类
+	 */
+	@OneToOne
+	private Category category;
+
+	/**
 	 * 轮播图类型 轮播图类型，用于判断，可以根据商品id或者分类进行页面跳转，1：商品 2：分类
 	 */
 	private Integer type;
@@ -54,12 +62,12 @@ public class Carousel extends DomainImpl {
 	 * 是否展示
 	 */
 	@Column(name = "is_show")
-	private Integer isShow;
+	private Boolean isShow;
 
-	@OneToMany(cascade = CascadeType.REMOVE,mappedBy = "carousel")
-	//@OrderBy("carousel.id ASC")设置排序方式
+	@OneToMany(cascade = CascadeType.REMOVE, mappedBy = "carousel")
+	// @OrderBy("carousel.id ASC")设置排序方式
 	private Set<ItemsCarouselAssociation> items;
-	
+
 	public Set<ItemsCarouselAssociation> getItems() {
 		return items;
 	}
@@ -67,6 +75,7 @@ public class Carousel extends DomainImpl {
 	public void setItems(Set<ItemsCarouselAssociation> items) {
 		this.items = items;
 	}
+
 	public String getImageUrl() {
 		return imageUrl;
 	}
@@ -115,13 +124,20 @@ public class Carousel extends DomainImpl {
 		this.sort = sort;
 	}
 
-	public Integer getIsShow() {
+	public Boolean getIsShow() {
 		return isShow;
 	}
 
-	public void setIsShow(Integer isShow) {
+	public void setIsShow(Boolean isShow) {
 		this.isShow = isShow;
 	}
-	
-	
+
+	public Category getCategory() {
+		return category;
+	}
+
+	public void setCategory(Category category) {
+		this.category = category;
+	}
+
 }

@@ -6,7 +6,11 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
+import javax.persistence.Table;
 import javax.persistence.Transient;
+import javax.persistence.UniqueConstraint;
+
 /**
  * 
  * @author riverplant
@@ -14,6 +18,7 @@ import javax.persistence.Transient;
  */
 
 @Entity
+@Table(uniqueConstraints = { @UniqueConstraint(columnNames = { "river_name", "river_type", "river_father_id" }) })
 public class Category extends DomainImpl {
 	private static final long serialVersionUID = 1L;
 
@@ -24,16 +29,16 @@ public class Category extends DomainImpl {
 	private String name;
 
 	/**
-	 * 分类类型
+	 * 分类类型:1: 1级分类,根级分类...
 	 */
-	@Column(name = "type",nullable = false)
+	@Column(name = "type", nullable = false)
 	private Integer type;
 
 	/**
 	 * 父id
 	 */
 	@Column(name = "father_id")
-	private Integer fatherId;
+	private Long fatherId;
 
 	/**
 	 * 图标
@@ -58,23 +63,28 @@ public class Category extends DomainImpl {
 	 */
 	@Column(name = "bg_color")
 	private String bgColor;
-    /**
-     * mappedBy = "category":一对多关系的维护交给many端的category来维护
-     */
-	@OneToMany(cascade = CascadeType.REMOVE,mappedBy = "category")
-	private Set<Items> carousel;
-	
-	
-	//使用了该注解的字段将不会被同步到数据库
+	/**
+	 * mappedBy = "category":一对多关系的维护交给many端的category来维护
+	 */
+	@OneToMany(cascade = CascadeType.REMOVE, mappedBy = "category")
+	private Set<Items> items;
+
+	/**
+	 * 轮播图外键id
+	 */
+	@OneToOne(mappedBy = "category")
+	private Carousel carousel;
+
+	// 使用了该注解的字段将不会被同步到数据库
 	@Transient
 	private String xxx;
-	
-	public Set<Items> getCarousel() {
-		return carousel;
+
+	public Set<Items> getItems() {
+		return items;
 	}
 
-	public void setCarousel(Set<Items> carousel) {
-		this.carousel = carousel;
+	public void setItems(Set<Items> items) {
+		this.items = items;
 	}
 
 	public String getName() {
@@ -93,11 +103,11 @@ public class Category extends DomainImpl {
 		this.type = type;
 	}
 
-	public Integer getFatherId() {
+	public Long getFatherId() {
 		return fatherId;
 	}
 
-	public void setFatherId(Integer fatherId) {
+	public void setFatherId(Long fatherId) {
 		this.fatherId = fatherId;
 	}
 
@@ -131,6 +141,14 @@ public class Category extends DomainImpl {
 
 	public void setBgColor(String bgColor) {
 		this.bgColor = bgColor;
+	}
+
+	public Carousel getCarousel() {
+		return carousel;
+	}
+
+	public void setCarousel(Carousel carousel) {
+		this.carousel = carousel;
 	}
 
 }
