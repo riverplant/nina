@@ -4,9 +4,15 @@ import java.math.BigDecimal;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.OneToOne;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-
+/**
+ * 商品规格表
+ * @author jli
+ *
+ */
 @Entity
 @Table(name = "items_spec")
 public class ItemsSpec extends DomainImpl {
@@ -14,7 +20,8 @@ public class ItemsSpec extends DomainImpl {
 	 /**
      * 商品外键id
      */
-    @OneToOne(mappedBy = "spec")
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "item_id")
     private Items items;
 
     /**

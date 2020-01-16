@@ -16,5 +16,10 @@
       <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-security</artifactId>
     </dependency>
+     <dependency>
+      <groupId>com.riverplant</groupId>
+        <artifactId>nina-repository</artifactId>
+        <version>${nina.version}</version>
+    </dependency>
   </dependencies>
 </project>

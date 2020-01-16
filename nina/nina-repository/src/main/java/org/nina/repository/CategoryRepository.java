@@ -3,6 +3,8 @@ package org.nina.repository;
 import java.util.List;
 
 import org.nina.domain.Category;
+import org.nina.dto.vo.CategoryVO;
+import org.nina.dto.vo.NewItemsVO;
 import org.nina.repository.support.NinaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -10,8 +12,32 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface CategoryRepository extends NinaRepository<Category> {
 	
-	@Query(value = "select f.id as id, " + "f.name as name," + "f.type as type," + "f.fatherId as fatherId, "
-			+ "c.id as subId," + "c.name as subName," + "c.type as subType," + "c.fatherId as subFatherId"
-			+ "FROM Category f " + "LEFT JOIN " + "Category c " + "ON f.id = c.fatherId " + "WHERE f.fatherId = ?1")
-	List<Category> querySubCatalog(Long id);
+	@Query(value = "select f.id as id,"
+			          + "f.`name` as `name`,"
+			          + "f.type as type,"
+			          + "f.father_id as fatherId," 
+			          + "c.id as subId,"
+			          + "c.`name` as `subName`,"
+			          + "c.type as subType,"
+			          + "c.father_id as subFatherId " 
+			          +"FROM river_category f "
+			         + "LEFT JOIN river_category c ON f.id = c.fatherId "
+			         + "WHERE f.father_id = ?1", nativeQuery = true)
+	List<CategoryVO> querySubCatalog(Long id);
+	
+	@Query(value = "select f.id as rootCatId,"
+			          + "f.`name` as `rootCatName`,"
+			          + "f.slogan as slogan,"
+			          + "f.cat_image as catImage,"
+			          + "f.bg_color as bgColor "
+			          + "i.id as itemId,"
+			          + "i.item_name as `itemName`,"
+			          + "ii.url as itemUrl,"
+			          + "i.create_time as createTime " 
+			          + "FROM river_category f "
+	                  + "LEFT JOIN river_items i ON f.id = i.root_cat_id "
+	                  + "LEFT JOIN river_Items_img ii ON i.id = ii.item_id "
+	                  + "WHERE f.type = 1 AND i.root_cat_id = ?1"
+	                   + "AND ii.is_main = true ORDER BY i.updated_time DESC LIMIT 6", nativeQuery = true)
+	List<NewItemsVO> getSixNewItemsLazy(Long id);
 }

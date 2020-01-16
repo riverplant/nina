@@ -1,9 +1,14 @@
 package org.nina.service;
 
+import java.util.List;
+
 import javax.validation.Valid;
 
 import org.nina.dto.ItemsCondition;
 import org.nina.dto.ItemsInfo;
+import org.nina.dto.ItemsParamInfo;
+import org.nina.dto.ItemsSpecInfo;
+import org.nina.dto.Items_imgInfo;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -24,4 +29,25 @@ public interface ItemsService {
 	 */
 	//void task();
 	
+	ItemsInfo queryById(Long itemId);
+	/**
+	 * 根据商品ID查询商品图片
+	 * @param itemId
+	 * @return
+	 */
+	List<Items_imgInfo> queryItemImgList(Long itemId);
+	
+	/**
+	 * 根据商品ID查询商品规格
+	 * @param itemId
+	 * @return
+	 */
+	List<ItemsSpecInfo> queryItemSpecList(Long itemId);
+	
+	/**
+	 * 根据商品ID查询商品参数
+	 * @param itemId
+	 * @return
+	 */
+	 ItemsParamInfo queryItemParam(Long itemId);
 }

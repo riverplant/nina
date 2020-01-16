@@ -27,8 +27,10 @@ import javax.persistence.Version;
  * 设置抓取信息，在查询Items的时候将相关联的category 和carousels信息一并抓取
  *
  */
-@NamedEntityGraph(name = "Items.fetch.category.and.carousels", attributeNodes = { @NamedAttributeNode("category"),
-		@NamedAttributeNode("carousels") })
+@NamedEntityGraph(name = "Items.fetch.category.and.carousels.and.spec", 
+              attributeNodes = { @NamedAttributeNode("category"),
+		                         @NamedAttributeNode("carousels"),
+		                         @NamedAttributeNode("spec")})
 public class Items extends DomainImpl {
 	private static final long serialVersionUID = 1L;
 
@@ -50,12 +52,8 @@ public class Items extends DomainImpl {
 	@JoinColumn(name = "cat_id")
 	private Category category;
 
-	/**
-	 * 一级分类外键id
-	 */
 	@Column(name = "root_cat_id")
-	private Integer rootCatId;
-
+	private Long rootCatId;
 	/**
 	 * 累计销售 累计销售
 	 */
@@ -71,9 +69,23 @@ public class Items extends DomainImpl {
 	@OneToMany(cascade = CascadeType.REMOVE, mappedBy = "items")
 	private Set<ItemsCarouselAssociation> carousels;
 
-	@OneToOne
+	/**
+	 * 商品内容
+	 */
+	@Column(name = "content")
+	private String content;
+	
+	@OneToMany(cascade = CascadeType.REMOVE, mappedBy = "items")
 	private ItemsSpec spec;
-
+	/**
+	 * 商品图片
+	 */
+	@OneToMany(cascade = CascadeType.REMOVE, mappedBy = "items")
+	private Set<Items_img> itemsImg;
+	
+	@OneToOne(mappedBy = "items")
+	private ItemsParam itemsParam;
+	
 	public int getVersion() {
 		return version;
 	}
@@ -114,14 +126,6 @@ public class Items extends DomainImpl {
 		this.category = category;
 	}
 
-	public Integer getRootCatId() {
-		return rootCatId;
-	}
-
-	public void setRootCatId(Integer rootCatId) {
-		this.rootCatId = rootCatId;
-	}
-
 	public Integer getSellCounts() {
 		return sellCounts;
 	}
@@ -136,6 +140,30 @@ public class Items extends DomainImpl {
 
 	public void setOnOffStatus(Integer onOffStatus) {
 		this.onOffStatus = onOffStatus;
+	}
+
+	public Long getRootCatId() {
+		return rootCatId;
+	}
+
+	public void setRootCatId(Long rootCatId) {
+		this.rootCatId = rootCatId;
+	}
+
+	public String getContent() {
+		return content;
+	}
+
+	public void setContent(String content) {
+		this.content = content;
+	}
+
+	public Set<Items_img> getItemsImg() {
+		return itemsImg;
+	}
+
+	public void setItemsImg(Set<Items_img> itemsImg) {
+		this.itemsImg = itemsImg;
 	}
 
 }

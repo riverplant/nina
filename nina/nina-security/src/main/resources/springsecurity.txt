@@ -1,0 +1,6 @@
+AuthenticationProvider:提供身份认证逻辑
+
+UserDetails:用户身份信息的接口实现
+用户信息通过UserDetailService接口的实现来获取!!!!!!
+我们需要自己实现一个UserDetailService，在实现类里定义自己的
+HttpBasic认证流程主要是通过BasicAuthenticationFIlter.doFilterInternal()

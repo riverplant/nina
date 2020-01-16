@@ -1,10 +1,13 @@
 package org.nina.domain;
 
+import java.util.List;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
@@ -18,7 +21,7 @@ import javax.persistence.UniqueConstraint;
  */
 
 @Entity
-@Table(uniqueConstraints = { @UniqueConstraint(columnNames = { "river_name", "river_type", "river_father_id" }) })
+@Table(uniqueConstraints = { @UniqueConstraint(columnNames = { "name", "type", "father_id" }) })
 public class Category extends DomainImpl {
 	private static final long serialVersionUID = 1L;
 
@@ -34,11 +37,15 @@ public class Category extends DomainImpl {
 	@Column(name = "type", nullable = false)
 	private Integer type;
 
-	/**
-	 * 父id
+	/*
+	 * cascade：为级联操作，里面有级联保存，级联删除等，all为所有 fetch：加载类型，有lazy和eager二种，
+	 * eager为急加载，意为立即加载，在类加载时就加载，lazy为慢加载，第一次调用的时候再加载，由于数据量太大，onetomany一般为lazy
+	 * mappedBy：这个为manytoone中的对象名，这个不要变哦.指向的是要关联的属性，而不是要关联的类
+	 * Set<role>：这个类型有两种，一种为list另一种为set
 	 */
-	@Column(name = "father_id")
-	private Long fatherId;
+	@OneToMany(cascade = CascadeType.ALL,fetch = FetchType.LAZY)
+	@JoinColumn(name = "father_id") // 根据父级菜单ID，实现自关联（内部其实也就是一对多）
+	private List<Category> subCategory;
 
 	/**
 	 * 图标
@@ -103,14 +110,6 @@ public class Category extends DomainImpl {
 		this.type = type;
 	}
 
-	public Long getFatherId() {
-		return fatherId;
-	}
-
-	public void setFatherId(Long fatherId) {
-		this.fatherId = fatherId;
-	}
-
 	public String getLogo() {
 		return logo;
 	}
@@ -149,6 +148,14 @@ public class Category extends DomainImpl {
 
 	public void setCarousel(Carousel carousel) {
 		this.carousel = carousel;
+	}
+
+	public List<Category> getSubCategory() {
+		return subCategory;
+	}
+
+	public void setSubCategory(List<Category> subCategory) {
+		this.subCategory = subCategory;
 	}
 
 }

@@ -1,13 +1,24 @@
 package org.nina.service;
 
+import java.util.List;
+
 import javax.validation.Valid;
 
 import org.nina.commons.aop.ServiceLog;
 import org.nina.domain.Items;
+import org.nina.domain.ItemsParam;
+import org.nina.domain.ItemsSpec;
+import org.nina.domain.Items_img;
 import org.nina.dto.ItemsCondition;
 import org.nina.dto.ItemsInfo;
+import org.nina.dto.ItemsParamInfo;
+import org.nina.dto.ItemsSpecInfo;
+import org.nina.dto.Items_imgInfo;
+import org.nina.repository.ItemsImgRepository;
+import org.nina.repository.ItemsParamRepository;
 import org.nina.repository.ItemsRepository;
-import org.nina.repository.spec.ItemsSpec;
+import org.nina.repository.ItemsSpecRepository;
+import org.nina.repository.spec.ItemSpec;
 import org.nina.repository.support.AbstractDomain2InfoConverter;
 import org.nina.repository.support.QueryResultConverter;
 import org.springframework.batch.core.Job;
@@ -19,6 +30,7 @@ import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Modifying;
@@ -42,6 +54,12 @@ import org.springframework.transaction.support.DefaultTransactionDefinition;
 public class ItemsServiceImpl implements ItemsService {
 	@Autowired
 	private ItemsRepository itemsRepository;
+	@Autowired
+	private ItemsImgRepository itemsImgRepository;
+	@Autowired
+	private ItemsSpecRepository itemsSpecRepository;
+	@Autowired
+	private ItemsParamRepository itemsParamRepository;
 	// 通过编程控制事务
 	@Autowired
 	private PlatformTransactionManager transactionManager;
@@ -53,7 +71,7 @@ public class ItemsServiceImpl implements ItemsService {
 	 */
 	@Autowired
 	private JobLauncher jobLauncher;
-	
+
 	@Autowired
 	private Job job;
 
@@ -63,22 +81,22 @@ public class ItemsServiceImpl implements ItemsService {
 	 */
 	@Override
 	@ServiceLog
-	@Cacheable(cacheNames = "items", key = "#condition.itemName") //condition = "#pageable.size > 0")
+	@Cacheable(cacheNames = "items", key = "#condition.itemName") // condition = "#pageable.size > 0")
 	@Transactional(propagation = Propagation.SUPPORTS)
 	public Page<ItemsInfo> query(ItemsCondition condition, Pageable pageable) {
 		/**
 		 * security
 		 */
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-		if(authentication != null) {
-			//authentication.getPrincipal():拿到当前认证的用户信息
+		if (authentication != null) {
+			// authentication.getPrincipal():拿到当前认证的用户信息
 			System.out.println(authentication.getPrincipal());
 		}
 		/**
 		 * ***************security****************************
 		 */
-		Page<Items> result = itemsRepository.findAll(new ItemsSpec(condition), pageable);
-		if(result != null && result.hasContent()) {
+		Page<Items> result = itemsRepository.findAll(new ItemSpec(condition), pageable);
+		if (result != null && result.hasContent()) {
 			Page<ItemsInfo> result2 = QueryResultConverter.convert(result, pageable,
 					new AbstractDomain2InfoConverter<Items, ItemsInfo>() {
 						/**
@@ -104,7 +122,7 @@ public class ItemsServiceImpl implements ItemsService {
 	 * @return
 	 */
 	@ServiceLog
-	@Transactional
+	@Transactional(propagation = Propagation.SUPPORTS)
 	public Page<ItemsInfo> query2(ItemsCondition condition, Pageable pageable) {
 		/**
 		 * 开启一个事务
@@ -118,7 +136,7 @@ public class ItemsServiceImpl implements ItemsService {
 		TransactionStatus status = transactionManager.getTransaction(definition);
 
 		try {
-			Page<Items> result = itemsRepository.findAll(new ItemsSpec(condition), pageable);
+			Page<Items> result = itemsRepository.findAll(new ItemSpec(condition), pageable);
 			transactionManager.commit(status);// 提交事务
 			Page<ItemsInfo> result2 = QueryResultConverter.convert(result, pageable,
 					new AbstractDomain2InfoConverter<Items, ItemsInfo>() {
@@ -193,10 +211,10 @@ public class ItemsServiceImpl implements ItemsService {
 		itemsRepository.save(items);
 		return info;
 	}
-   /**
-    * 如果已经存在事务就使用现有的,
-    * 如果当前没有,就创建一个
-    */
+
+	/**
+	 * 如果已经存在事务就使用现有的, 如果当前没有,就创建一个
+	 */
 	@Override
 	@Transactional(propagation = Propagation.REQUIRED)
 	public ItemsInfo create(@Valid ItemsInfo info) {
@@ -250,9 +268,10 @@ public class ItemsServiceImpl implements ItemsService {
 			return (ItemsInfo) value.get();
 		}
 	}
-    /**
-     * 每隔三秒执行一次
-     */
+
+	/**
+	 * 每隔三秒执行一次
+	 */
 //	@Override
 //	@Scheduled(cron = "0/3*****")
 //	public void task() {
@@ -275,5 +294,65 @@ public class ItemsServiceImpl implements ItemsService {
 //			e.printStackTrace();
 //		}
 //	}
+
+	@Override
+	@Transactional(propagation = Propagation.SUPPORTS)
+	public ItemsInfo queryById(Long itemId) {
+		Items item = itemsRepository.findById(itemId).orElse(null);
+		if (item != null) {
+			ItemsInfo itemInfo = new ItemsInfo();
+			BeanUtils.copyProperties(item, itemInfo);
+			return itemInfo;
+		}
+		return null;
+	}
+
+	@Override
+	@Transactional(propagation = Propagation.SUPPORTS)
+	public List<Items_imgInfo> queryItemImgList(Long itemId) {
+		Items_img items_img = new Items_img();
+		Items item = itemsRepository.findById(itemId).orElse(null);
+		if (item != null) {
+			items_img.setItems(item);
+			Example<Items_img> example = Example.of(items_img);
+			List<Items_img> itemsImgs = itemsImgRepository.findAll(example);
+			List<Items_imgInfo> result2 = QueryResultConverter.convert(itemsImgs, Items_imgInfo.class);
+			return result2;
+		}
+		return null;
+	}
+
+	@Override
+	@Transactional(propagation = Propagation.SUPPORTS)
+	public List<ItemsSpecInfo> queryItemSpecList(Long itemId) {
+		ItemsSpec itemsSpec = new ItemsSpec();
+		Items item = itemsRepository.findById(itemId).orElse(null);
+		if (item != null) {
+			itemsSpec.setItems(item);
+			Example<ItemsSpec> example = Example.of(itemsSpec);
+			List<ItemsSpec> itemsSpecs = itemsSpecRepository.findAll(example);
+			List<ItemsSpecInfo> result2 = QueryResultConverter.convert(itemsSpecs, ItemsSpecInfo.class);
+			return result2;
+		}
+		return null;
+	}
+
+	@Override
+	@Transactional(propagation = Propagation.SUPPORTS)
+	public ItemsParamInfo queryItemParam(Long itemId) {
+		ItemsParam itemsParam = new ItemsParam();
+		Items item = itemsRepository.findById(itemId).orElse(null);
+		if (item != null) {
+			itemsParam.setItems(item);
+			Example<ItemsParam> example = Example.of(itemsParam);
+			ItemsParam itemsParams = itemsParamRepository.findOne(example).orElse(null);
+			if (itemsParams != null) {
+				ItemsParamInfo result2 = new ItemsParamInfo();
+				BeanUtils.copyProperties(itemsParams, result2);
+				return result2;
+			}
+		}
+		return null;
+	}
 
 }

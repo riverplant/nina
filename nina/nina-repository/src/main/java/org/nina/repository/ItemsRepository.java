@@ -1,8 +1,11 @@
 package org.nina.repository;
 
+import java.util.List;
+
 import org.nina.domain.Items;
 import org.nina.repository.support.NinaRepository;
 import org.springframework.data.jpa.repository.EntityGraph;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 @Repository
 public interface ItemsRepository extends NinaRepository<Items>{
@@ -15,4 +18,7 @@ public interface ItemsRepository extends NinaRepository<Items>{
 	 */
 	@EntityGraph(value = "Items.fetch.category.and.carousels")
 	Items findByItemName(String itemName);
+	
+	@Query("from Items where items.rootCatId = ?1")
+	List<Items> findByRootCatId(Long rootCatId);
 }

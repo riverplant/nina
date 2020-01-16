@@ -1,6 +1,5 @@
 package org.nina.repository.spec;
 
-import javax.persistence.criteria.JoinType;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
