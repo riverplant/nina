@@ -10,6 +10,7 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 /**
  * 
@@ -25,7 +26,8 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 		 * 使用userRepository读取数据库对用户进行认证
 		 */
 		if(StringUtils.equals(username, "nina"));
-		return new User("nina","123456",new ArrayList<GrantedAuthority>());
+		String password = new BCryptPasswordEncoder().encode("123456");
+		return new User("nina",password,new ArrayList<GrantedAuthority>());
 	}
 
 }
