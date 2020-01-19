@@ -16,6 +16,11 @@
       <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-security</artifactId>
     </dependency>
+    <!-- 用于管理集群spring session,使用jdbc来管理session -->
+    <dependency>
+        <groupId>org.springframework.session</groupId>
+        <artifactId>spring-session-jdbc</artifactId>
+      </dependency>
      <dependency>
       <groupId>com.riverplant</groupId>
         <artifactId>nina-repository</artifactId>

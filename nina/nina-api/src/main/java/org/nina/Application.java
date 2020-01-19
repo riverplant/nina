@@ -19,6 +19,7 @@ import org.springframework.data.redis.cache.RedisCacheConfiguration;
 import org.springframework.data.redis.cache.RedisCacheManager;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.session.jdbc.config.annotation.web.http.EnableJdbcHttpSession;
 
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
 @SpringBootApplication
@@ -31,6 +32,8 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 //@ComponentScan(basePackages = {"",""})
 //引入配置文件@ImportResource("classpath:consumer.xml")
 @EnableSwagger2
+//使用jdbc管理session
+@EnableJdbcHttpSession
 public class Application 
 {
     public static void main( String[] args )

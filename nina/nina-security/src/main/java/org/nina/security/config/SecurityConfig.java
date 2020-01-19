@@ -42,8 +42,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		 * 默认设置每次系统启动都会去创建persisitent_logins数据库表
 		 * 所以只要第一次创建成功就可以注销这句代码
 		 */
-		jdbcTokenRepository.setCreateTableOnStartup(true);//启用数据库存取token
-		
+		jdbcTokenRepository.setCreateTableOnStartup(true);//启用数据库存取token		
 		jdbcTokenRepository.setDataSource(datasource);
 		return jdbcTokenRepository;
 	}
@@ -67,9 +66,15 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 				.rememberMe().tokenRepository(persistentTokenRepository())//启用数据库存取token
 				.tokenValiditySeconds(60)//设置token有效期(秒)
 				.and()
+//				.sessionManagement()
+//				.invalidSessionUrl("/session.html")
+//				.maximumSessions(1)//最大session数为1,用于并发控制
+//				.maxSessionsPreventsLogin(true)//达到最大session数就不容许新登录了
+//				.and()
+//				.and()
 				.csrf().disable()
 				.authorizeRequests()
-				.antMatchers("/index/*", "/login.html", "/auth").permitAll()
+				.antMatchers("/index/*", "/login.html", "/auth","/session.html").permitAll()
 				// .antMatchers(HttpMethod.GET).permitAll()
 				.anyRequest().authenticated();
 	}
