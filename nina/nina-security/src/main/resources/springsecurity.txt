@@ -40,3 +40,32 @@ CREATE TABLE SPRING_SESSION_ATTRIBUTES (
 	CONSTRAINT SPRING_SESSION_ATTRIBUTES_FK FOREIGN KEY (SESSION_PRIMARY_ID) REFERENCES SPRING_SESSION(PRIMARY_ID) ON DELETE CASCADE
 ) ENGINE=InnoDB ROW_FORMAT=DYNAMIC;
 *********************************spring-session-jdbc-2.1.6RELEASE.jar*************
+
+
+-------------授权------------------------------------------------------
+1.GrantedAuthority接口:用户被授予的权限
+String getAuthority():返回一串用户权限
+
+2.AbstractSecurityInterceptor: 类似AOP，拦截安全对象
+/**
+authenticated:通过认证后的用户信息，getPrincipal()可以获得该用户的所有权限
+object:用户想要访问的受保护对象
+attributes:判断用户是否能访问object的权限规则集合
+*/
+this.accessDecisionManager.decide(authenticated,object,attributes)
+
+
+3.ConfigAttribute:需要判断的权限规则
+
+//AccessDecisionVoter:执行具体的判断逻辑
+4.AccessDecisionManager -> AbstractAccessDecisionManager
+  List<AccessDecisionVoter<? extends Object>> decisionVotes;
+
+  
+  AbstractSecurityInterceptor --->
+     1.FilterSecurityInterceptor: 用来拦截http请求
+     
+     2.MethodSecurityInterceptor:；用来拦截方法调用
+     
+     3.AccessDecisionManager:通过拦截方法后调用该方法来进行投票
+     
