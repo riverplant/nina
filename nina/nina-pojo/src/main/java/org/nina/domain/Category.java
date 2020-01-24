@@ -8,11 +8,14 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 import javax.persistence.UniqueConstraint;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
  * 
@@ -43,9 +46,14 @@ public class Category extends DomainImpl {
 	 * mappedBy：这个为manytoone中的对象名，这个不要变哦.指向的是要关联的属性，而不是要关联的类
 	 * Set<role>：这个类型有两种，一种为list另一种为set
 	 */
-	@OneToMany(cascade = CascadeType.ALL,fetch = FetchType.LAZY)
+	@OneToMany(cascade = CascadeType.ALL,fetch = FetchType.LAZY,mappedBy = "parentCategory")
 	@JoinColumn(name = "father_id") // 根据父级菜单ID，实现自关联（内部其实也就是一对多）
+	@JsonIgnore
 	private List<Category> subCategory;
+	
+	@ManyToOne
+	@JoinColumn(name = "father_id") // 根据父级菜单ID，实现自关联（内部其实也就是一对多）
+	private Category parentCategory;
 
 	/**
 	 * 图标
@@ -158,4 +166,11 @@ public class Category extends DomainImpl {
 		this.subCategory = subCategory;
 	}
 
+	public Category getParentCategory() {
+		return parentCategory;
+	}
+
+	public void setParentCategory(Category parentCategory) {
+		this.parentCategory = parentCategory;
+	}
 }
