@@ -13,6 +13,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.authentication.rememberme.JdbcTokenRepositoryImpl;
 import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
+import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 
 /**
  * 
@@ -70,13 +71,19 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 				.rememberMe().tokenRepository(persistentTokenRepository())//启用数据库存取token
 				.tokenValiditySeconds(60)//设置token有效期(秒)
 				.and()
-//				.sessionManagement()
+				.sessionManagement()
+				//针对session fixation攻击
+				.sessionFixation().changeSessionId()
 //				.invalidSessionUrl("/session.html")
 //				.maximumSessions(1)//最大session数为1,用于并发控制
 //				.maxSessionsPreventsLogin(true)//达到最大session数就不容许新登录了
 //				.and()
-//				.and()
-				.csrf().disable()
+				.and()
+				.csrf()
+				//创建并且发送XSRF-TOKEN给用户端用于csrf
+				.csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
+//				.csrf().disable()
+				.and()
 				.authorizeRequests()
 				/**
 				 * 通过该方法设置授权投票器的种类
