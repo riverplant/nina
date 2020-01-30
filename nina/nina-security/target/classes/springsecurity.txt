@@ -63,9 +63,36 @@ this.accessDecisionManager.decide(authenticated,object,attributes)
 
   
   AbstractSecurityInterceptor --->
-     1.FilterSecurityInterceptor: 用来拦截http请求
+     1.FilterSecurityInterceptor: 用来拦截http请求,通过配置来实现
      
-     2.MethodSecurityInterceptor:；用来拦截方法调用
+     2.MethodSecurityInterceptor:；用来拦截方法调用,通过在方法上使用注解来实现
      
      3.AccessDecisionManager:通过拦截方法后调用该方法来进行投票
-     
+ 
+ 
+ ***********************权限设计模型******************************
+  Manager:realName,username,password,departement,enable role
+  管理员
+    多 <------>多
+  Role: name, memo, resources, managers
+  角色，资源的集合
+   多 <------>多
+  Resources: name, style,  type, urls, roles
+  需要被权限管理的项目
+  多 <------>多
+  ServiceUrl: className, MethodName, url 
+ 服务的地址
+  ***********************权限设计模型******************************
+  
+  1.在UserDetailsServiceImpl中，loadUserByUsername方法里返回的
+  Collection<? extends GrantedAuthority> authorities：包含该用户所有能访问的url信息
+  
+  2.当用户访问资源的时候，NinaSecurity.check方法，会通过request.getRequestURI()获得用户想要访问的资源地址
+    Object principal = authentication.getPrincipal();
+		if (principal != null && principal instanceof UserDetails) {
+			/**
+			 * 已经成功登录
+			 */
+          System.out.println(((UserDetails)principal).getAuthorities());
+       获得用户能够访问的资源地址
+       最后经过比对后返回true或者是false来决定用户是否能访问

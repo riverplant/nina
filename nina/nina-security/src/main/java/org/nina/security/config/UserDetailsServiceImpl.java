@@ -6,6 +6,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.nina.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -27,7 +28,12 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 		 */
 		if(StringUtils.equals(username, "nina"));
 		String password = new BCryptPasswordEncoder().encode("123456");
-		return new User("nina",password,new ArrayList<GrantedAuthority>());
+		//创建用户权限
+		 AuthorityUtils.createAuthorityList("admin","root");
+		 /**
+		  * 可以通过UserDetails接口的实现类来自定义权限列表
+		  */
+		return new User("nina",password,AuthorityUtils.createAuthorityList("admin","root"));
 	}
 
 }

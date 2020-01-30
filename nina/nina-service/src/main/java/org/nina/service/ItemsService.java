@@ -12,6 +12,7 @@ import org.nina.dto.Items_imgInfo;
 import org.nina.dto.vo.CommentLevelCountsVO;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.access.prepost.PreAuthorize;
 
 public interface ItemsService {
 
@@ -49,7 +50,12 @@ public interface ItemsService {
 	 * 根据商品ID查询商品参数
 	 * @param itemId
 	 * @return
+	 * @PreAuthorize("hasAuthority('admin')")
+	 * 通过注解为该方法添加springSecurity的授权,
+	 * 所有调取该方法的用户必须具备admin权限
+	 * 该方法不适用于分布式dabbo环境
 	 */
+     @PreAuthorize("hasAuthority('admin')")
 	 ItemsParamInfo queryItemParam(Long itemId);
 	 /**
 	  * 根据商品ID查询商品所有评价等级和数量

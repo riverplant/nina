@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
@@ -19,7 +20,10 @@ import org.springframework.security.web.authentication.rememberme.PersistentToke
  *
  */
 @Configuration
+//拦截http请求
 @EnableWebSecurity
+//开启方法授权注解,prePostEnabled模式的表达式类似于：hasAuthority('admin')
+@EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
 	@Autowired
@@ -74,9 +78,27 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 //				.and()
 				.csrf().disable()
 				.authorizeRequests()
-				.antMatchers("/index/*", "/login.html", "/auth","/session.html").permitAll()
+				/**
+				 * 通过该方法设置授权投票器的种类
+				 */
+				//.accessDecisionManager(accessDecisionManager)
+				.antMatchers("/index", "/login.html", "/auth","/session.html").permitAll()
 				// .antMatchers(HttpMethod.GET).permitAll()
-				.anyRequest().authenticated();
+				.antMatchers("/test/*").access("hasRole('a') or hasRole('b')")
+				//.anyRequest()
+				/**
+				 * ConfigAttribute:需要判断的权限规则
+				 */
+				//.authenticated();
+				/**
+				 * 相当于hasAuthority("admin"),
+				 * 授权工作在FilterSecurityInterceptor中做
+				 */
+				//.access("hasAuthority('admin')");
+				/**@ninaSecurity:自定义授权类bean
+				 * Check:自定义bean中的自定义方法
+				 */
+				.anyRequest().access("@ninaSecurity.check(authentication,request)");
 	}
 
 }

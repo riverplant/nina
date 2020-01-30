@@ -24,6 +24,7 @@ public class ExceptionHandlerController {
 	public Map<String, Object> handleFileNotFoundException(RuntimeException e) {
 		Map<String, Object> result = new HashMap<>();
 		result.put("result", "Fail");
+		result.put("code", HttpStatus.NOT_FOUND);
 		result.put("errMsg", e.getMessage());
 
 		return result;
@@ -34,6 +35,7 @@ public class ExceptionHandlerController {
 	public Map<String, Object> handleForbidden(RuntimeException e) {
 		Map<String, Object> result = new HashMap<>();
 		result.put("result", "Fail");
+		result.put("code", HttpStatus.FORBIDDEN);
 		result.put("errMsg", e.getMessage());
 
 		return result;
@@ -44,6 +46,7 @@ public class ExceptionHandlerController {
 	public Map<String, Object> handleMethodNotAllowedException(RuntimeException e) {
 		Map<String, Object> result = new HashMap<>();
 		result.put("result", "Fail");
+		result.put("code", HttpStatus.METHOD_NOT_ALLOWED);
 		result.put("errMsg", e.getMessage());
 
 		return result;
@@ -54,6 +57,18 @@ public class ExceptionHandlerController {
 	public Map<String, Object> handleRuntimeExceptio(RuntimeException e) {
 		Map<String, Object> result = new HashMap<>();
 		result.put("result", "Fail");
+		result.put("code", HttpStatus.INTERNAL_SERVER_ERROR);
+		result.put("errMsg", e.getMessage());
+
+		return result;
+	}
+	
+	@ExceptionHandler(Exception.class)
+	@ResponseStatus(code = HttpStatus.INTERNAL_SERVER_ERROR)
+	public Map<String, Object> handleExceptio(RuntimeException e) {
+		Map<String, Object> result = new HashMap<>();
+		result.put("result", "Fail");
+		result.put("code", HttpStatus.INTERNAL_SERVER_ERROR);
 		result.put("errMsg", e.getMessage());
 
 		return result;
