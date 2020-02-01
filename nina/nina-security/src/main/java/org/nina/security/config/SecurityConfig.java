@@ -3,6 +3,7 @@ package org.nina.security.config;
 import javax.sql.DataSource;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.security.oauth2.client.EnableOAuth2Sso;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -25,6 +26,7 @@ import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 @EnableWebSecurity
 //开启方法授权注解,prePostEnabled模式的表达式类似于：hasAuthority('admin')
 @EnableGlobalMethodSecurity(prePostEnabled = true)
+@EnableOAuth2Sso
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
 	@Autowired
@@ -77,13 +79,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 //				.invalidSessionUrl("/session.html")
 //				.maximumSessions(1)//最大session数为1,用于并发控制
 //				.maxSessionsPreventsLogin(true)//达到最大session数就不容许新登录了
-//				.and()
 				.and()
-				.csrf()
+				.csrf().disable()
 				//创建并且发送XSRF-TOKEN给用户端用于csrf
-				.csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
+				//.csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
 //				.csrf().disable()
-				.and()
 				.authorizeRequests()
 				/**
 				 * 通过该方法设置授权投票器的种类

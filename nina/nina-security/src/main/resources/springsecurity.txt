@@ -96,3 +96,15 @@ this.accessDecisionManager.decide(authenticated,object,attributes)
           System.out.println(((UserDetails)principal).getAuthorities());
        获得用户能够访问的资源地址
        最后经过比对后返回true或者是false来决定用户是否能访问
+       
+*************************权限设计模型**********************************
+**************************QAuth2**********************************
+
+RO(resource owner):资源所有者，对资源具有授权能力
+RS(resource server):资源服务器
+Client:第三方应用,获得RO的授权后可以去访问RS
+AS(authorization server):授权服务器，认证RO的身份，为RO提供授权审核过程
+ 颁发最终授权令牌(Access Token)
+
+
+
