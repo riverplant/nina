@@ -105,6 +105,9 @@ RS(resource server):资源服务器
 Client:第三方应用,获得RO的授权后可以去访问RS
 AS(authorization server):授权服务器，认证RO的身份，为RO提供授权审核过程
  颁发最终授权令牌(Access Token)
+grant_type(授权类型):authorization_code授权码模式
+ 
+ 认证过程: OAuth2ClientContextFilter<引导用户跳转> ->OAuth2ClientAuthenticationProcessingFilter<获取accessToken,Authorization code如果没有跳转>
 
 
 

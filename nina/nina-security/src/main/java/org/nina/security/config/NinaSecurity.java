@@ -1,10 +1,7 @@
 package org.nina.security.config;
 
-import static org.hamcrest.CoreMatchers.instanceOf;
-
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.catalina.User;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
