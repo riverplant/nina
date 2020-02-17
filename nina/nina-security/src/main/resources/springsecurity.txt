@@ -108,6 +108,91 @@ AS(authorization server):授权服务器，认证RO的身份，为RO提供授权
 grant_type(授权类型):authorization_code授权码模式
  
  认证过程: OAuth2ClientContextFilter<引导用户跳转> ->OAuth2ClientAuthenticationProcessingFilter<获取accessToken,Authorization code如果没有跳转>
+------------------------------------------------------------------------
+
+Spring Social------第三方登录--------------------------------------------------
+1.微信开发平台，新建应用，配置回调域地址 www.nina.com
+
+2.修改C:\Windows\System32\drivers\etc\hosts文件，将回调域地址指向本机
+127.0.0.1     www.nina.com
+
+3.appID:     wxf0c2ff56a8ef1ea3
+  appsecret:  b61789e353e49ff9cc7477c071262d0c
+  也可以先注册一个测试号: https://mp.weixin.qq.com/debug/cgi-bin/sandbox?t=sandbox/login
+ 
+ 4.social.connet.UsersConnectionRepository: 一个连接是系统中的用户和第三用户的关联关系
+ @Override
+	public UsersConnectionRepository getUsersConnectionRepository(ConnectionFactoryLocator connectionFactoryLocator) {
+		//将系统的用户和第三方用的关系存入数据库
+		JdbcUsersConnectionRepository repository = new JdbcUsersConnectionRepository(dataSource, connectionFactoryLocator, textEncryptor);
+		repository.setTablePrefix("pzx_");
+		return repository;
+	}
+	
+添加过滤器:SocialAuthenticationFilter
+ ///////////////////////////////////////////////////////////////////////
+ create table UserConnection (
+    userId varchar(255) not null,//业务系统中的用户id
+	providerId varchar(255) not null, //第三方的标识(微信，qq, facebook...)
+	providerUserId varchar(255), // 第三方的用户openId
+	rank int not null,
+	displayName varchar(255),//实现名称
+	profileUrl varchar(512),//第三方存个人信息的连接
+	imageUrl varchar(512),  //头像连接
+	accessToken varchar(512) not null, //accessToken
+	secret varchar(512),
+	refreshToken varchar(512), //刷新
+	expireTime bigint,
+	primary key (userId, providerId, providerUserId));
+create unique index UserConnectionRank on UserConnection(userId, providerId, rank);
+/////////////////////////////////////////////////////////////////////////////////////// 
+ 
+ 
+ 
+ 
+------------------------------------------------------------------------  
+  protected void configure(HttpSecurity http) throws Exception {
+		SpringSocialConfigurer configurer = new SpringSocialConfigurer();
+		http.formLogin()// 加入了UsernamePasswordAuthenticationFilter
+				.loginPage("/login.html").loginProcessingUrl("/auth")
+				// 可以通过配置修改
+				.usernameParameter("username").passwordParameter("password")
+				.successHandler(ninaAuthenticationSuccessHandler).failureHandler(ninaAuthenticationFaildHandler).and()
+				// 加入RememberMeAuthenticationFilter
+				.rememberMe().tokenRepository(persistentTokenRepository())// 启用数据库存取token
+				.tokenValiditySeconds(60)// 设置token有效期(秒)
+				.and().sessionManagement()
+				// 针对session fixation攻击
+				.sessionFixation().changeSessionId()
+				// .invalidSessionUrl("/session.html")
+				// .maximumSessions(1)//最大session数为1,用于并发控制
+				// .maxSessionsPreventsLogin(true)//达到最大session数就不容许新登录了
+				.and().csrf().disable()
+				// 创建并且发送XSRF-TOKEN给用户端用于csrf
+				// .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
+				// .csrf().disable()
+				.authorizeRequests()
+				/**
+				 * 通过该方法设置授权投票器的种类
+				 */
+				// .accessDecisionManager(accessDecisionManager)
+				.antMatchers("/index", "/login.html", "/auth", "/session.html").permitAll()
+				// .antMatchers(HttpMethod.GET).permitAll()
+				.antMatchers("/test/*").access("hasRole('a') or hasRole('b')").anyRequest()
+				//添加SpringSocialConfigurer
+				.authenticated().and().apply(configurer);
+		/**
+		 * ConfigAttribute:需要判断的权限规则
+		 * 相当于hasAuthority("admin"), 授权工作在FilterSecurityInterceptor中做
+		 */
+		// .access("hasAuthority('admin')");
+		/**
+		 * @ninaSecurity:自定义授权类bean Check:自定义bean中的自定义方法
+		 */
+		// .anyRequest().access("@ninaSecurity.check(authentication,request)");
+	}
+
+
 
 
 
