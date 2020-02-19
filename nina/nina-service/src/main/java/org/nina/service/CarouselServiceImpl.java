@@ -28,7 +28,7 @@ public class CarouselServiceImpl implements CarouselService {
 		/**
 		 * ***************security****************************
 		 */
-		List<Carousel> result = carouselRepository.querAll(true);
+			List<Carousel> result = carouselRepository.querAll(true);
 		return result;
 	}
 

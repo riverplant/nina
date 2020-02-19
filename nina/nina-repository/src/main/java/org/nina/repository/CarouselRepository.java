@@ -9,6 +9,11 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface CarouselRepository extends NinaRepository<Carousel> {
+	/**
+	 * 
+	 * @param isShow
+	 * @return
+	 */
 	@Query("from Carousel carousel where carousel.isShow = ?1 order by carousel.sort desc ")
 	List<Carousel> querAll(boolean isShow);
 }

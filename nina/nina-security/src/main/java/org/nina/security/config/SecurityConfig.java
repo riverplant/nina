@@ -3,18 +3,15 @@ package org.nina.security.config;
 import javax.sql.DataSource;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.security.oauth2.client.EnableOAuth2Sso;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
-import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.authentication.rememberme.JdbcTokenRepositoryImpl;
 import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
-import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 import org.springframework.social.security.SpringSocialConfigurer;
 
 /**
@@ -89,9 +86,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 				.authorizeRequests()
 				.antMatchers("/index", "/login.html", "/auth/**", "/session.html").permitAll()
 				// .antMatchers(HttpMethod.GET).permitAll()
-				.antMatchers("/test/*").access("hasRole('a') or hasRole('b')").anyRequest()
+				.antMatchers("/test/*").access("hasRole('a') or hasRole('b')")
+				//@ninaSecurity:自定义授权类bean Check:自定义bean中的自定义方法
+				//.anyRequest().access("@ninaSecurity.check(authentication,request)")
+				
 				//添加SpringSocialConfigurer
-				.authenticated().and().apply(configurer);
+				.anyRequest().authenticated().and().apply(configurer);
 	}
 
 }

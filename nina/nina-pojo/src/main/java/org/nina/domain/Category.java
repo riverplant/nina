@@ -87,7 +87,7 @@ public class Category extends DomainImpl {
 	/**
 	 * 轮播图外键id
 	 */
-	@OneToOne(mappedBy = "category")
+	@OneToOne(cascade = CascadeType.ALL, mappedBy = "category")
 	private Carousel carousel;
 
 	// 使用了该注解的字段将不会被同步到数据库

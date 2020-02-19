@@ -5,6 +5,7 @@ import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 
@@ -37,15 +38,10 @@ public class Carousel extends DomainImpl {
 	private String itemId;
 
 	/**
-	 * 商品分类id 商品分类id
-	 */
-	@Column(name = "cat_id")
-	private String catId;
-
-	/**
 	 * 商品分类
 	 */
-	@OneToOne
+	@OneToOne(cascade = CascadeType.ALL)
+	@JoinColumn(name = "cat_id")
 	private Category category;
 
 	/**
@@ -99,15 +95,6 @@ public class Carousel extends DomainImpl {
 	public void setItemId(String itemId) {
 		this.itemId = itemId;
 	}
-
-	public String getCatId() {
-		return catId;
-	}
-
-	public void setCatId(String catId) {
-		this.catId = catId;
-	}
-
 	public Integer getType() {
 		return type;
 	}
