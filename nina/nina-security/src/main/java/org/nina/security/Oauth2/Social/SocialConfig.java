@@ -14,8 +14,8 @@ import org.springframework.social.connect.jdbc.JdbcUsersConnectionRepository;
  * @author riverplant
  *
  */
-@Configuration
-@EnableSocial
+//@Configuration
+//@EnableSocial
 public class SocialConfig extends SocialConfigurerAdapter{
     @Autowired
 	private DataSource dataSource;
