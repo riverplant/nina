@@ -1,6 +1,5 @@
 package org.nina.domain;
 
-import java.util.List;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -10,7 +9,6 @@ import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 import javax.persistence.UniqueConstraint;
@@ -47,7 +45,6 @@ public class Category extends DomainImpl {
 	 * Set<role>：这个类型有两种，一种为list另一种为set
 	 */
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "parentCategory")
-	@JoinColumn(name = "father_id") // 根据父级菜单ID，实现自关联（内部其实也就是一对多）
 	@JsonIgnore
 	private Set<Category> subCategory;
 
