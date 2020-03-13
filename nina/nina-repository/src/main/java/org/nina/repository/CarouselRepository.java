@@ -15,5 +15,5 @@ public interface CarouselRepository extends NinaRepository<Carousel> {
 	 * @return
 	 */
 	@Query("from Carousel carousel where carousel.isShow = ?1 order by carousel.sort desc ")
-	List<Carousel> querAll(boolean isShow);
+	List<Carousel> querAll(Integer isShow);
 }

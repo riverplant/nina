@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
  * @author riverplant
  *
  */
-@Component("ninaSecurity")
+//@Component("ninaSecurity")
 public class NinaSecurity {
 	/**
 	 * 

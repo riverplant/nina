@@ -10,8 +10,6 @@ import org.nina.repository.CategoryRepository;
 import org.nina.repository.support.QueryResultConverter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -43,15 +41,15 @@ public class CategoryServiceImpl implements CategoryService {
 		/**
 		 * security
 		 */
-		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-		if (authentication == null) {
-			throw new RuntimeException("");
-		}
+//		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+//		if (authentication == null) {
+//			throw new RuntimeException("");
+//		}
 	}
 
 	@Override
 	@Transactional(propagation = Propagation.SUPPORTS)
-	public List<CategoryVO> quwerySubCategory(Long rootId) {
+	public List<CategoryVO> querySubCategory(Long rootId) {
 		authenticationUserPermission();
 		return categoryRepository.querySubCatalog(rootId);
 	}

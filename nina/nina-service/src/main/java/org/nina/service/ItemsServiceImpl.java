@@ -38,8 +38,6 @@ import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Modifying;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionDefinition;
@@ -93,11 +91,11 @@ public class ItemsServiceImpl implements ItemsService {
 		/**
 		 * security
 		 */
-		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-		if (authentication != null) {
-			// authentication.getPrincipal():拿到当前认证的用户信息
-			System.out.println(authentication.getPrincipal());
-		}
+//		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+//		if (authentication != null) {
+//			// authentication.getPrincipal():拿到当前认证的用户信息
+//			System.out.println(authentication.getPrincipal());
+//		}
 		/**
 		 * ***************security****************************
 		 */

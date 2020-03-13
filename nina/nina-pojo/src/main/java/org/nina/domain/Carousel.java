@@ -64,7 +64,6 @@ public class Carousel extends DomainImpl {
 	private Boolean isShow;
 
 	@OneToMany(cascade = CascadeType.REMOVE, mappedBy = "carousel")
-	// @OrderBy("carousel.id ASC")设置排序方式
 	private Set<ItemsCarouselAssociation> items;
 
 	public Set<ItemsCarouselAssociation> getItems() {

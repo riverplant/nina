@@ -19,9 +19,9 @@ import org.springframework.social.security.SpringSocialConfigurer;
  * @author riverplant
  *
  */
-@Configuration
+//@Configuration
 // 拦截http请求
-@EnableWebSecurity
+//@EnableWebSecurity
 // 开启方法授权注解,prePostEnabled模式的表达式类似于：hasAuthority('admin')
 // @EnableGlobalMethodSecurity(prePostEnabled = true)
 // @EnableOAuth2Sso
