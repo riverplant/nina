@@ -22,7 +22,7 @@ public interface CategoryService {
 	 * @param rootId
 	 * @return
 	 */
-	List<CategoryVO> querySubCategory(Long rootId);
+	List<Object> querySubCategory(Long rootId);
 	/**
 	 * 查询首页所有一级分类下的6条最新商品记录
 	 * @param rootId

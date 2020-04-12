@@ -29,7 +29,11 @@ public interface ItemsService {
 	 * 用作定时任务的方法必须是无返回值，无参数
 	 */
 	//void task();
-	
+	/**
+	 * 根据商品ID查询详情
+	 * @param itemId
+	 * @return
+	 */
 	ItemsInfo queryById(Long itemId);
 	/**
 	 * 根据商品ID查询商品图片

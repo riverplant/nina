@@ -58,11 +58,12 @@ public class IndexController {
 	@ApiOperation(value = "首页分类展示", notes = "首页分类展", httpMethod = "GET")
 	@GetMapping("/subCats/{id:\\d+}")
 	public NinaJsonResult querySubCats(
-			@ApiParam(name = "id", value = "一级分类Id", required = true) @PathVariable Long id) {
+			@ApiParam(name = "id", value = "一级分类Id", required = true) 
+			@PathVariable Long id) {
 		if (id == null) {
 			return NinaJsonResult.erorMsg("分类不存在");
 		}
-		List<CategoryVO> result = categoryService.querySubCategory(id);
+		List<Object> result = categoryService.querySubCategory(id);
 		return NinaJsonResult.ok(result);
 	}
 

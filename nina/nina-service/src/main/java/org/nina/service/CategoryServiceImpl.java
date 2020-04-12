@@ -28,13 +28,12 @@ public class CategoryServiceImpl implements CategoryService {
 	@Override
 	@Transactional(propagation = Propagation.SUPPORTS)
 	public List<CategoryInfo> queryAllRootLevel() {
-		authenticationUserPermission();
+		//authenticationUserPermission();
 		Category category = new Category();
 		category.setType(1);
 		Example<Category> example = Example.of(category);
 		List<Category> categorys = categoryRepository.findAll(example);
 		return QueryResultConverter.convert(categorys, CategoryInfo.class);
-
 	}
 
 	private void authenticationUserPermission() {
@@ -49,8 +48,8 @@ public class CategoryServiceImpl implements CategoryService {
 
 	@Override
 	@Transactional(propagation = Propagation.SUPPORTS)
-	public List<CategoryVO> querySubCategory(Long rootId) {
-		authenticationUserPermission();
+	public List<Object> querySubCategory(Long rootId) {
+		//authenticationUserPermission();
 		return categoryRepository.querySubCatalog(rootId);
 	}
 

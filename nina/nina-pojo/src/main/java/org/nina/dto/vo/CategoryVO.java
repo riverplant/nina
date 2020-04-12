@@ -1,30 +1,55 @@
 package org.nina.dto.vo;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
- * 二级分类
+ * 二级分类VO
  * 
  * @author jli
  *
  */
-public class CategoryVO {
-	private Long Id;
+public class CategoryVO implements Serializable{
+	private static final long serialVersionUID = 1L;
+	private Long id;
 	private String name;
 	private Integer type;
-	private Long FatherId;
+	private Long fatherId;
 	private List<SubCategoryVO> subCatList;
 
-	public Long getId() {
-		return Id;
+	
+	public CategoryVO(Long id, String name, Integer type, Long fatherId, List<SubCategoryVO> subCatList) {
+		this.id = id;
+		this.name = name;
+		this.type = type;
+		this.fatherId = fatherId;
+		this.subCatList = subCatList;
 	}
 
-	public void setId(Long id) {
-		Id = id;
+	
+	public CategoryVO() {
+		
 	}
+
 
 	public String getName() {
 		return name;
+	}
+
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	public Long getFatherId() {
+		return fatherId;
+	}
+
+	public void setFatherId(Long fatherId) {
+		this.fatherId = fatherId;
 	}
 
 	public void setName(String name) {
@@ -37,14 +62,6 @@ public class CategoryVO {
 
 	public void setType(Integer type) {
 		this.type = type;
-	}
-
-	public Long getFatherId() {
-		return FatherId;
-	}
-
-	public void setFatherId(Long fatherId) {
-		FatherId = fatherId;
 	}
 
 	public List<SubCategoryVO> getSubCatList() {

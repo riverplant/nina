@@ -365,6 +365,7 @@ public class ItemsServiceImpl implements ItemsService {
 		Integer goodCount = getCommentCounts(itemId, CommentLevel.GOOD.type);
 		Integer normalCount = getCommentCounts(itemId, CommentLevel.NORMAL.type);
 		Integer badCount = getCommentCounts(itemId, CommentLevel.BAD.type);
+		//Integer totalCounts = goodCount + normalCount + badCount;
 		CommentLevelCountsVO commentLevelCountsVO = new CommentLevelCountsVO();
 		commentLevelCountsVO.setBadCount(badCount);
 		commentLevelCountsVO.setGoodCount(goodCount);
@@ -383,7 +384,7 @@ public class ItemsServiceImpl implements ItemsService {
 		ItemsComments itemsComments = new ItemsComments();
 		itemsComments.setId(itemId);
 		if(level != null && level != 0) {
-			itemsComments.setComment_level(level);
+			itemsComments.setCommentLevel(CommentLevel.stateOf(level));
 		}
 		Example<ItemsComments> example = Example.of(itemsComments);
 		Long result = itemsCommentRepository.count(example);

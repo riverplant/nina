@@ -12,18 +12,18 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface CategoryRepository extends NinaRepository<Category> {
 	
-	@Query(value = "select f.id as id,"
+	@Query(value = "select f.river_id as id,"
 			          + "f.`name` as `name`,"
 			          + "f.type as type,"
 			          + "f.father_id as fatherId," 
-			          + "c.id as subId,"
+			          + "c.river_id as subId,"
 			          + "c.`name` as `subName`,"
 			          + "c.type as subType,"
 			          + "c.father_id as subFatherId " 
 			          +"FROM river_category f "
-			         + "LEFT JOIN river_category c ON f.id = c.fatherId "
-			         + "WHERE f.father_id = ?1", nativeQuery = true)
-	List<CategoryVO> querySubCatalog(Long id);
+			         + "LEFT JOIN river_category c ON f.river_id = c.father_id "
+			         + "WHERE c.father_id = ?1", nativeQuery = true)
+	List<Object> querySubCatalog(Long id);
 	
 	@Query(value = "select f.id as rootCatId,"
 			          + "f.`name` as `rootCatName`,"
@@ -38,6 +38,6 @@ public interface CategoryRepository extends NinaRepository<Category> {
 	                  + "LEFT JOIN river_items i ON f.id = i.root_cat_id "
 	                  + "LEFT JOIN river_Items_img ii ON i.id = ii.item_id "
 	                  + "WHERE f.type = 1 AND i.root_cat_id = ?1"
-	                   + "AND ii.is_main = true ORDER BY i.updated_time DESC LIMIT 6", nativeQuery = true)
+	                   + "AND ii.is_main = true ORDER BY i.createTime DESC LIMIT 0,6", nativeQuery = true)
 	List<NewItemsVO> getSixNewItemsLazy(Long id);
 }

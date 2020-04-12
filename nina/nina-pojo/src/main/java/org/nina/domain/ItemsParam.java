@@ -5,7 +5,11 @@ import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
-
+/**
+ * 产品参数表
+ * @author riverplant
+ *
+ */
 @Entity
 public class ItemsParam extends DomainImpl {
 
