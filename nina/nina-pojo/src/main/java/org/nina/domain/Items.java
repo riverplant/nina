@@ -88,7 +88,7 @@ public class Items extends DomainImpl {
 	 */
 	@OneToMany(cascade = CascadeType.REMOVE, mappedBy = "items")
 	private Set<ItemsComments> itemsComments;
-
+	
 	public int getVersion() {
 		return version;
 	}

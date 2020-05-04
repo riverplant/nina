@@ -76,6 +76,9 @@ public class PassportController {
 		}
 		//设置浏览器端Cookies
 		CookieUtils.setCookie(request, response, "user", JsonUtils.objectToJson(resultData),true);
+		
+		//TODO:生成用户Token,存入redis会话
+		//TODO:同步购物车数据
 		return NinaJsonResult.ok(resultData);
 	}
 	/**

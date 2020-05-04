@@ -1,7 +1,9 @@
 package org.nina.service;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -14,7 +16,9 @@ import org.nina.commons.aop.UserLoginLog;
 import org.nina.commons.enums.Sex;
 import org.nina.commons.utils.DateUtil;
 import org.nina.commons.utils.MD5Utils;
+import org.nina.domain.Address;
 import org.nina.domain.User;
+import org.nina.dto.AddressInfo;
 import org.nina.dto.UserInfo;
 import org.nina.repository.UserRepository;
 import org.springframework.beans.BeanUtils;
@@ -120,5 +124,54 @@ public class UserServiceImpl implements UserService {
 		}
 		return null;
 	}
-
+	@Override
+	@Transactional(propagation = Propagation.SUPPORTS)
+	public List<Address> getUserAdrress(Long id) {
+		User user = userRepository.findById(id).orElse(null);
+		return user!=null ? user.getAddresses() : null;
+	}
+	@Override
+	@Transactional(propagation = Propagation.REQUIRED)
+	public void addNewAddress(AddressInfo info, Long userId) {
+		User user = userRepository.findById(userId).orElse(null);
+		if(user == null || info.getAddressOrder() != null) {
+			throw new RuntimeException("can't find user or address is exist alreday");
+		}
+		List<Address> addressList = user.getAddresses();
+		//1.判断用户是否已经有地址，如果没有，设置该地址为默认地址
+		Address address = new Address();
+		BeanUtils.copyProperties(address, info);
+		if(addressList == null || addressList.isEmpty() || addressList.size() == 0) {
+			address.setAddressOrder(0);
+			address.setIsDefault(1);
+		}else {
+			address.setAddressOrder(
+					addressList.stream()
+							   .map(Address::getAddressOrder)
+							   .reduce(Integer::max).get()+1);
+		}				
+		addressList.add(address);
+		user.setAddresses(addressList);
+		userRepository.save(user);
+	}
+	@Override
+	//事务隔离
+	@Transactional(propagation = Propagation.REQUIRED)
+	public void updateAddress(AddressInfo info, Long userId) {
+		User user = userRepository.findById(userId).orElse(null);
+		if(user == null || info.getAddressOrder() == null) {
+			throw new RuntimeException("can't find user or address is not exist");
+		}		
+		List<Address> addresss = user.getAddresses()
+				.parallelStream()
+				.filter(add->add.getAddressOrder() == info.getAddressOrder())
+				.collect(Collectors.toList());
+	    if(addresss == null || addresss.size() != 1) {
+	    	throw new RuntimeException("can't find address or address more than one");
+	    }
+	    Address address = addresss.get(0);
+		BeanUtils.copyProperties(address, info);
+		user.getAddresses().set(user.getAddresses().indexOf(address), address);
+		userRepository.save(user);
+	}
 }

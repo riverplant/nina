@@ -12,6 +12,9 @@ public class DesensitizationUtil {
 
 	private static final int SIZE = 6;
 	private static final String SYMBOL = "*";
+	public static void main(String[] args) {
+		System.out.println(commonDisplay("riverplant@hotmail.com"));
+	}
     /**
      * 通用脱敏方法
      * @param value

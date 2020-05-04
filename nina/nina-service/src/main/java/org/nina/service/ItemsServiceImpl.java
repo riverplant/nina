@@ -1,6 +1,8 @@
 package org.nina.service;
 
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.validation.Valid;
 
@@ -17,6 +19,7 @@ import org.nina.dto.ItemsParamInfo;
 import org.nina.dto.ItemsSpecInfo;
 import org.nina.dto.Items_imgInfo;
 import org.nina.dto.vo.CommentLevelCountsVO;
+import org.nina.dto.vo.ShopcartVO;
 import org.nina.repository.ItemsCommentRepository;
 import org.nina.repository.ItemsImgRepository;
 import org.nina.repository.ItemsParamRepository;
@@ -391,4 +394,11 @@ public class ItemsServiceImpl implements ItemsService {
 		return result.intValue();
 	}
 
+	@Override
+	public List<ShopcartVO> queryItemsBySpecIds(String specIds) {
+		String[] sids = specIds.split(",");	
+		List<Long> specIdsList =Arrays.stream(sids).map(Long::parseLong).collect(Collectors.toList());
+		itemsSpecRepository.queryItemsBySpecIds(specIdsList);
+		return null;
+	}
 }

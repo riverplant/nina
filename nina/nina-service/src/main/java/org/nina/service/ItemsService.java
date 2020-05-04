@@ -10,6 +10,7 @@ import org.nina.dto.ItemsParamInfo;
 import org.nina.dto.ItemsSpecInfo;
 import org.nina.dto.Items_imgInfo;
 import org.nina.dto.vo.CommentLevelCountsVO;
+import org.nina.dto.vo.ShopcartVO;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -65,4 +66,10 @@ public interface ItemsService {
 	  * @param itemId
 	  */
 	 CommentLevelCountsVO queryCommentLevelsAndCounts(Long itemId);
+	 /**
+	  * 根据规格ids查询最新的购物车种商品数据
+	  * @param specIds：前端传过来的规格id拼接的字符串
+	  * @return
+	  */
+	 List<ShopcartVO> queryItemsBySpecIds(String specIds);
 }

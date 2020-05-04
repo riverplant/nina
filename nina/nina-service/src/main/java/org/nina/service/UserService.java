@@ -1,8 +1,11 @@
 package org.nina.service;
 
+import java.util.List;
 import java.util.Optional;
 
+import org.nina.domain.Address;
 import org.nina.domain.User;
+import org.nina.dto.AddressInfo;
 import org.nina.dto.UserInfo;
 import org.springframework.data.domain.Pageable;
 
@@ -18,5 +21,10 @@ public interface UserService {
 	 UserInfo createUser(UserInfo userInfo);
 	 //用户登录
 	 UserInfo queryUserForLogin(String username, String password);
-	
+	 
+	 List<Address> getUserAdrress(Long id);
+	 
+	 void addNewAddress( AddressInfo info, Long userId);
+	 
+	 void updateAddress( AddressInfo info, Long userId);
 }

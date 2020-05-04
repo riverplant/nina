@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.validation.Valid;
 
+import org.apache.commons.lang3.StringUtils;
 import org.nina.commons.utils.NinaJsonResult;
 import org.nina.dto.ItemsCondition;
 import org.nina.dto.ItemsInfo;
@@ -14,6 +15,7 @@ import org.nina.dto.ItemsSpecInfo;
 import org.nina.dto.Items_imgInfo;
 import org.nina.dto.vo.CommentLevelCountsVO;
 import org.nina.dto.vo.ItemInfosVO;
+import org.nina.dto.vo.ShopcartVO;
 import org.nina.service.ItemsService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -159,6 +161,24 @@ public class ItemsController {
 		itemInfosVO.setItemsParamInfo(itemsParamInfo);
 		itemInfosVO.setItemsSpecInfosList(itemsSpecInfosList);
 		return NinaJsonResult.ok(itemInfosVO);
+	}
+	
+	/**
+	 * {id:\\d}:只能有一位
+	 * 用于用户长时间未登录网站，刷新购物车数据，主要是更新商品价格
+	 * @param id
+	 * @return
+	 */
+	@ApiOperation(value = "根据商品规格ids查找最新的商品数据", notes = "根据商品规格ids查找最新的商品数据", httpMethod = "GET")
+	@GetMapping("/refresh")
+	@JsonView(ItemsDetailView.class)
+	public NinaJsonResult refresh(@ApiParam(name = "itemSpecIds", value = "商品规格id拼接字符串", required = true,example="1001,1003,...") @PathVariable String itemSpecIds) {
+		if (StringUtils.isBlank(itemSpecIds)) {
+			//当前端传递一个空规格ID，返回一个空的购物车数据
+			return NinaJsonResult.ok();
+		}
+		List<ShopcartVO> shopcartVo = itemsService.queryItemsBySpecIds(itemSpecIds);
+		return NinaJsonResult.ok(shopcartVo);
 	}
 
 	/**
