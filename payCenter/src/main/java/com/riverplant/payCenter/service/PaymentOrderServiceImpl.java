@@ -60,5 +60,24 @@ public class PaymentOrderServiceImpl implements PaymentOrderService {
 		Example<PayOrders> example = Example.of(payOrder);
 		return payOrderRepository.findOne(example).orElse(null);
 	}
+	@Transactional(propagation = Propagation.REQUIRED)
+	@Override
+	public String updateOrderPaid(String merchantOrderId, Integer paidAmount, OrderStatusEnum payStatus) {
+		PayOrders payOrder = new PayOrders();
+		payOrder.setMerchantOrderId(Long.valueOf(merchantOrderId));
+		Example<PayOrders> example = Example.of(payOrder);
+		PayOrders payOrderUpdate = payOrderRepository.findOne(example).orElse(null);
+		if(payOrderUpdate != null) {
+			payOrderUpdate.setAmount(paidAmount);
+			payOrderUpdate.setPayStatus(payStatus.trype);
+			payOrderRepository.save(payOrderUpdate);
+			return payOrderUpdate.getReturnUrl();
+		}
+		return null;
+		
+		
+		
+		
+	}
 
 }

@@ -12,4 +12,6 @@ public interface PaymentOrderService {
 	PayOrders queryOrderInfo(String merchantOrderId, String merchantUserId);
 
 	PayOrders queryOrderByStatus(String merchantOrderId, String merchantUserId, OrderStatusEnum waitPay);
+
+	String updateOrderPaid(String merchantOrderId, Integer paidAmount, OrderStatusEnum payStatus);
 }
