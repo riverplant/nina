@@ -1,23 +1,25 @@
 package org.nina.dto.vo;
 
 import java.io.Serializable;
+
 /**
  * 用于创建订单的对象
+ * 
  * @author riverplant
  *
  */
-public class SubmitOrderVO implements Serializable{
+public class SubmitOrderVO implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
 	private Long userId;
-	
+
 	private String itemSpecIds;
-	
-	private String choosedAddressId;
-	
+
+	private Integer choosedAddressSord;
+
 	private Integer choosedPayMethod;
-	
+
 	private String orderRemarker;
 
 	public Long getUserId() {
@@ -36,12 +38,12 @@ public class SubmitOrderVO implements Serializable{
 		this.itemSpecIds = itemSpecIds;
 	}
 
-	public String getChoosedAddressId() {
-		return choosedAddressId;
+	public Integer getChoosedAddressSord() {
+		return choosedAddressSord;
 	}
 
-	public void setChoosedAddressId(String choosedAddressId) {
-		this.choosedAddressId = choosedAddressId;
+	public void setChoosedAddressSord(Integer choosedAddressSord) {
+		this.choosedAddressSord = choosedAddressSord;
 	}
 
 	public Integer getChoosedPayMethod() {
@@ -60,17 +62,8 @@ public class SubmitOrderVO implements Serializable{
 		this.orderRemarker = orderRemarker;
 	}
 
-	public SubmitOrderVO(Long userId, String itemSpecIds, String choosedAddressId, Integer choosedPayMethod,
-			String orderRemarker) {
-		this.userId = userId;
-		this.itemSpecIds = itemSpecIds;
-		this.choosedAddressId = choosedAddressId;
-		this.choosedPayMethod = choosedPayMethod;
-		this.orderRemarker = orderRemarker;
+	public SubmitOrderVO() {
+
 	}
 
-	public SubmitOrderVO() {
-		
-	}
-	
 }

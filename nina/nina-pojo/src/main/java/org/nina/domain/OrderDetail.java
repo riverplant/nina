@@ -30,7 +30,7 @@ public class OrderDetail extends DomainImpl {
 
 	// 规格id
 	@Column(name = "item_spec_id")
-	String itemSpecId;
+	Long itemSpecId;
 
 	// 规格名称
 	@Column(name = "item_spec_name")
@@ -76,11 +76,11 @@ public class OrderDetail extends DomainImpl {
 		this.itemName = itemName;
 	}
 
-	public String getItemSpecId() {
+	public Long getItemSpecId() {
 		return itemSpecId;
 	}
 
-	public void setItemSpecId(String itemSpecId) {
+	public void setItemSpecId(Long itemSpecId) {
 		this.itemSpecId = itemSpecId;
 	}
 

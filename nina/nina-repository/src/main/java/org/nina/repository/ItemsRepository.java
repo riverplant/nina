@@ -21,4 +21,15 @@ public interface ItemsRepository extends NinaRepository<Items>{
 	
 	@Query("from Items items where items.rootCatId = ?1")
 	List<Items> findByRootCatId(Long rootCatId);
+	/**
+	 * 用户提交订单后修改库存，这里需要使用乐观锁
+	 * @param specId
+	 * @param buyCounts
+	 */
+	@Query(value="update items_spec "
+					+ "set stock = stok - ?1 "
+					+ "where id = ?2"
+					+ "and stock >= ?1"
+					,nativeQuery = true)
+	int decreaseItemSpecStock(Long specId, Integer buyCounts);
 }

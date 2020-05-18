@@ -103,16 +103,14 @@ public class User extends DomainImpl {
 		return username;
 	}
 
-	// public Address getAddress() {
-	// return address;
-	// }
-	//
-	// public void setAddress(Address address) {
-	// this.address = address;
-	// }
-
 	public List<Address> getAddresses() {
 		return addresses;
+	}
+	
+	public Address getAddresseByOrder(Integer addressOrder) {
+		return addresses == null || addresses.isEmpty() ? null : addresses.stream()
+				.filter(add->add.getAddressOrder() == addressOrder)
+				.findFirst().get();
 	}
 
 	public void setAddresses(List<Address> addresses) {

@@ -393,7 +393,8 @@ public class ItemsServiceImpl implements ItemsService {
 		Long result = itemsCommentRepository.count(example);
 		return result.intValue();
 	}
-
+	
+	@Transactional(propagation = Propagation.SUPPORTS)
 	@Override
 	public List<ShopcartVO> queryItemsBySpecIds(String specIds) {
 		String[] sids = specIds.split(",");	
@@ -401,4 +402,35 @@ public class ItemsServiceImpl implements ItemsService {
 		itemsSpecRepository.queryItemsBySpecIds(specIdsList);
 		return null;
 	}
+	
+	@Transactional(propagation = Propagation.SUPPORTS)
+	@Override
+	public ItemsSpec queryItemSpecById(Long id) {
+		return itemsSpecRepository.getOne(id);
+	}
+
+	@Transactional(propagation = Propagation.REQUIRED)
+	@Override
+	public void decreaseItemSpecStocke(Long specId, Integer buyCounts) {
+		/**
+		 * 1.集群下不推荐使用synchronized
+		 * 2.不推荐锁数据库
+		 * 3.应该使用分布式锁: zookeeper, redis
+		 */
+//		ReentrantReadWriteLock lock = new ReentrantReadWriteLock();
+//		ReadLock  readLock  = lock.readLock();
+//		WriteLock writeLock = lock.writeLock();		
+//		readLock.lock();//--加锁		
+//		readLock.unlock();//--解锁
+		
+		//1.查询库存
+		//2.判断库存，是否能减少到0以下
+		int result = itemsRepository.decreaseItemSpecStock(specId, buyCounts);
+		if(result != 1) {
+			throw new RuntimeException("订单创建失败，库存不足");
+		}
+		
+	}
+	
+	
 }

@@ -11,7 +11,7 @@ import javax.persistence.Entity;
  * @author riverplant 订单状态表
  */
 @Entity(name = "order_status")
-public class OderStatus extends DomainImpl {
+public class OrderStatus extends DomainImpl {
 	private static final long serialVersionUID = 1L;
 
 	// 订单id
@@ -106,12 +106,12 @@ public class OderStatus extends DomainImpl {
 		this.payTime = payTime;
 	}
 
-	public OderStatus(Integer orderStatus, Date payTime) {
+	public OrderStatus(Integer orderStatus, Date payTime) {
 		this.orderStatus = orderStatus;
 		this.payTime = payTime;
 	}
 
-	public OderStatus() {
+	public OrderStatus() {
 
 	}
 }

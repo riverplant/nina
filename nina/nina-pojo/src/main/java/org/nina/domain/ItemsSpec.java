@@ -32,6 +32,7 @@ public class ItemsSpec extends DomainImpl {
     /**
      * 库存
      */
+    @Column(name="stock")
     private Integer stock;
 
     /**
