@@ -1,5 +1,6 @@
 package org.nina.service;
 
+import org.nina.domain.OrderStatus;
 import org.nina.dto.vo.OrderVO;
 import org.nina.dto.vo.SubmitOrderVO;
 
@@ -15,4 +16,10 @@ public interface OrderService {
 	 * @param orderStatus
 	 */
 	void updateOrderStatus(Long orderId, Integer orderStatus);
+	/**
+	 * 查询订单状态
+	 * @param orderId
+	 * @return
+	 */
+	OrderStatus queryOrderStatusInfo(Long orderId);
 }

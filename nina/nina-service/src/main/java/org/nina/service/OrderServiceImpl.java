@@ -28,7 +28,7 @@ import org.springframework.transaction.annotation.Transactional;
  *
  */
 @Service
-@Transactional
+@Transactional(readOnly = true)
 public class OrderServiceImpl implements OrderService {
 
 	@Autowired private OrderRepository orderRepository;
@@ -137,6 +137,12 @@ public class OrderServiceImpl implements OrderService {
 		paidStatus.setOrderStatus(orderStatus);
 		paidStatus.setPayTime(new Date());
 		orderStatusRepository.save(paidStatus);
+	}
+	
+	@Transactional(propagation = Propagation.REQUIRED)
+	@Override
+	public OrderStatus queryOrderStatusInfo(Long orderId) {
+		return orderStatusRepository.getByOrderId(orderId);
 	}
 	
 }

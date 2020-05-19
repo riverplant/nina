@@ -10,6 +10,7 @@ import org.nina.commons.enums.OrderStatusEnum;
 import org.nina.commons.enums.PayMethod;
 import org.nina.commons.utils.CookieUtils;
 import org.nina.commons.utils.NinaJsonResult;
+import org.nina.domain.OrderStatus;
 import org.nina.dto.vo.OrderVO;
 import org.nina.dto.vo.PayOrdersVO;
 import org.nina.dto.vo.SubmitOrderVO;
@@ -34,7 +35,7 @@ import io.swagger.annotations.ApiOperation;
  */
 @Api(value = "订单接口controller", tags = "订单相关的接口API")
 @RestController
-@RequestMapping("oders")
+@RequestMapping("orders")
 public class OrdersController extends BaseController{
 	@Autowired
 	private OrderService orderService;
@@ -91,5 +92,17 @@ public class OrdersController extends BaseController{
 	public Integer notifyMerchantOrderPaide(String merchantOrderId) { 
 		orderService.updateOrderStatus(Long.valueOf(merchantOrderId), OrderStatusEnum.SUCCESS.trype);
 		return  HttpStatus.OK.value();
+	}
+	
+	/**
+	 * 供前端js轮询调用,查询订单是否支付成功
+	 * @param orderId用户提交支付的订单id
+	 * @return
+	 */
+	@ApiOperation(value = "查询订单是否支付成功", notes = "供前端js轮询调用", httpMethod = "POST")
+	@PostMapping("/getPaidOrderInfo")
+	public NinaJsonResult getPaidOrderInfo(String orderId) { 
+		OrderStatus orderStatus =  orderService.queryOrderStatusInfo(Long.valueOf(orderId));
+		return  NinaJsonResult.ok(orderStatus);
 	}
 }

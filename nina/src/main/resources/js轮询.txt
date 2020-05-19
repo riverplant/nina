@@ -1,0 +1,23 @@
+通过轮询实时查看订单状态，当订单状态变成支付完成，就跳转页面
+
+//每隔3秒调用后台方法，查看订单是否支付成功
+this.setTimer();
+
+setTimer() {
+return setInterval(
+()=>{this.checkPayResult()},3000)
+}
+
+
+checkPayResult(){
+post(){
+if(res.data.status == 200){
+ var orderStatus = res.data.data;
+ if(orderStatus == 20)//已支付{
+ window.location.href = "success.html?orderId="+orderId;
+ }
+ }else{
+ //支付失败
+ }
+}
+}
