@@ -5,6 +5,7 @@ import java.util.List;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Pattern;
 
 import org.hibernate.validator.constraints.Length;
 import org.nina.commons.enums.Sex;
@@ -14,14 +15,15 @@ import com.fasterxml.jackson.annotation.JsonView;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-@ApiModel(value = "用户对象",description = "用户对象,与前端交互")
+
+@ApiModel(value = "用户对象", description = "用户对象,与前端交互")
 public class UserInfo {
 	public interface UserListView {
 	};
 
 	public interface UserDetailView extends UserListView {
 	};
-    
+
 	@ApiModelProperty(value = "用户id", name = "id", example = "1L", required = false)
 	private long id;
 	/**
@@ -36,7 +38,7 @@ public class UserInfo {
 	 */
 	@ApiModelProperty(value = "密码", name = "password", example = "123456", required = true)
 	@NotBlank
-	@Length(min = 6,message="密码长度不正确!")
+	@Length(min = 6, message = "密码长度不正确!")
 	private String password;
 
 	/**
@@ -44,7 +46,7 @@ public class UserInfo {
 	 */
 	@ApiModelProperty(value = "确认密码", name = "confirmPassword", example = "123456", required = false)
 	@NotBlank
-	@Length(min = 6,message="确认密码长度不正确!")
+	@Length(min = 6, message = "确认密码长度不正确!")
 	private String confirmPassword;
 	/**
 	 * 年龄
@@ -68,6 +70,7 @@ public class UserInfo {
 	/**
 	 * 手机号 手机号
 	 */
+	@Pattern(regexp = "", message = "")
 	private String mobile;
 
 	/**
@@ -79,7 +82,7 @@ public class UserInfo {
 	/**
 	 * 定义枚举值属性，保存为字符
 	 */
-	private Sex sex;
+	private Integer sex;
 
 	/**
 	 * 生日 生日
@@ -175,13 +178,8 @@ public class UserInfo {
 		this.email = email;
 	}
 
-	@JsonView(UserDetailView.class)
-	public Sex getSex() {
-		return sex;
-	}
-
-	public void setSex(Sex sex) {
-		this.sex = sex;
+	public void setBirthday(Date birthday) {
+		this.birthday = birthday;
 	}
 
 	@JsonView(UserDetailView.class)
@@ -189,8 +187,13 @@ public class UserInfo {
 		return birthday;
 	}
 
-	public void setBirthday(Date birthday) {
-		this.birthday = birthday;
+	@JsonView(UserDetailView.class)
+	public Integer getSex() {
+		return sex;
+	}
+
+	public void setSex(Integer sex) {
+		this.sex = sex;
 	}
 
 	@JsonView(UserDetailView.class)

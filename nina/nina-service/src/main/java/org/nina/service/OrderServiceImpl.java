@@ -1,9 +1,11 @@
 package org.nina.service;
 import java.util.Date;
+import java.util.List;
 import java.util.Objects;
 
 import org.nina.commons.enums.OrderStatusEnum;
 import org.nina.commons.enums.YesOrNo;
+import org.nina.commons.utils.DateUtil;
 import org.nina.domain.Address;
 import org.nina.domain.Items;
 import org.nina.domain.ItemsSpec;
@@ -19,17 +21,19 @@ import org.nina.repository.OrderRepository;
 import org.nina.repository.OrderStatusRepository;
 import org.nina.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 /**
  * 通过定义transactionManager.commit来保持上下文的一致性
  * @author riverplant
+ * @param <V>
  *
  */
 @Service
 @Transactional(readOnly = true)
-public class OrderServiceImpl implements OrderService {
+public class OrderServiceImpl<V> implements OrderService {
 
 	@Autowired private OrderRepository orderRepository;
 	@Autowired private UserRepository userRepository;
@@ -145,4 +149,41 @@ public class OrderServiceImpl implements OrderService {
 		return orderStatusRepository.getByOrderId(orderId);
 	}
 	
+	@Transactional(propagation = Propagation.REQUIRED)
+	@Override
+	public void closeOrder() {
+		//查询所有未付款订单，判断时间是否超时(1 day),超时就关闭交易
+		OrderStatus orderStatusExemple = new OrderStatus();
+		orderStatusExemple.setOrderStatus(OrderStatusEnum.WAIT_PAY.trype);
+		Example<OrderStatus> example = Example.of(orderStatusExemple);
+		List<OrderStatus> orderStatus = orderStatusRepository.findAll(example);
+		orderStatus.stream().forEach(os->{
+			//获得订单创建时间
+			Date createdTime = os.getCreatedTime();
+			//和当前时间对比
+			int days = DateUtil.daysBetween(createdTime, new Date());
+			if(days >= 1) {
+				//超过一天，关闭订单
+				doCloseOrder(os.getId());
+			}
+		});
+	}
+	
+	@Transactional(propagation = Propagation.REQUIRED)
+	private void doCloseOrder(Long oderId) {
+		OrderStatus orderStatus = orderStatusRepository.getOne(oderId);
+		orderStatus.setOrderStatus(OrderStatusEnum.CLOSE.trype);
+		orderStatus.setCloseTime(new Date());
+		orderStatusRepository.save(orderStatus);
+	}
+
+	@Override
+	public Orders checkUserOrder(Long userId, Long orderId) {
+		Orders order = new Orders();
+		order.setId(orderId);
+		order.setUserId(userId);
+		Example<Orders> example = Example.of(order);
+		return orderRepository.findOne(example).orElse(null);
+	}
+
 }

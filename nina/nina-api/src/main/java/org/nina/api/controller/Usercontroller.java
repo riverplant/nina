@@ -96,7 +96,7 @@ public class Usercontroller {
 	 * @return
 	 */
 	@ApiOperation(value = "新增用户地址", notes = "新增用户地址", httpMethod = "POST")
-	@PostMapping("/address{id\\\\d+}")
+	@PostMapping("/address{id\\d+}")
 	public NinaJsonResult addNewAddress(
 			@Valid @RequestBody AddressInfo info,
 			@ApiParam(name = "id", value = "用户ID", required = true) @PathVariable Long id,
@@ -122,7 +122,7 @@ public class Usercontroller {
 	 * @return
 	 */
 	@ApiOperation(value = "修改用户地址", notes = "修改用户地址", httpMethod = "PUT")
-	@PutMapping("/address{id\\\\d+}")
+	@PutMapping("/address{id\\d+}")
 	public NinaJsonResult updateAddress(
 			@Valid @RequestBody AddressInfo info,
 			@ApiParam(name = "id", value = "用户ID", required = true) @PathVariable Long id,

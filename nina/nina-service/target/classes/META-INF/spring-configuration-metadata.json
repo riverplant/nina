@@ -1,0 +1,22 @@
+{
+  "groups": [
+    {
+      "name": "file",
+      "type": "org.nina.resources.FileUploadResources",
+      "sourceType": "org.nina.resources.FileUploadResources"
+    }
+  ],
+  "properties": [
+    {
+      "name": "file.image-service-url",
+      "type": "java.lang.String",
+      "sourceType": "org.nina.resources.FileUploadResources"
+    },
+    {
+      "name": "file.image-user-face-location",
+      "type": "java.lang.String",
+      "sourceType": "org.nina.resources.FileUploadResources"
+    }
+  ],
+  "hints": []
+}

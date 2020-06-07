@@ -4,11 +4,13 @@ import java.io.FileNotFoundException;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.nina.commons.utils.NinaJsonResult;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.client.HttpClientErrorException.Forbidden;
+import org.springframework.web.multipart.MaxUploadSizeExceededException;
 import org.springframework.web.server.MethodNotAllowedException;
 
 /**
@@ -28,6 +30,15 @@ public class ExceptionHandlerController {
 		result.put("errMsg", e.getMessage());
 
 		return result;
+	}
+	/**
+	 * 上传文件过大
+	 * @param e
+	 * @return
+	 */
+	@ExceptionHandler(MaxUploadSizeExceededException.class)
+	public NinaJsonResult handlerMaxUploadSizeExceededException(MaxUploadSizeExceededException e) {
+		return NinaJsonResult.erorMsg("上传文件过大，不能超过500K");
 	}
 	
 	@ExceptionHandler(Forbidden.class)
