@@ -1,0 +1,51 @@
+支付宝支付会返回一个同步的get请求returnUrl，该地址不能够作为支付凭证
+
+一定要以post的异步请求返回结果来作为支付凭证!!!!!!!!!!!!!
+
+支付宝提供了alipay.trade.query接口来查看交易状态
+--------------------------------------------------------
+
+以表单形式提交到支付宝网关。（微信是生成二维码）
+https://docs.open.alipay.com/270/105899
+查看接口调用配置
+
+public   void   doPost (HttpServletRequest httpRequest,
+                      HttpServletResponse httpResponse)   throws  ServletException, IOException  {
+    AlipayClient alipayClient =  new  DefaultAlipayClient( "https://openapi.alipay.com/gateway.do" , APP_ID, APP_PRIVATE_KEY, FORMAT, CHARSET, ALIPAY_PUBLIC_KEY, SIGN_TYPE);  //获得初始化的AlipayClient 
+    AlipayTradePagePayRequest alipayRequest =  new  AlipayTradePagePayRequest(); //创建API对应的request 
+    //get同步请求，页面跳转同步的地址路径，不能加?参数
+    alipayRequest.setReturnUrl( "http://domain.com/CallBack/return_url.jsp" );
+    //post请求，异步通知
+    alipayRequest.setNotifyUrl( "http://domain.com/CallBack/notify_url.jsp" ); //在公共参数中设置回跳和通知地址 
+    //业务参数内容
+    alipayRequest.setBizContent( "{"  +
+              //商户订单号，商户网站订单系统中唯一订单号，必填merchantOrderId
+         "    \"out_trade_no\":\"20150320010101001\","  +
+         "    \"product_code\":\"FAST_INSTANT_TRADE_PAY\","  +
+         "    \"total_amount\":88.88,"  +
+         "    \"subject\":\"Iphone6 16G\","  +
+         "    \"body\":\"Iphone6 16G\","  +
+         "    \"passback_params\":\"merchantBizType%3d3C%26merchantBizNo%3d2016010101111\","  +
+         "    \"extend_params\":{"  +
+         "    \"sys_service_provider_id\":\"2088511833207846\""  +
+         "    }" +
+         "  }" ); //填充业务参数 
+    String form= "" ;
+     try  {
+        //执行支付
+        form = alipayClient.pageExecute(alipayRequest).getBody();  //调用SDK生成表单 
+    }  catch  (AlipayApiException e) {
+        e.printStackTrace();
+    }
+    httpResponse.setContentType( "text/html;charset="  + CHARSET);
+    httpResponse.getWriter().write(form); //直接将完整的表单html输出到页面 
+    httpResponse.getWriter().flush();
+    httpResponse.getWriter().close();
+
+
+//出现乱码解决方法
+String valueStr = new String(valueStr.getBytes("ISO-8859-1"),"utf-8");
+
+for(int i=0; i< values.lenght; i++){
+valueStr = (i == values.lenght - 1 ) ? valueStr + values[i] : valueStr + values[i] + ","
+}

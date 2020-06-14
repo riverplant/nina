@@ -71,6 +71,7 @@ public class PaymentOrderServiceImpl implements PaymentOrderService {
 			payOrderUpdate.setAmount(paidAmount);
 			payOrderUpdate.setPayStatus(payStatus.trype);
 			payOrderRepository.save(payOrderUpdate);
+			//OrdersController中的/notifyMerchantOrderPaide接口
 			return payOrderUpdate.getReturnUrl();
 		}
 		return null;

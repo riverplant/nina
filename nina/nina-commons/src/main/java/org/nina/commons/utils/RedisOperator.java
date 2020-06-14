@@ -15,7 +15,7 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class RedisOperator {
-
+    //使用StringRedisTemplate可以防止乱码
 	@Autowired private StringRedisTemplate redisTemplate;
 	/**
 	 * TTL key, 以秒为单位，返回给定key的过期时间

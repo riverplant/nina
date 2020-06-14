@@ -45,7 +45,9 @@ public class NotifyController {
 		PrintWriter writer = response.getWriter();
 		if(isPaid) {
 			String merchantOrderId = payResult.getOut_trade_no();
-			String wxFlowId = payResult.getTransaction_id();
+			//微信端支付订单号
+			//String wxFlowId = payResult.getTransaction_id();
+			//支付总金额
 			Integer paidAmount = payResult.getTotal_fee();
 			//支付成功，修改订单状态
 			String merchantReturnUrl = paymentOrderServiceImpl.updateOrderPaid(merchantOrderId,paidAmount,OrderStatusEnum.WAIT_DELIVER);
@@ -55,7 +57,7 @@ public class NotifyController {
 			String noticeStr = setXML("SUCCESS","");
 			writer.write(noticeStr);
 		}else {
-			//支付失败
+			//支付失败,传给微信
 			String noticeStr = setXML("FAIL","");
 			writer.write(noticeStr);
 		}
