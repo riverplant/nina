@@ -1,0 +1,188 @@
+设计原则：
+1.异步解耦
+
+2.幂等一致性(增加和修改)
+
+3.拆分原则(按系统功能)
+
+4.融合分布式中间件
+
+5.容错高可用
+
+------------NoSql-------------------------
+1.键值对数据库 
+  1.1 Redis
+  1.2 Memcache
+  
+2.列存储数据库
+  2.1 Hbase
+  2.2 Cassandra
+
+3.文档型数据库
+  3.1 MongoDB
+  3.2 CouchDB
+
+
+4.图形数据库
+  4.1 Neo4J
+  4.2 FlockDB
+  
+-------------分布式缓存------------------------
+1.提升读取速度新能
+
+2.分布式计算领域
+
+3.为数据库降低查询压力
+
+4.快服务器缓存
+
+5.内存式缓存
+
+--------------Redis----------------------
+cp redis_init_script /etc/init.d
+
+cd /etc/init.d
+
+//修改配置文件redis.conf[核心配置文件]
+mkdir /sur/local/redis -p
+
+cp redis.conf  /sur/local/redis
+
+cd /sur/local/redis
+
+修改配置：
+1.daemonize yes[在后台运行] | no[在前台运行]
+2.dir /usr/local/redis/working [指定redis的工作空间，这里需要写路径，不能写文件名]
+3.退出配置文件
+4.mkdir /usr/local/redis/working 创建指定的工作空间
+5.进入配置文件
+6.bind 0.0.0.0  可以被外部访问，默认是127.0.0.1:只能被内部访问
+7.requirepass foobared[默认：访问不需要密码]
+     修改为： requirepass passwOrd[设置的密码]
+     
+8. cd /etc/init.d
+        修改redis_init_script
+9.启动: ./redis_init_script start [可能需要用chmod给redis_init_script777权限]
+10. 为了让redis能随着系统的启动而自启动，再次修改脚本redis_init_script
+11.添加：
+  #chkconfig: 22345  10 90
+  #description: Start and Stop redis
+     保存脚本:wq
+12.运行命令 chkconfig redis_init_script  on  :将redis注册为开机自启动
+13.验证是否启动: ps -ef | grep redis
+14.进入客户端:redis-cli
+   auth [password]
+   redis-cli -a [password] ping
+   
+   ./redis_ini_script stop 关闭进程
+   如果没有权限,修改redis_init_script: 
+     echo "Stopping..."
+     $CLIEXEC [-a "[password]"] -p $REDISPORT shutdown
+----------------------------------------------------------------
+数据类型:
+1.string:
+  1.1 keys *  查看所有的
+   
+  1.2 setnx age 18: 如果该key不存在则保存，如果已存在则不做操作。可避免被覆盖
+       ttl  age: 可以看到该key的过期时间，如果是-1则没有期限, -2 过期
+       expire age 30  设置key的过期时间
+       setnx age 20 ex 60 :一条命令完成
+  
+  1.3  set name imm
+       append name 123 //拼接内容
+  
+  1.4  set age 18
+       incr age  //累加1
+       decr age  //累减1
+       incrby age 10 //增加10
+       decrby age 10 //减少10
+       
+   1.5 getrange name 0[startindex] -1[endindex,-1表示无穷] //截取内容
+       setrange name [offset] 1  [value] abc :从第一个下标开始，用value替换原来的值
+       
+   1.6 msetnx | mset  key1 value1 key2 value2 ...
+       mgetnx | mget  key1  key2  ...
+       
+   1.7  select [number]  选择库，Redis默认有16个库
+   
+   1.8 flushdb: 清空数据库内容， flushall 清空所有数据 尽量不使用这两个命令
+ 
+
+2. hash : 保存对象
+   2.1 hset user name nina
+       hset user age 20
+       hget user name
+       hget user age
+       
+   2.2 hmset user key1 value1 key2 value2 ...
+       hmget user key1 key2...
+       hgetall user:获得该对象的所有属性
+       hkeys user:获得获得该对象的所有key
+       hvals user:获得获得该对象的所有val 
+       
+   2.3 hincrby user age 3
+       hdecrby user age 2
+       hincrbyfloat user age 2.2
+       hexists user age 判断属性是否存在，0为不存在
+       
+   2.4 hdel user age //删除对象的属性，不能直接删除user
+       
+3. lpush:保存list
+   3.1 lpush list1 value1,value2 ... 从value列表的左边第一个值开始插入数据
+       rpush list1 value1,value2 ... 从value列表的右边第一个值开始插入数据
+       lpop list1 从list中的左边第一个值开始获取，该值会从list中删除
+       rpop list1 从list中的右边第一个值开始获取，该值会从list中删除
+       lrange list1 0 -1 查看list
+       
+   3.2 linsert list1 [before | after]  [list中的value1] [插入的value2]:在list中的value1之前插入value2
+       lrem list num value：删除几个相同数据
+       lrem list1 [个数]n  [list中的value1] :删除list中的n个value1，删除存在的相同的数据
+   
+       ltrim list start end：截取值，替换原来的list
+   3.3 ltrim list [start]0 [stop]-1   截取list中的内容，其它部分舍去
+       del list1  删除list1
+
+4. 保存在Set中，数据去重
+   4.1 sadd set member1 member2 member3... 如果值重复将被覆盖
+       smembers set :查看set中的数据
+       scard set : 查看set中的数据数量
+       sismember set member1 : 判断是否存在member1
+       srem set member1:  删除member1
+       spop set member1: 获得弹出的member1， 在set中将被删除
+       
+   4.2 srandmember set 3  :在set中随机获得3个数据
+   
+   4.3 smove set1 set2 10: 将set1中的10 move to set2, set1中删除10
+   
+   4.4 :数学集合操作:
+       sdiff set1 set2 :找到set1与set2的不同值
+       sinter set1 set2 : 交集
+       sunion set1 set2: 合并集合
+       
+5. zset:可排序的set, sorted set(可以用在按照用户的积分排名)，zset中每一个member都包含一个积分，所以可以按照积分排序
+    5.1 zadd zset 10 val1 20 val2 ....
+       zrange zset 0 -1
+       zrange zset 0 -1 withscores ：查询所有结果，并且带数值
+       
+       zrank zset val1 :查询到该值的下标
+       zscore zset val1 :查询到该值的分数
+       
+       zcard zset: 统计
+       
+       zcount zset 20 40 :统计出20分到40分之间的数量
+       
+       
+     5.2 zrangebyscore zset 20 40 :查询出20分到40分之间的内容,包含了20和40
+         zrangebyscore zset (20 (40 :查询出20分到40分之间的内容,不包含20和40
+         zrangebyscore zset (20 (40 limit 1 2 :查询出20分到40分之间的内容,不包含20和40,从下标为1开始找2项
+         zrem zset val1 ... 删除
+   
+
+
+
+
+
+
+
+  
+  
