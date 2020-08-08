@@ -1,8 +1,10 @@
 package org.nina.service;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
+import org.apache.commons.lang3.StringUtils;
 import org.nina.commons.enums.OrderStatusEnum;
 import org.nina.commons.enums.YesOrNo;
 import org.nina.commons.utils.DateUtil;
@@ -15,6 +17,7 @@ import org.nina.domain.Orders;
 import org.nina.domain.User;
 import org.nina.dto.vo.OrderVO;
 import org.nina.dto.vo.PayOrdersVO;
+import org.nina.dto.vo.ShopcartVO;
 import org.nina.dto.vo.SubmitOrderVO;
 import org.nina.repository.OrderDetailRepository;
 import org.nina.repository.OrderRepository;
@@ -43,7 +46,7 @@ public class OrderServiceImpl<V> implements OrderService {
 
 	@Transactional(propagation = Propagation.REQUIRED)
 	@Override
-	public OrderVO createOrder(SubmitOrderVO submitOrderVO) {
+	public OrderVO createOrder(SubmitOrderVO submitOrderVO, List<ShopcartVO>  shopcartList) {
 		Long userId = submitOrderVO.getUserId();
 		int addressSord = submitOrderVO.getChoosedAddressSord();
 		String itemSpecIds = submitOrderVO.getItemSpecIds();
@@ -80,10 +83,16 @@ public class OrderServiceImpl<V> implements OrderService {
     	String[] itemSpec = itemSpecIds.split(",");
     	Integer totalAmount = 0; //商品原价累计
     	Integer reakPayAmount = 0; //优惠后实际价格累计
+    	//生成订单后即将从购物车里移除的商品
+    	List<ShopcartVO> toBeRemoveShopCartList = new ArrayList<>();
     	for(String i : itemSpec) {
     		//TODO 整合redis后，商品购买的数量重新从redis的购物车中获取
-    		int buyCounts = 1;
-    		
+    		ShopcartVO shopItem = getBuyCount(shopcartList, i);
+    		if(shopItem == null) {
+    			throw new RuntimeException("itemSpecId错误");
+    		}
+    		int buyCounts = shopItem.getBuyCounts();
+    		toBeRemoveShopCartList.add(shopItem);
     		//2.1 根据规格id查询规格具体信息，主要是价格
     		ItemsSpec itemsSpec = itemsServiceImpl.queryItemSpecById(Long.valueOf(i));
     		totalAmount += itemsSpec.getPriceNormal() * buyCounts ;
@@ -131,7 +140,21 @@ public class OrderServiceImpl<V> implements OrderService {
     	OrderVO orderVO = new OrderVO();
     	orderVO.setOrderId(String.valueOf(order.getId()));
     	orderVO.setPayOrdersVO(payOrdersVO);
+    	//将要删除的商品传给controller,由controller进行删除
+    	orderVO.setToBeRemoveShopCartItems(toBeRemoveShopCartList);
     	return orderVO;
+	}
+    /**
+     * 从redis的购物车获得商品
+     * @param shopcartList
+     * @param id
+     * @return
+     */
+	private ShopcartVO getBuyCount(List<ShopcartVO> shopcartList, String id) {
+		ShopcartVO result = shopcartList.stream()
+		.filter(shopcart->StringUtils.equals(String.valueOf(shopcart.getSpecId()), id))
+		.findFirst().orElse(null);
+		return result;
 	}
 
 	@Transactional(propagation = Propagation.REQUIRED)

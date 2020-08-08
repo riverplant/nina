@@ -1,8 +1,11 @@
 package org.nina.service;
 
+import java.util.List;
+
 import org.nina.domain.OrderStatus;
 import org.nina.domain.Orders;
 import org.nina.dto.vo.OrderVO;
+import org.nina.dto.vo.ShopcartVO;
 import org.nina.dto.vo.SubmitOrderVO;
 
 public interface OrderService {
@@ -10,7 +13,7 @@ public interface OrderService {
      * 创建订单相关信息
      * @param submitOrderVO
      */
-	OrderVO createOrder(SubmitOrderVO submitOrderVO);
+	OrderVO createOrder(SubmitOrderVO submitOrderVO, List<ShopcartVO>  shopcartList);
 	/**
 	 * 修改订单状态
 	 * @param orderId

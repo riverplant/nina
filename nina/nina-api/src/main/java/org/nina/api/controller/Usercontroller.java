@@ -29,37 +29,7 @@ import springfox.documentation.annotations.ApiIgnore;
 @RequestMapping("/user")
 public class Usercontroller {
 	@Autowired private UserService userService;	
-	/**
-	 * 
-	 * @param info
-	 * @param result:校验结果
-	 * @return
-	 */
-	@ApiOperation(value = "用户注册", notes = "用户注册", httpMethod = "POST")
-	@PostMapping
-	public NinaJsonResult register(@Valid @RequestBody UserInfo info,HttpServletRequest request, HttpServletResponse response,BindingResult result) {
-		if(result.hasErrors()) {
-			result.getAllErrors().stream().forEach(System.out::println);
-			//throw new RuntimeException(result.toString());
-			return NinaJsonResult.erorMsg(result.toString());
-		}
-		boolean isExist = userService.queryUsernameIsExist(info.getUsername());
-		String password = info.getPassword();
-		String confirmedpassword = info.getConfirmPassword();
-		if(!password.equals(confirmedpassword)) {
-			return NinaJsonResult.erorMsg("两次密码输入不一致");
-		}
-		if(isExist) {
-			return NinaJsonResult.erorMsg("用户名已经存在");
-		}
-		UserInfo resultData = userService.createUser(info);
-		//设置浏览器端Cookies
-	    CookieUtils.setCookie(request, response, "user", JsonUtils.objectToJson(resultData),true);
-	    
-	    //TODO:生成用户Token,存入redis会话
-	    //TODO:同步购物车数据
-		return NinaJsonResult.ok(resultData);
-	}
+	
 	
 	/**
 	 * 用户在确认订单页面，可以针对收货地址做如下操作

@@ -1,3 +1,5 @@
+/etc/init.d/redis_init_script stop
+/etc/init.d/redis_init_script start
 设计原则：
 1.异步解耦
 
@@ -178,11 +180,111 @@ cd /sur/local/redis
          zrem zset val1 ... 删除
    
 
+**************发布与订阅*****************************
+发布:publish chan1[发布chan1] + 消息
+    publish chan1 java
 
+订阅: subscribe [chan1 chan2 chan3 ...]  处于监听状态
 
+批订阅: psubscribe [chan*]  批量订阅所有chan开头的频道。 处于监听状态
 
+****************持久化Persistence****************************
+1.RDB
+如果关闭持久化，数据的存在时间将和服务器的运行时间一直，一旦服务器关闭，数据将丢失
+RDB:在每个一个特定的时间进行快照备份,备份成一个单独的文件,无法实时备份
+开打配置文件 redis.conf
+dir  /usr/local/redis/working  配置保存文件路径
+dbfilename dump.rdb   保存文件名称
+适合大文件，大数据。
+-------------------------------------------------------------
+save 900 1 ： 如果至少有一个key发生了改变，将会在900sec (15分钟)后进行一次备份。
+save 300 10
+save 60 10000
+stop-writes-on-bgsave-error yes 为了数据一致，在保存的过程中如果发生错误，将停止写操作
+---------------------------------------------------------------------
+2.AOF 记录写操作
+同步策略：
+  no fsync at all
+  fsync every second[默认]
+  fsync every query 
 
+以日志的方式进行追加append
+------------------------------------------------
+开打配置文件 redis.conf->搜索append
+appendonly no :可以选择打开AOF模式或者默认选择的关闭
+appendfilename "appendonly.aof" :选择使用AOF模式后自动生成的文件
+同步策略：
+appendfsync always
+appendfsync everysec[默认使用]
+appendfsync no
 
+重写策略
+no-appendfsync-on-rewrite no: 在重写过程中，不同步新的内容
+auto-aof-rewrite-percentage 100 与上一次重写文件的大小进行比较,达到了改百分比之后重写被触发(triggered)
+auto-aof-rewrite-min-size 64mb  触发重写的第二个条件，必须两个条件都满足
+-------------------------------------------
 
-  
-  
+如果误操作使用了flushdb 清空了数据库
+只需要关闭redis后修改 appendonly.aof
+将最后一行的flushdb删除
+再启动redis,数据将会被恢复
+
+可以同时时候RDB和AOF， 其中RDB作为冷备份！！！！！！！！！！
+****************持久化Persistence**************************** 
+
+***********主从架构master slave**************************
+主:192.168.1.191 
+从:192.168.1.192, 192.168.1.193
+1.创建完整克隆->拷贝ling/ether:后面的mac地址
+->打开 /etc/udev/rules.d/70-persistent-ipoib.rules
+->修改其中的ATTR{address} == "[输入mac地址]"
+->修改 /etc/sysconfig/network-scripts/ifcfg-ens33
+->修改其中的IPADDR=[自己网段的静态ip]
+->修改HWADDE="[输入mac地址]"
+->service network restart 重启
+
+2.配置主从
+info replication: 查看redis的主从信息
+
+修改从:192.168.1.192, 192.168.1.193
+2.1 修改redis.conf
+          搜索replication
+    #replicaof <masterip><masterport>
+    replicaof 192.168.1.191 6379
+    masterauth [master密码] master上必须要加密码
+    replica-read-only yes : 从节点只能读不能写，从而达到读写分离    
+    
+ 3.diskless: (仅在实验性阶段)  
+   repl-diskless-sync no: 无磁盘化复制  master将RDB文件写入socket,不接触磁盘
+                                                                    当网速很好的情况下可以考虑使用无磁盘化复制。
+
+   repl-diskless-sync-delay 5 等待延时 5秒
+ 4.缓存过期机制
+   4.1 主动定期删除:修改redis.conf
+                                            搜索dynamic-hz yes
+                    hz 10  每秒做10次检测【尽量不超过100】
+                    
+   
+   4.2 被动惰性删除:当key被用户访问请求到的时候才做一次检查，如果已经过期则从内存里删除
+   
+ 5. MaxMemory policy:
+    allkes-lfu :当内存已满，再有新的存储进来的时候，删除之前没有过期设置的最少用到的缓存
+    noeviction:当内存已满，再有新的存储进来的时候，不删除任何存储内容，只是返回错误
+    volatile-ttl:优先删除即将过期的缓存
+    LRU:最近最少被使用
+    LFU:最少频率被使用
+ 
+ ****************哨兵********************************
+ 修改sentinel.conf文件
+ 
+ scp 远程拷贝命令
+ scp [被拷贝的文件名]sentinel.conf  root@192.168.1.192:/usr/local/redis/ 
+ redis-sentinel + 配置文件
+ 
+ 通过指令连接哨兵
+ redis-cli -p[指定端口] 26379
+ sentinel master [master昵称] ：查看master相关信息
+ 
+  sentinel sentinels [master昵称] ：查看master下的哨兵相关信息
+ 
+  ****************哨兵********************************

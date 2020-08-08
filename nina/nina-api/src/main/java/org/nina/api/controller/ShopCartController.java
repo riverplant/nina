@@ -3,12 +3,18 @@
  */
 package org.nina.api.controller;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang3.StringUtils;
+import org.nina.commons.utils.JsonUtils;
 import org.nina.commons.utils.NinaJsonResult;
+import org.nina.commons.utils.RedisOperator;
 import org.nina.dto.vo.ShopcartVO;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -24,7 +30,9 @@ import io.swagger.annotations.ApiOperation;
 @Api(value = "购物车接口controller", tags = "购物车相关的接口API")
 @RestController
 @RequestMapping("/shopCart")
-public class ShopCartController {
+public class ShopCartController extends BaseController{
+	 @Autowired
+	    private RedisOperator redisOperator;
 	/**
 	 * 用户登录的情况下，添加商品到购物车调用该接口
 	 * @param request
@@ -37,14 +45,39 @@ public class ShopCartController {
 	public NinaJsonResult add(
 			HttpServletRequest request,
 			HttpServletResponse response,
-			@RequestParam String userId,
+			@RequestParam Long userId,
 			@RequestBody ShopcartVO shopcart 
 			) {
-	   if(StringUtils.isBlank(userId)) {
+	   if(StringUtils.isBlank(String.valueOf(userId))) {
 		   return NinaJsonResult.erorMsg("");
 	   }
 	   //TODO Redis 前端用户在登录的情况下，添加商品到购物车，会在后端同步购物车到缓存
-		return  NinaJsonResult.ok() ;
+	   //需要判断购物车中包含已经存在的商品，如果存在则累加购买数量
+	   String shopcartJson = redisOperator.get(SHOPCART+":"+userId);
+	   List<ShopcartVO>shopcartList = null;
+	   if(StringUtils.isNotBlank(shopcartJson)) {
+		   //redis中已经有购物车
+		   shopcartList = JsonUtils.jsonToList(shopcartJson, ShopcartVO.class);
+		   boolean isHave = false;
+		   for(ShopcartVO shopcartVO : shopcartList ) {
+			   Long specId = shopcartVO.getSpecId();
+			   //购物车中包含已经存在的商品，如果存在则累加购买数量
+			   if(specId.longValue() == shopcart.getSpecId().longValue()) {
+				   shopcartVO.setBuyCounts(shopcartVO.getBuyCounts() + shopcart.getBuyCounts());  
+				   isHave = true;
+			   }
+		   } 
+		   if(!isHave) {
+			   shopcartList.add(shopcart);
+		   }
+	   } else {
+		   //redis中没有购物车
+		   shopcartList = new ArrayList<>();
+		   shopcartList.add(shopcart);
+	   }
+	   //覆盖现有的redis中的购物车
+	   redisOperator.set(SHOPCART+":"+userId,JsonUtils.objectToJson(shopcartList));	   
+	   return  NinaJsonResult.ok() ;
 	}
 	
 	/**
@@ -60,17 +93,31 @@ public class ShopCartController {
 	public NinaJsonResult del(
 			HttpServletRequest request,
 			HttpServletResponse response,
-			@RequestParam String userId,
-			@RequestParam String itemSpecId
+			@RequestParam Long userId,
+			@RequestParam Long itemSpecId
 			) {
-	   if(StringUtils.isBlank(userId)) {
+	   if(StringUtils.isBlank(String.valueOf(userId))) {
 		   return NinaJsonResult.erorMsg("userId不能为空");
 	   }
-	   if(StringUtils.isBlank(itemSpecId)) {
+	   if(StringUtils.isBlank(String.valueOf(itemSpecId))) {
 		   return NinaJsonResult.erorMsg("itemSpecId不能为空");
 	   }
-	   String[] specIds = itemSpecId.split(",");
-	   //TODO Redis 前端用户在登录的情况下，删除购物车商品，会在后端同步购物车到缓存
-		return  NinaJsonResult.ok() ;
+	   //TODO Redis 前端用户在登录的情况下，删除购物车商品，会在redis同步购物车到缓存
+	   String shopcartJson = redisOperator.get(SHOPCART+":"+userId);
+	   List<ShopcartVO>shopcartList = null;
+	   if(StringUtils.isNotBlank(shopcartJson)) {
+		   //redis中已经有购物车
+		   shopcartList = JsonUtils.jsonToList(shopcartJson, ShopcartVO.class);
+		   for(ShopcartVO shopcartVO : shopcartList ) {
+			   Long specId = shopcartVO.getSpecId();
+			   //购物车中包含已经存在的商品，如果存在则累加购买数量
+			   if(specId.longValue() == itemSpecId.longValue()) {
+				   shopcartList.remove(shopcartVO);
+				   break;
+			   }
+		   } 
+	   }
+	   redisOperator.set(SHOPCART+":"+userId,JsonUtils.objectToJson(shopcartList));	
+	   return  NinaJsonResult.ok() ;
 	}
 }

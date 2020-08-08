@@ -22,7 +22,7 @@ public abstract class BaseController {
 														   +File.separator+"nina"
 														   +File.separator+"images"
 														   +File.separator+"faces";
-	
+	public static final String SHOPCART = "shopcart";
 	@Autowired public OrderService orderService;
 	protected Orders checkUserOrder(Long userId, Long orderId) {
 		

@@ -1,9 +1,13 @@
 package org.nina.api.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
 import org.nina.commons.enums.YesOrNo;
+import org.nina.commons.utils.JsonUtils;
 import org.nina.commons.utils.NinaJsonResult;
+import org.nina.commons.utils.RedisOperator;
 import org.nina.domain.Carousel;
 import org.nina.dto.CategoryInfo;
 import org.nina.dto.vo.CategoryVO;
@@ -32,13 +36,30 @@ public class IndexController {
 	private CarouselService carouselService;
 	@Autowired
 	private CategoryService categoryService;
-
+    @Autowired
+    private RedisOperator redisOperator;
+	
 	@ApiOperation(value = "轮播图", notes = "获取首页轮播图列表", httpMethod = "GET")
 	@GetMapping("/carousel")
 	public NinaJsonResult carousel() {
-		List<Carousel> result = carouselService.querAll(YesOrNo.YES.trype);
-		return NinaJsonResult.ok(result);
+		List<Carousel>list = new ArrayList<>();
+		//查询缓存
+		String carouselStr = redisOperator.get("carousel");
+		//如果缓存为空
+		if(StringUtils.isAllEmpty(carouselStr)){
+			list = carouselService.querAll(YesOrNo.YES.trype);
+			//将数据库返回内容放入redis缓存
+			redisOperator.set("carousel", JsonUtils.objectToJson(list));	
+		}else {
+			list = JsonUtils.jsonToList(carouselStr, Carousel.class);
+		}		
+		return NinaJsonResult.ok(list);
 	}
+	/**
+	 * 1.后台运营系统，一旦广告发生更改，可以删除缓存，然后重置
+	 * 2.定时重置
+	 * 3.每个轮播图都有可能是一个广告，每个广告都有一个过期时间
+	 */
 
 	/**
 	 * 首页分类展示需求: 
@@ -48,8 +69,17 @@ public class IndexController {
 	@ApiOperation(value = "获取商品分类(一级分类)", notes = "获取商品分类(一级分类)", httpMethod = "GET")
 	@GetMapping("/cats")
 	public NinaJsonResult queryCats() {
-		List<CategoryInfo> result = categoryService.queryAllRootLevel();
-		return NinaJsonResult.ok(result);
+		List<CategoryInfo>list = new ArrayList<>();
+		//查询缓存
+		String categoryinfos = redisOperator.get("categoryinfos");
+		if(StringUtils.isAllEmpty(categoryinfos)){
+			list = categoryService.queryAllRootLevel();
+			//将数据库返回内容放入redis缓存
+			redisOperator.set("categoryinfos", JsonUtils.objectToJson(list));	
+		}else {
+			list = JsonUtils.jsonToList(categoryinfos, CategoryInfo.class);
+		}		
+		return NinaJsonResult.ok(list);
 	}
 
 	/**
@@ -63,8 +93,16 @@ public class IndexController {
 		if (id == null) {
 			return NinaJsonResult.erorMsg("分类不存在");
 		}
-		List<Object> result = categoryService.querySubCategory(id);
-		return NinaJsonResult.ok(result);
+		List<Object>list = new ArrayList<>();
+		String categoryinfos = redisOperator.get("subcat:"+id);
+		if(StringUtils.isAllEmpty(categoryinfos)){
+			list = categoryService.querySubCategory(id);
+			//将数据库返回内容放入redis缓存
+			redisOperator.set("subcat:"+id, JsonUtils.objectToJson(list));	
+		}else {
+			list = JsonUtils.jsonToList(categoryinfos, Object.class);
+		}	
+		return NinaJsonResult.ok(list);
 	}
 
 	/**
