@@ -48,7 +48,7 @@ public class RabbitSender {
 	public void send(Object message, Map<String, Object> properties) {
 		// 在消息头中存放附加属性
 		MessageHeaders mhs = new MessageHeaders(properties);
-		// 构造消息
+		// MessageBuilder：springboot提供的消息构造器
 		Object msg = MessageBuilder.createMessage(message, mhs);
 		// confirm模式
 		rabbitTemplate.setConfirmCallback(confirmCallback);

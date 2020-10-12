@@ -38,6 +38,7 @@ public class ReceiverDlxExchange {
 		channel.exchangeDeclare(exchangeName, exchangeType, true, false, false, null);
 		//定义arguments用于开启死信队列
 		Map<String, Object> arguments = new HashMap<>();
+		//该参数定义了死信队列【重要】
 		arguments.put("x-dead-letter-exchange", "dlx.exchange");
 		//添加参数arguments,开启了死信队列
 		channel.queueDeclare(queueName, false, false, false, arguments);
@@ -71,9 +72,9 @@ public class ReceiverDlxExchange {
         };
         /**
          * 限流
-         * prefetchSize：消息体大小，0为不限制 
+         * prefetchSize：消息体大小，0为不限制【暂时没有实现】
          * prefetchCount:同一时间只能消费一条消息 
-         * global：
+         * global：【暂时没有实现】
          */
         channel.basicQos(0, 1, false);
         /**

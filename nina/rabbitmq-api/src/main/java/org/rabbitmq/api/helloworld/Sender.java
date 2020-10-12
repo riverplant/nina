@@ -40,7 +40,7 @@ public class Sender {
 		//自定义属性
 		Map<String,Object>headers = new HashMap<>();
 		/**
-		 * 
+		 * 定义消息
 		 */
 		AMQP.BasicProperties props = new AMQP.BasicProperties.Builder()
 				 .deliveryMode(2)//持久化消息

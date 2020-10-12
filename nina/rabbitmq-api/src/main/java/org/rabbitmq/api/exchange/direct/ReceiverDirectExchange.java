@@ -26,17 +26,17 @@ public class ReceiverDirectExchange {
 		Connection connection = connectionFactory.newConnection();
 		// 3.创建Channel
 		Channel channel = connection.createChannel();
-		// 4.申明
+		// 4.自由申明队列名称
 		String queueName = "test001";
+		//交换机名称必须与发送端定义的一致
 		String exchangeName = "test_direct_exchange";
-		//选择直连的方式，routingKey必须完全匹配，不能使用正则
+		//选择直连的方式，
 		String exchangType = "direct";
+		//routingKey必须完全匹配，不能使用正则!!!!!
 		String routingKey = "test_direct_routingKey";
 		/**
 	     * Declare an exchange, via an interface that allows the complete set of
-	     * arguments.
-	     * @see com.rabbitmq.client.AMQP.Exchange.Declare
-	     * @see com.rabbitmq.client.AMQP.Exchange.DeclareOk
+	     * argument
 	     * @param exchange the name of the exchange
 	     * @param type the exchange type
 	     * @param durable true if we are declaring a durable exchange (the exchange will survive a server restart)

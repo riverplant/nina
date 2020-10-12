@@ -1,0 +1,4 @@
+#自动装配指定的类
+#Auto Configure
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+com.riverplant.rabbit.core.producer.autoconfigure.RabbitProducerAutoConfiguration

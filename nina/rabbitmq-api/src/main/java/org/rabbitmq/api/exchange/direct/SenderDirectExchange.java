@@ -21,7 +21,7 @@ public class SenderDirectExchange {
 		Connection connection = connectionFactory.newConnection();
 		// 3.创建Channel
 		Channel channel = connection.createChannel();
-		// 4.申明
+		// 4.申明交换机名称
 		String exchangeName = "test_direct_exchange";
 		
 		String routingKey = "test_direct_routingKey";

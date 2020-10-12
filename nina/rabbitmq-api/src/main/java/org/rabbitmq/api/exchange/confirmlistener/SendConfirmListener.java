@@ -34,7 +34,7 @@ public class SendConfirmListener {
 		String routingKey1 = "confirm.save";
 			
 		String msg = "Hello World RabbitMQ confirm listener Message ...";
-		//5.发送
+		//5.发送,开启确认模式
 		channel.confirmSelect();
 		//添加事务，但是会很严重影响性能，不推荐使用
 		//channel.txSelect();

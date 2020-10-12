@@ -16,17 +16,17 @@ import com.rabbitmq.client.Channel;
 @Component
 public class RabbitRceiver {
 	/**
-	 * 监听的方法
+	 * 配置监听的方法【重要】
 	 * @throws IOException 
 	 */
 	@RabbitListener(bindings = @QueueBinding(
-			    value = @Queue(value = "${spring.rabbitmq.listener.order.queue.name}", 
+			        value = @Queue(value = "${spring.rabbitmq.listener.order.queue.name}", 
 			                   durable = "${spring.rabbitmq.listener.order.queue.durable}" ),
-			    exchange = @Exchange(name = "${spring.rabbitmq.listener.order.exchange.name}", 
+			        exchange = @Exchange(name = "${spring.rabbitmq.listener.order.exchange.name}", 
 			                         durable = "${spring.rabbitmq.listener.order.exchange.durable}", 
 			                         type="${spring.rabbitmq.listener.order.exchange.type}",
 			                         ignoreDeclarationExceptions = "${spring.rabbitmq.listener.order.exchange.ignoreDeclarationExceptions}"),
-			    key = "${spring.rabbitmq.listener.order.exchange.key}"
+			         key = "${spring.rabbitmq.listener.order.exchange.key}"
 			   ) //bindings
 	        )
 	@RabbitHandler
@@ -35,8 +35,9 @@ public class RabbitRceiver {
 		System.out.println("--------------");
 		System.out.println("消费消息:" + msg.getPayload());
 		//处理成功后获取deliveryTag，并且进行手工签收
+		//spring.rabbitmq.listener.simple.acknowledge-mode=manual
 		Long deliveryTag =	(Long) msg.getHeaders().get(AmqpHeaders.DELIVERY_TAG);
-		//手工签收
+		//手工签收【重要】
 		channel.basicAck(deliveryTag, false);
 	}
 }
