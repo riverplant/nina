@@ -25,7 +25,7 @@ public class WeixinOrderServiceImpl implements WeixinOrderService {
 
 	@Override
 	public PreOrderResult placeOrder(String body,String out_trade_no, String total_fee) throws Exception {
-		//生成预付单对象
+		//生成传给微信支付系统的预付单对象
 		PreOrder o = new PreOrder();
 		//生成随机字符串
 		String nonce_str = UUID.randomUUID().toString();
@@ -60,7 +60,7 @@ public class WeixinOrderServiceImpl implements WeixinOrderService {
 		String xml = XmlUtil.object2Xml(o,PreOrder.class);
 		//统一下单地址
 		String url = wxConfig.getPlaceOrderUrl();
-		//调用微信统一下单地址
+		//调用微信统一下单地址,获得用来验证用户身份信息的二维码信息
 		String returnXml = HttpUtil.sendPost(url, xml);
 		//XML转换成Object
 		PreOrderResult preOrderResult = (PreOrderResult) XmlUtil.xml2Object(returnXml, PreOrderResult.class);

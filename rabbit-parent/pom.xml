@@ -43,6 +43,11 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
 		</dependency>
+			<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-test</artifactId>
+			<scope>test</scope>
+		</dependency>
 		<!-- 这个依赖很重要，识别yml外其他格式的配置文件 -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -147,5 +152,9 @@
 		<module>rabbit-api</module>
 		<module>rabbit-core-producer</module>
 		<module>rabbit-task</module>
+		<module>rabbit-pojo</module>
+		<module>rabbit-repository</module>
+		<module>rabbit-service</module>
+		<module>rabbit-esJob</module>
 	</modules>
 </project>

@@ -12,11 +12,15 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.riverplant.payCenter.domain.PayOrders;
 import com.riverplant.payCenter.domain.PreOrderResult;
-import com.riverplant.payCenter.domain.vo.PayOrdersVO;
+import com.riverplant.payCenter.domain.vo.MerchantOrdersVO;
 import com.riverplant.payCenter.domain.vo.PaymentInfoVO;
 import com.riverplant.payCenter.service.PaymentOrderService;
 import com.riverplant.payCenter.service.WeixinOrderServiceImpl;
-
+/**
+ * 用于支付
+ * @author riverplant
+ *
+ */
 @RestController
 @RequestMapping("payment")
 public class PaymentController {
@@ -27,12 +31,12 @@ public class PaymentController {
 
 	/**
 	 * 接收客户订单信息，保存到自己的数据库
-	 * 
+	 * 创建自己系统的订单，保存在自己的数据库中
 	 * @param merchantOrder
 	 * @return
 	 */
 	@PostMapping("/createMerchantOrder")
-	public NinaJsonResult createMerchantOrder(@RequestBody PayOrdersVO merchantOrder) {
+	public NinaJsonResult createMerchantOrder(@RequestBody MerchantOrdersVO merchantOrder) {
 		String merchantOrderId = merchantOrder.getMerchantUserId();
 		String merchantUserId = merchantOrder.getMerchantUserId();
 		Integer amount = merchantOrder.getAmount();
@@ -59,6 +63,7 @@ public class PaymentController {
 		// 保存传过来的商户订单消息
 		boolean isSuccess = false;
 		try {
+			//创建支付中心的订单
 			isSuccess = paymentOrderService.createPaymentOrder(merchantOrder);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -73,7 +78,7 @@ public class PaymentController {
 
 	/**
 	 * 查询订单信息
-	 * 
+	 * 根据自己系统的订单号和客户主键，去查询保存在自己系统里的PayOrders订单
 	 * @param merchantOrderId
 	 * @param merchantUserId
 	 * @return
@@ -99,10 +104,15 @@ public class PaymentController {
 		if (StringUtils.isBlank(merchantOrderId) || StringUtils.isBlank(merchantUserId)) {
 			return NinaJsonResult.erorMsg("查询参数不能为空");
 		}
+		//获得自己系统里的PayOrders订单
 		PayOrders waitPayOrder = paymentOrderService.queryOrderByStatus(
 				                  merchantOrderId, 
 				                  merchantUserId,
-				                  OrderStatusEnum.WAIT_PAY);
+			                  OrderStatusEnum.WAIT_PAY);
+		/**
+		 * 将自己系统里的PayOrders订单信息，转给微信支付中的预付单对象PreOrder
+		 * 用来传给微信支付端
+		 */
 		// 商品描述
 		String body = "付款用户["+merchantUserId+"]";
 		// 商户订单号[out_trade_no]:与微信中心参数名匹配
@@ -118,6 +128,7 @@ public class PaymentController {
 			String total_fee = String.valueOf(waitPayOrder.getAmount());
 			//统一下单
 			try {
+				//将自己系统中的订单PayOrders转化成微信支付的订单
 				PreOrderResult result =	weixinOrderServiceImpl.placeOrder(body, out_trade_no, total_fee);
 				qrCodeUrl = result.getCode_url();
 			} catch (Exception e) {

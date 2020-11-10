@@ -1,0 +1,117 @@
+超卖现象：
+1.扣减库存不在程序中进行，而是通过数据库
+
+2.向数据库传递库存增量，扣减一个库存，增量为-1
+
+3.在数据库update语句计算库存，
+      通过update行锁(当一条记录被update的时候，其=它update操作被禁止)解决并发
+      
+      
+*******************************模拟*******************************
+1.数据库表
+ 1.1 order: 【id, order_status:订单状态，默认为1，待支付,  
+            receive_name, receive_mobile, order_account:金额】
+
+ 1.2 order_item: 【id, order_id,  product_id, purchase_price:购买价格, 
+                  purchase_num:购买数量】
+
+ 1.3 product: 【id, product_name,  price, count:库存, product_desc】
+ 
+ 
+2. 程序流程: 更新商品库存(update product)-->成功后创建订单(create order)
+            -->创建订单明细(create order_item)
+3. 多线程并发测试超卖:
+   public void concurrentOrder() {
+   
+   //创建5个线程的闭锁,相当于一个阻塞线程，当其他线程先后达到摸一个条件，在执行后续操作
+   CountDownLatch cdl = new CountDownLatch(5);
+   
+   //等待5个线程，通过CyclicBarrier的await()方法，线程就处于barrier屏障状态
+   CyclicBarrier cyclicBarrier = new CyclicBarrier(5);
+   
+   ExecutorService es = Executors.newFixedThreadPool(5);
+   
+   for(int i=0; i<5; i++) {
+     es.execute(()->{
+       try{
+       
+       cyclicBarrier.await();//在所有等待的线程创建完成后同时并发开始执行
+      
+       //更新商品库存(update product)!!!!!!!!!!!!!!!!   
+        /**
+        **成功后创建订单(create order)
+        **-->创建订单明细(create order_item)
+       **/
+       orderService.createOrder();
+         }catch(Exception e){
+            e.printStackTrace();
+         }finally{
+         cdl.countDown();//执行完一个线程减少一个
+         }
+     });
+   }//for
+    cdl.await();//为防止主线程结束后就执行es.shutdown()，
+                //导致连接池直接关闭,等待5个线程都结束再执行下面关闭数据库
+    es.shutdown();
+   }//concurrentOrder
+
+----------------------使用synchronized防止超卖,不使用事务注解--------------------------------------------------------------------------------------
+@Autowired private PlatformTransactionManager platformTransactionManager;
+@Autowired private TransactionDefinition transactionDefinition;
+//因为使用synchronized，为了防止因为事务而无法让所有的并发线程同步，所以必须手动提交事务
+public synchronized createOrder() {
+
+  TransactionStatus ts = platformTransactionManager.getTransaction(transactionDefinition);
+  /**
+   **如果出现任何异常，手动事务回滚
+   ** platformTransactionManager.rollback(ts);
+   **/
+  productRepository.updateProductCount(int purchaseProductNum, Long productId);
+  
+  platformTransactionManager.commit(ts);//提交事务
+  
+}
+4.为了防止超卖，更新库存需要直接在数据库中进行，不通过程序:
+   update 有行锁，可以防止并发,所有的线程依次执行
+   
+   update product set count = count - 【传进来的增量变量】purchaseProductNum
+   where id = 【传进来的商品id变量】productId and count >purchaseProductNum;
+    
+******************************ReentrantLock*************************************
+//java.util.concurrent.locks
+private Lock = new ReentrantLock();
+@Autowired private PlatformTransactionManager platformTransactionManager;
+@Autowired private TransactionDefinition transactionDefinition;
+//为了防止因为事务而无法让所有的并发线程同步，所以必须手动提交事务
+public void createOrder() {
+ 
+  Lock.lock();//加锁
+  
+  try{
+  TransactionStatus ts = platformTransactionManager.getTransaction(transactionDefinition);
+  /**
+   **如果出现任何异常，手动事务回滚
+   ** platformTransactionManager.rollback(ts);
+   **/
+   
+   //执行库存更新
+  productRepository.updateProductCount(int purchaseProductNum, Long productId); 
+  platformTransactionManager.commit(ts);//库存更新成功后提交事务 
+  }finally{
+  Lock.unlock();//最终必须释放锁
+  }
+  
+  //上一个事务已经提交，对于创建订单，创建订单明细需要获取第二个事务
+  TransactionStatus ts2 = platformTransactionManager.getTransaction(transactionDefinition);
+   //执行创建订单，创建订单明细....... 
+   saveOrder();
+   saveOrder_item();
+   /**
+   **如果出现任何异常，手动事务回滚
+   ** platformTransactionManager.rollback(ts2);
+   **/
+   platformTransactionManager.commit(ts2);//最终提交第二个事务 
+   
+}//createOrder
+
+

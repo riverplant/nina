@@ -1,17 +1,23 @@
 package com.riverplant.payCenter.domain.vo;
 
 import java.io.Serializable;
-
-public class PayOrdersVO implements Serializable{
+/**
+ * 支付中心订单对象，用于保存在开发者自己的支付中心数据库
+ * @author riverplant
+ *
+ */
+public class MerchantOrdersVO implements Serializable{
 	private static final long serialVersionUID = 1L;
 	private String merchantOrderId;
 	private String merchantUserId;
 	private Integer amount;
 	private Integer payMethod;
-	private Integer payStatus;
-	private String comeFrom;
+	//回调通知地址
 	private String returnUrl;
 	private Integer isDelete;
+	
+	private Integer payStatus;
+	private String comeFrom;
 	
 	public String getMerchantOrderId() {
 		return merchantOrderId;
@@ -61,7 +67,7 @@ public class PayOrdersVO implements Serializable{
 	public void setIsDelete(Integer isDelete) {
 		this.isDelete = isDelete;
 	}
-	public PayOrdersVO() {
+	public MerchantOrdersVO() {
 		
 	}	
 }

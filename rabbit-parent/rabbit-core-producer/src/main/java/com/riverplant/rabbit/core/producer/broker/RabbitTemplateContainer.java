@@ -24,6 +24,7 @@ import com.riverplant.rabbit.common.convert.RabbitMessageConverter;
 import com.riverplant.rabbit.common.serializer.Serializer;
 import com.riverplant.rabbit.common.serializer.SerializerFactory;
 import com.riverplant.rabbit.common.serializer.impl.JacksonSerializerFactory;
+import com.riverplant.rabbit.service.MessageStockService;
 
 /**
  * $RabbitTemplateContainer RabbitTemplate池化
@@ -33,6 +34,8 @@ import com.riverplant.rabbit.common.serializer.impl.JacksonSerializerFactory;
  */
 @Component
 public class RabbitTemplateContainer {
+	//用于在confirm方法中修改数据库
+	@Autowired private MessageStockService messageStockService;
 	
 	private Logger log = LoggerFactory.getLogger(RabbitTemplateContainer.class);
     //之前的correlationData的id使用messageId+#+时间戳组成
@@ -92,9 +95,12 @@ public class RabbitTemplateContainer {
 			List<String>strings  = splitter.splitToList(correlationData.getId());
 			String messageId = strings.get(0);			
 			long sendTime = Long.parseLong(strings.get(1));
-			
-			if(ack) {//成功返回结果
+			/**
+			 * 此时需要使用定时任务
+			 */
+			if(ack) {//当Broker 返回ACK成功,更新日志表里相对应的消息状态为SEND_OK
 				log.info("send message is success,confirm messageId:{}, send time is {}", messageId, sendTime);
+				messageStockService.success(messageId);
 			} else {//
 				log.error("send message is faild,confirm messageId:{}, send time is {}", messageId, sendTime);
 			}

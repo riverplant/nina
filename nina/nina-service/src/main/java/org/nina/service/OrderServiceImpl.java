@@ -129,14 +129,14 @@ public class OrderServiceImpl<V> implements OrderService {
     	waitPayorderStatus.setOrderId(order.getId());
     	waitPayorderStatus.setOrderStatus(OrderStatusEnum.WAIT_PAY.trype);
     	orderStatusRepository.save(waitPayorderStatus);
-    	//4.构建商户订单，用于传给支付中心
+    	//4.构建用户自己开发的支付中心的商户订单，用于传给支付中心
     	PayOrdersVO payOrdersVO = new PayOrdersVO();
     	payOrdersVO.setMerchantOrderId(String.valueOf(order.getId()));
     	payOrdersVO.setMerchantUserId(String.valueOf(user.getId()));
     	payOrdersVO.setAmount(reakPayAmount + postAmount);
     	payOrdersVO.setPayMethod(payMethod);
     	
-    	//5.构建自定订单VO
+    	//5.构建系统自定订单VO，包含支付中心的商户订单，通过返回给controller
     	OrderVO orderVO = new OrderVO();
     	orderVO.setOrderId(String.valueOf(order.getId()));
     	orderVO.setPayOrdersVO(payOrdersVO);
@@ -171,7 +171,9 @@ public class OrderServiceImpl<V> implements OrderService {
 	public OrderStatus queryOrderStatusInfo(Long orderId) {
 		return orderStatusRepository.getByOrderId(orderId);
 	}
-	
+	/**
+	 * 关闭订单
+	 */
 	@Transactional(propagation = Propagation.REQUIRED)
 	@Override
 	public void closeOrder() {

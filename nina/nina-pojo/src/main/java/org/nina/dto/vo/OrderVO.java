@@ -5,7 +5,7 @@ import java.util.List;
 public class OrderVO {
 
 	private String orderId;
-
+    //用于用户自己开发的支付中心的表单
 	private PayOrdersVO payOrdersVO;
 
 	private List<ShopcartVO> toBeRemoveShopCartItems;

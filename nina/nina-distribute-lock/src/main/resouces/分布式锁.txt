@@ -1,0 +1,212 @@
+超卖现象：
+1.扣减库存不在程序中进行，而是通过数据库
+
+2.向数据库传递库存增量，扣减一个库存，增量为-1
+
+3.在数据库update语句计算库存，
+      通过update行锁(当一条记录被update的时候，其=它update操作被禁止)解决并发
+      
+      
+*******************************模拟*******************************
+1.数据库表
+ 1.1 order: 【id, order_status:订单状态，默认为1，待支付,  
+            receive_name, receive_mobile, order_account:金额】
+
+ 1.2 order_item: 【id, order_id,  product_id, purchase_price:购买价格, 
+                  purchase_num:购买数量】
+
+ 1.3 product: 【id, product_name,  price, count:库存, product_desc】
+ 
+ 
+2. 程序流程: 更新商品库存(update product)-->成功后创建订单(create order)
+            -->创建订单明细(create order_item)
+3. 多线程并发测试超卖:
+   public void concurrentOrder() {
+   
+   //创建5个线程的闭锁,相当于一个阻塞线程，当其他线程先后达到摸一个条件，在执行后续操作
+   CountDownLatch cdl = new CountDownLatch(5);
+   
+   //等待5个线程，通过CyclicBarrier的await()方法，线程就处于barrier屏障状态
+   CyclicBarrier cyclicBarrier = new CyclicBarrier(5);
+   
+   ExecutorService es = Executors.newFixedThreadPool(5);
+   
+   for(int i=0; i<5; i++) {
+     es.execute(()->{
+       try{
+       
+       cyclicBarrier.await();//在所有等待的线程创建完成后同时并发开始执行
+      
+       //更新商品库存(update product)!!!!!!!!!!!!!!!!   
+        /**
+        **成功后创建订单(create order)
+        **-->创建订单明细(create order_item)
+       **/
+       orderService.createOrder();
+         }catch(Exception e){
+            e.printStackTrace();
+         }finally{
+         cdl.countDown();//执行完一个线程减少一个
+         }
+     });
+   }//for
+    cdl.await();//为防止主线程结束后就执行es.shutdown()，
+                //导致连接池直接关闭,等待5个线程都结束再执行下面关闭数据库
+    es.shutdown();
+   }//concurrentOrder
+
+----------------------使用synchronized防止超卖,不使用事务注解--------------------------------------------------------------------------------------
+@Autowired private PlatformTransactionManager platformTransactionManager;
+@Autowired private TransactionDefinition transactionDefinition;
+//因为使用synchronized，为了防止因为事务而无法让所有的并发线程同步，所以必须手动提交事务
+public synchronized createOrder() {
+
+  TransactionStatus ts = platformTransactionManager.getTransaction(transactionDefinition);
+  /**
+   **如果出现任何异常，手动事务回滚
+   ** platformTransactionManager.rollback(ts);
+   **/
+  productRepository.updateProductCount(int purchaseProductNum, Long productId);
+  
+  platformTransactionManager.commit(ts);//提交事务
+  
+}
+4.为了防止超卖，更新库存需要直接在数据库中进行，不通过程序:
+   update 有行锁，可以防止并发,所有的线程依次执行
+   
+   update product set count = count - 【传进来的增量变量】purchaseProductNum
+   where id = 【传进来的商品id变量】productId and count >purchaseProductNum;
+    
+******************************ReentrantLock*************************************
+//java.util.concurrent.locks
+private Lock = new ReentrantLock();
+@Autowired private PlatformTransactionManager platformTransactionManager;
+@Autowired private TransactionDefinition transactionDefinition;
+//为了防止因为事务而无法让所有的并发线程同步，所以必须手动提交事务
+public void createOrder() {
+ 
+  Lock.lock();//加锁
+  
+  try{
+  TransactionStatus ts = platformTransactionManager.getTransaction(transactionDefinition);
+  /**
+   **如果出现任何异常，手动事务回滚
+   ** platformTransactionManager.rollback(ts);
+   **/
+   
+   //执行库存更新
+  productRepository.updateProductCount(int purchaseProductNum, Long productId); 
+  platformTransactionManager.commit(ts);//库存更新成功后提交事务 
+  }finally{
+  Lock.unlock();//最终必须释放锁
+  }
+  
+  //上一个事务已经提交，对于创建订单，创建订单明细需要获取第二个事务
+  TransactionStatus ts2 = platformTransactionManager.getTransaction(transactionDefinition);
+   //执行创建订单，创建订单明细....... 
+   saveOrder();
+   saveOrder_item();
+   /**
+   **如果出现任何异常，手动事务回滚
+   ** platformTransactionManager.rollback(ts2);
+   **/
+   platformTransactionManager.commit(ts2);//最终提交第二个事务 
+   
+}//createOrder
+
+******************************分布式锁**************************
+集群部署的情况下，ReentrantLock无法跨越JVM
+1.使用数据库悲观锁实现分布式锁:
+【通过select ... for update访问同一条数据库】！！！！！！！！！！！！！
+for update： 锁定数据，其他线程只能等待.
+创建数据库表:
+distribute_lock: 【id, business_code(demo):业务代码，用来区分不同的需要锁的业务,  
+                  business_name(demo锁):写注释】
+   1.1 查看数据库自动提交状态
+     SELECT @@autocommit;          //1.自动提交，0.非自动提交 需要设置成0
+     SET @@autocommit = 0;
+     
+   1.2 查询表    
+    SELECT * FROM distribute_lock WHERE business_code='demo' FOR UPDATE;
+          此时因为事务没有提交，会话没有完成，其他需要加锁的检索请求(FOR UPDATE)将会被拒绝 
+          如果不加锁，检索的请求可以接受         
+    COMMIT;//此时提交
+    spring.datasource.url=jdbc:mysql://localhost:3306/demo?serverTimezone=Asia/Shanghai&useSSL=false
+        【mysql 8.0之后，必须要写时区serverTimezone=Asia/Shanghai，否则会报错!!!!!!!!!!!!!】
+   
+    1.3在service上必须加上@Transaction(rollbackFor = Exception.class)
+    
+2.基于redis:setNX
+   SET resource_name(key) my_random_value(val) NX PX 3000;
+   resource_name:资源名称(key)，根据不同的业务区分不同的锁
+   my_random_value:随机值，每个线程的随机值必须不同，用于释放锁时的校验
+   NX: key不存在的时候设置成功，key存在则设置不成功【原子性操作】,设置成功即获得锁，可以执行后续的业务
+   PX: 给key设置自动失效时间，当服务释放锁的时候出现异常情况，锁可以过期失效
+   3000: 失效时间，3秒
+   
+        释放锁: delete命令
+                         【释放锁之前，需要校验之前设置的随机数，相同才可以释放】
+                         
+         通过订单id设置锁-->key: id   value: 随机数
+         设置成功进行后续操作
+         操作结束后校验随机数
+         校验通过删除该订单id,此时其它访问者可以通过设置该id获得新的锁
+         
+         释放锁使用LUA脚本：
+         if redis.call("get",KEY[1]) == ARGV[1] then
+         return redis.call("del",KEYS[1])
+         else 
+            return 0
+         end
+        
+        KEY[1]：程序中传递过来的值 
+        ARGV[1]：程序中传递过来的值
+
+ 3.   通过分布式锁解决springTask重复执行问题
+
+
+***********************Zookeeper *********************************
+1.数据结构：树状
+   持久节点:除非手动删除，否则就算会话结束也不会消失
+   
+    瞬时节点：有序，不能再有子节点，会话结束后自动消失
+
+  1.1 下载： http://zookeeper.apache.org
+  1.2 解压文件并且配置zoo.cfg
+  
+  1.3 运行
+  
+  创建节点和内容: create /lock distribute-lock【创建了一个节点lock，内容为distribute-lock】
+  获得节点: get /lock
+  
+2.Zookeeper的观察器【监测节点的变化】
+   2.1 getData():获取数据
+   
+   2.2 getChildren()
+   
+   2.3 exists()
+     【只能监测一次，在监控需要重新设置】
+
+3.  多线程并发创建瞬时节点，得到有序的序列，序列最小的线程获得锁!!!!
+          其它的线程监听自己序号的前一个序号。
+   
+
+
+  
+            
+
+
+
+
+
+
+
+
+
+
+
+     
+   
+
+
+    

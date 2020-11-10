@@ -3,14 +3,11 @@ package com.riverplant.rabbit.api.model;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
-
-import lombok.Data;
 /**
  * 定义消息
  * @author riverplant
  *
  */
-@Data
 public class Message implements Serializable{
 	private static final long serialVersionUID = 1L;
 
@@ -88,8 +85,11 @@ public class Message implements Serializable{
 		this.messageType = messageType;
 	}
 	
-	public Message(String messageId, String topic, String routingKey, Map<String, Object> attributes, int delayMills
-			) {
+	public Message(String messageId, 
+				   String topic, 
+				   String routingKey, 
+				   Map<String, Object> attributes, 
+				   int delayMills) {
 		this.messageId = messageId;
 		this.topic = topic;
 		this.routingKey = routingKey;

@@ -1,6 +1,6 @@
 package com.riverplant.payCenter.domain;
 /**
- * 微信的预付单对象
+ * 微信的预付单对象,用于和微信支付系统对接
  * @author riverplant
  *
  */

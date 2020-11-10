@@ -27,8 +27,11 @@ import javax.persistence.Version;
  * 设置抓取信息，在查询Items的时候将相关联的category 和carousels信息一并抓取
  *
  */
-@NamedEntityGraph(name = "Items.fetch.category.and.carousels.and.spec", attributeNodes = {
-		@NamedAttributeNode("category"), @NamedAttributeNode("carousels"), @NamedAttributeNode("spec") })
+@NamedEntityGraph(name = "Items.fetch.category.and.carousels.and.spec", 
+                  attributeNodes = {
+		                             @NamedAttributeNode("category"), 
+		                             @NamedAttributeNode("carousels"), 
+		                             @NamedAttributeNode("spec") })
 public class Items extends DomainImpl {
 	private static final long serialVersionUID = 1L;
 

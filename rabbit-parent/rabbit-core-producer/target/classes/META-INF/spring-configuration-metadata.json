@@ -1,0 +1,12 @@
+{
+  "groups": [
+    {
+      "name": "spring.datasource",
+      "type": "javax.sql.DataSource",
+      "sourceType": "com.riverplant.rabbit.core.producer.config.db.RabbitProducerDataSourceConfiguration",
+      "sourceMethod": "public javax.sql.DataSource rabbitProducerDataSource() throws java.sql.SQLException"
+    }
+  ],
+  "properties": [],
+  "hints": []
+}

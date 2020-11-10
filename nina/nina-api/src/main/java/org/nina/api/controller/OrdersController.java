@@ -68,7 +68,7 @@ public class OrdersController extends BaseController{
 			   return NinaJsonResult.erorMsg("购物车数据不正确");
 		   }
 		   List<ShopcartVO>  shopcartList = JsonUtils.jsonToList(shopcartJson, ShopcartVO.class);
-		//1.创建订单
+		//1.创建用于保存在用户自己开发的支付中心系统的订单
 		OrderVO orderVO = orderService.createOrder(submitOrderVO, shopcartList);
 		//2.创建订单后，移除购物车种以提交的商品,当前先处理为清空购物车
 		//清理覆盖现有的redis汇总的购物数据
@@ -105,8 +105,8 @@ public class OrdersController extends BaseController{
 	@ApiOperation(value = "供微信支付中心回调", notes = "供微信支付中心回调", httpMethod = "POST")
 	@PostMapping("/notifyMerchantOrderPaide")
 	public Integer notifyMerchantOrderPaide(String merchantOrderId) { 
-		orderService.updateOrderStatus(Long.valueOf(merchantOrderId), OrderStatusEnum.SUCCESS.trype);
-		return  HttpStatus.OK.value();
+		orderService.updateOrderStatus(Long.valueOf(merchantOrderId), OrderStatusEnum.WAIT_DELIVER.trype);
+		return  HttpStatus.OK.value();//200
 	}
 	
 	/**

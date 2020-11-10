@@ -34,7 +34,12 @@ public class NotifyController {
 	private PaymentOrderServiceImpl paymentOrderServiceImpl;
 	@Autowired
 	private RestTemplate restTemplate;
-
+    /**
+     * 获得微信支付的处理结果
+     * @param request
+     * @param response
+     * @throws IOException
+     */
 	@PostMapping(value = "/wxpay")
 	public void wxpay(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		//获取微信支付结果
@@ -53,6 +58,7 @@ public class NotifyController {
 			String merchantReturnUrl = paymentOrderServiceImpl.updateOrderPaid(merchantOrderId,paidAmount,OrderStatusEnum.WAIT_DELIVER);
 			MultiValueMap<String, String> requestEntity = new LinkedMultiValueMap<>();
 			requestEntity.add("merchantOrderId", merchantOrderId);
+			//向微信支付中心发送确认，以终止微信中心的通知
 			String httpStatus = restTemplate.postForObject(merchantReturnUrl, requestEntity, String.class);
 			String noticeStr = setXML("SUCCESS","");
 			writer.write(noticeStr);

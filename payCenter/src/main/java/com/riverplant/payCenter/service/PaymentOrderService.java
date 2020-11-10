@@ -3,11 +3,11 @@ package com.riverplant.payCenter.service;
 import org.nina.commons.enums.OrderStatusEnum;
 
 import com.riverplant.payCenter.domain.PayOrders;
-import com.riverplant.payCenter.domain.vo.PayOrdersVO;
+import com.riverplant.payCenter.domain.vo.MerchantOrdersVO;
 
 public interface PaymentOrderService {
 
-	boolean createPaymentOrder(PayOrdersVO payOrdersVO);
+	boolean createPaymentOrder(MerchantOrdersVO payOrdersVO);
 
 	PayOrders queryOrderInfo(String merchantOrderId, String merchantUserId);
 

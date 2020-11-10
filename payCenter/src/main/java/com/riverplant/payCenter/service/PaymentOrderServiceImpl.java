@@ -12,7 +12,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.riverplant.payCenter.domain.PayOrders;
-import com.riverplant.payCenter.domain.vo.PayOrdersVO;
+import com.riverplant.payCenter.domain.vo.MerchantOrdersVO;
 import com.riverplant.payCenter.repository.PayOrderRepository;
 
 @Service
@@ -21,7 +21,7 @@ public class PaymentOrderServiceImpl implements PaymentOrderService {
     @Autowired private PayOrderRepository payOrderRepository;
 	@Transactional(propagation = Propagation.REQUIRED)
 	@Override
-	public boolean createPaymentOrder(PayOrdersVO payOrdersVO){
+	public boolean createPaymentOrder(MerchantOrdersVO payOrdersVO){
 		PayOrders paymentOrder = new PayOrders();
 		try {
 			BeanUtils.copyProperties(paymentOrder, payOrdersVO);

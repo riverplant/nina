@@ -22,6 +22,7 @@ import com.riverplant.rabbit.api.model.MessageType;
 @Component
 public class ProducerClient implements MessageProducer{
     @Autowired RabbitBroker rabbitBroker;
+    
 	@Override
 	public void send(Message message) throws MessageRunTimeException {
 		Map<String, Object> properties = new HashMap<>();

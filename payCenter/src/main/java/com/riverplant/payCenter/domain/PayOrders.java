@@ -11,10 +11,10 @@ import javax.persistence.Entity;
 public class PayOrders extends DomainImpl{
 	
 	private static final long serialVersionUID = 1L;
-	
+	//订单号，由前端传递
 	@Column(name = "merchat_order_id", nullable = false)
 	private Long merchantOrderId;
-	
+	//商户方的发起用户的用户主键，由前端传递
 	@Column(name = "merchant_user_id", nullable = false)
 	private Long merchantUserId;
 	
@@ -35,10 +35,10 @@ public class PayOrders extends DomainImpl{
 	 */
 	@Column(name = "pay_status")
 	private Integer payStatus;
-	
+	//从哪一端过来
 	@Column(name = "come_from")
 	private String comeFrom;
-	
+	//支付成功后的通知地址，由第三方支付端回调开发者
 	@Column(name = "return_url")
 	private String returnUrl;
 	

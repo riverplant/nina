@@ -173,5 +173,6 @@
 		<module>nina-api</module>
 		<module>nina-security</module>
 		<module>nina-service</module>
+    <module>nina-distribute-lock</module>
   </modules>
 </project>
