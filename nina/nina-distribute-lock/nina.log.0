@@ -1,0 +1,4 @@
+[2020-11-16 15:42:05.310] - 27768 信息 [restartedMain] --- org.apache.catalina.core.StandardService: Starting service [Tomcat]
+[2020-11-16 15:42:05.404] - 27768 信息 [restartedMain] --- org.apache.catalina.core.StandardEngine: Starting Servlet engine: [Apache Tomcat/9.0.19]
+[2020-11-16 15:42:06.005] - 27768 信息 [restartedMain] --- org.apache.catalina.core.ContainerBase.[Tomcat].[localhost].[/]: Initializing Spring embedded WebApplicationContext
+[2020-11-16 15:42:26.741] - 27768 信息 [restartedMain] --- org.apache.catalina.core.StandardService: Stopping service [Tomcat]

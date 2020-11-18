@@ -189,7 +189,13 @@ distribute_lock: 【id, business_code(demo):业务代码，用来区分不同的
 
 3.  多线程并发创建瞬时节点，得到有序的序列，序列最小的线程获得锁!!!!
           其它的线程监听自己序号的前一个序号。
+          
+4.zookeeper curator客户端，直接调用锁
    
+5.Redisson:实现Redis分布式锁
+
+
+
 
 
   

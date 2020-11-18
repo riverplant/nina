@@ -1,0 +1,16 @@
+1.客户端先用带有 Upgrade:Websocket 请求头的 HTTP 请求，向服务器端发起连接请求，实现握手(HandShake)。
+
+【Connection: Upgrade
+Sec-WebSocket-Extensions: permessage-deflate; client_max_window_bits
+Sec-WebSocket-Key: IRQYhWINfX5Fh1zdocDl6Q==
+Sec-WebSocket-Version: 13
+Upgrade: websocket】
+
+Connection： Upgrade 表示要升级协议。
+Upgrade： Websocket 要升级协议到 websocket 协议。
+Sec-WebSocket-Extensions： 表示客户端所希望执行的扩展(如消息压缩插件)。
+Sec-WebSocket-Key： 主要用于WebSocket协议的校验，对应服务端响应头的 Sec-WebSocket-Accept。
+Sec-WebSocket-Version： 表示 websocket 的版本。如果服务端不支持该版本，需要返回一个Sec-WebSocket-Versionheader，里面包含服务端支持的版本号。
+
+
+2.握手成功后，由 HTTP 协议升级成 Websocket 协议，进行长连接通信，两端相互传递信息。

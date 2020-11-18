@@ -6,8 +6,14 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.curator.RetryPolicy;
+import org.apache.curator.framework.CuratorFramework;
+import org.apache.curator.framework.CuratorFrameworkFactory;
+import org.apache.curator.retry.ExponentialBackoffRetry;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
@@ -23,6 +29,9 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 @EnableSwagger2
 public class Application 
 {
+	@Value("${riverplant.zookeeper.connectString}")
+	private String zookeeperConnectString;
+	
     public static void main( String[] args )
     {
     	SpringApplication application = new SpringApplication(Application.class);
@@ -85,5 +94,34 @@ public class Application
 				.build();
 		
 		return redisCacheManager;
-    }	
+    }
+	/**
+	 * 初始化调用start
+	 * 结束调用close
+	 * @return
+	 */
+	@Bean(initMethod="start",destroyMethod="close")
+	@ConditionalOnMissingBean
+	public CuratorFramework getCuratorFramework() {
+		//获取连接
+		RetryPolicy retryPolicy = new ExponentialBackoffRetry(1000,3);
+		CuratorFramework client = CuratorFrameworkFactory.newClient(zookeeperConnectString, retryPolicy);
+		return client;
+	}
+	
+	/**
+	 * 初始化调用start
+	 * 结束调用close
+	 * @return
+	 */
+//	@Bean(destroyMethod="shutdown")
+//	@ConditionalOnMissingBean
+//	public RedissonClient getRedisson() {
+//		Config config = new Config();
+//		//使用集群模式
+//		config.useClusterServers()
+//		.setScanInterval(2000) //集群状态扫描间隔时间
+//		      .addNodeAddress("redis://127.0.0.1:6379");
+//		return Redisson.create(config);
+//	}
 }

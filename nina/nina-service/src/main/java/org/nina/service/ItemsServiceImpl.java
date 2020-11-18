@@ -2,6 +2,7 @@ package org.nina.service;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 import javax.validation.Valid;
@@ -28,6 +29,8 @@ import org.nina.repository.ItemsSpecRepository;
 import org.nina.repository.spec.ItemSpec;
 import org.nina.repository.support.AbstractDomain2InfoConverter;
 import org.nina.repository.support.QueryResultConverter;
+import org.redisson.api.RLock;
+import org.redisson.api.RedissonClient;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.launch.JobLauncher;
 import org.springframework.beans.BeanUtils;
@@ -73,6 +76,8 @@ public class ItemsServiceImpl implements ItemsService {
 	// 编程式控制缓存
 	@Autowired
 	private CacheManager cacheManager;
+	@Autowired
+	private RedissonClient redisson;
 	/**
 	 * Job的运行器
 	 */
@@ -94,11 +99,12 @@ public class ItemsServiceImpl implements ItemsService {
 		/**
 		 * security
 		 */
-//		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-//		if (authentication != null) {
-//			// authentication.getPrincipal():拿到当前认证的用户信息
-//			System.out.println(authentication.getPrincipal());
-//		}
+		// Authentication authentication =
+		// SecurityContextHolder.getContext().getAuthentication();
+		// if (authentication != null) {
+		// // authentication.getPrincipal():拿到当前认证的用户信息
+		// System.out.println(authentication.getPrincipal());
+		// }
 		/**
 		 * ***************security****************************
 		 */
@@ -279,28 +285,28 @@ public class ItemsServiceImpl implements ItemsService {
 	/**
 	 * 每隔三秒执行一次
 	 */
-//	@Override
-//	@Scheduled(cron = "0/3*****")
-//	public void task() {
-//		System.out.println("task开始运行");
-//		Map<String,JobParameter> paran = new HashMap<>();
-//		paran.put("startTime", new JobParameter(new Date()));
-//		try {
-//			jobLauncher.run(job, new JobParameters(paran));
-//		} catch (JobExecutionAlreadyRunningException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		} catch (JobRestartException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		} catch (JobInstanceAlreadyCompleteException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		} catch (JobParametersInvalidException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
-//	}
+	// @Override
+	// @Scheduled(cron = "0/3*****")
+	// public void task() {
+	// System.out.println("task开始运行");
+	// Map<String,JobParameter> paran = new HashMap<>();
+	// paran.put("startTime", new JobParameter(new Date()));
+	// try {
+	// jobLauncher.run(job, new JobParameters(paran));
+	// } catch (JobExecutionAlreadyRunningException e) {
+	// // TODO Auto-generated catch block
+	// e.printStackTrace();
+	// } catch (JobRestartException e) {
+	// // TODO Auto-generated catch block
+	// e.printStackTrace();
+	// } catch (JobInstanceAlreadyCompleteException e) {
+	// // TODO Auto-generated catch block
+	// e.printStackTrace();
+	// } catch (JobParametersInvalidException e) {
+	// // TODO Auto-generated catch block
+	// e.printStackTrace();
+	// }
+	// }
 
 	@Override
 	@Transactional(propagation = Propagation.SUPPORTS)
@@ -368,7 +374,7 @@ public class ItemsServiceImpl implements ItemsService {
 		Integer goodCount = getCommentCounts(itemId, CommentLevel.GOOD.type);
 		Integer normalCount = getCommentCounts(itemId, CommentLevel.NORMAL.type);
 		Integer badCount = getCommentCounts(itemId, CommentLevel.BAD.type);
-		//Integer totalCounts = goodCount + normalCount + badCount;
+		// Integer totalCounts = goodCount + normalCount + badCount;
 		CommentLevelCountsVO commentLevelCountsVO = new CommentLevelCountsVO();
 		commentLevelCountsVO.setBadCount(badCount);
 		commentLevelCountsVO.setGoodCount(goodCount);
@@ -376,6 +382,7 @@ public class ItemsServiceImpl implements ItemsService {
 		commentLevelCountsVO.setTotalCount();
 		return commentLevelCountsVO;
 	}
+
 	/**
 	 * 
 	 * @param itemId
@@ -386,51 +393,57 @@ public class ItemsServiceImpl implements ItemsService {
 	Integer getCommentCounts(Long itemId, Integer level) {
 		ItemsComments itemsComments = new ItemsComments();
 		itemsComments.setId(itemId);
-		if(level != null && level != 0) {
+		if (level != null && level != 0) {
 			itemsComments.setCommentLevel(CommentLevel.stateOf(level));
 		}
 		Example<ItemsComments> example = Example.of(itemsComments);
 		Long result = itemsCommentRepository.count(example);
 		return result.intValue();
 	}
-	
+
 	@Transactional(propagation = Propagation.SUPPORTS)
 	@Override
 	public List<ShopcartVO> queryItemsBySpecIds(String specIds) {
-		String[] sids = specIds.split(",");	
-		List<Long> specIdsList =Arrays.stream(sids).map(Long::parseLong).collect(Collectors.toList());
+		String[] sids = specIds.split(",");
+		List<Long> specIdsList = Arrays.stream(sids).map(Long::parseLong).collect(Collectors.toList());
 		itemsSpecRepository.queryItemsBySpecIds(specIdsList);
 		return null;
 	}
-	
+
 	@Transactional(propagation = Propagation.SUPPORTS)
 	@Override
 	public ItemsSpec queryItemSpecById(Long id) {
 		return itemsSpecRepository.getOne(id);
 	}
-
+    /**
+     * 扣减库存
+     */
 	@Transactional(propagation = Propagation.REQUIRED)
 	@Override
 	public void decreaseItemSpecStocke(Long specId, Integer buyCounts) {
 		/**
-		 * 1.集群下不推荐使用synchronized
-		 * 2.不推荐锁数据库
-		 * 3.应该使用分布式锁: zookeeper, redis
+		 * 1.集群下不推荐使用synchronized 2.不推荐锁数据库 3.应该使用分布式锁: zookeeper, redis
 		 */
-//		ReentrantReadWriteLock lock = new ReentrantReadWriteLock();
-//		ReadLock  readLock  = lock.readLock();
-//		WriteLock writeLock = lock.writeLock();		
-//		readLock.lock();//--加锁		
-//		readLock.unlock();//--解锁
-		
-		//1.查询库存
-		//2.判断库存，是否能减少到0以下
-		int result = itemsRepository.decreaseItemSpecStock(specId, buyCounts);
-		if(result != 1) {
-			throw new RuntimeException("订单创建失败，库存不足");
+		// ReentrantReadWriteLock lock = new ReentrantReadWriteLock();
+		// ReadLock readLock = lock.readLock();
+		// WriteLock writeLock = lock.writeLock();
+		// readLock.lock();//--加锁
+		// readLock.unlock();//--解锁
+		RLock rLock = redisson.getLock("item_lock_" + specId);
+		// 设置锁的过期时间，当过期没有释放锁，会自动释放
+		rLock.lock(5, TimeUnit.SECONDS);
+		try {
+			// 1.查询库存
+			// 2.判断库存，是否能减少到0以下
+			int result = itemsRepository.decreaseItemSpecStock(specId, buyCounts);
+			if (result != 1) {
+				throw new RuntimeException("订单创建失败，库存不足");
+			}
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			rLock.unlock();
 		}
-		
 	}
-	
-	
+
 }

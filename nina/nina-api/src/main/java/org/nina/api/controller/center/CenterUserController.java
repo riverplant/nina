@@ -44,7 +44,7 @@ public class CenterUserController extends BaseController{
     @Autowired private CenterUserService centerUserService;
 	@Autowired private FileUploadResources fileUploadResources;
     @ApiOperation(value = "修改用户信息", notes = "修改用户信息",httpMethod = "PUT")
-	@PutMapping("userInfo/{userId:\\\\d+}")
+	@PutMapping("userInfo/{userId:\\d+}")
 	public NinaJsonResult userInfo(
 			@ApiParam(name = "userId",value = "用户ID", required = true)
 			@PathVariable Long userId,
@@ -61,7 +61,7 @@ public class CenterUserController extends BaseController{
 	}
     
     @ApiOperation(value = "用户头像修改", notes = "用户头像修改",httpMethod = "POST")
-   	@PostMapping("uploadFace/{userId:\\\\d+}")
+   	@PostMapping("uploadFace/{userId:\\d+}")
    	public NinaJsonResult changeUserFace(
    			@ApiParam(name = "userId",value = "用户ID", required = true)
    			@PathVariable Long userId,
