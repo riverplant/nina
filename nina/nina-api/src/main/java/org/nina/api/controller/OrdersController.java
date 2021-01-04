@@ -73,10 +73,12 @@ public class OrdersController extends BaseController{
 		//2.创建订单后，移除购物车种以提交的商品,当前先处理为清空购物车
 		//清理覆盖现有的redis汇总的购物数据
 		shopcartList.removeAll(orderVO.getToBeRemoveShopCartItems());
-		CookieUtils.setCookie(request, response, FOODIE_SHOPCART , JsonUtils.objectToJson(shopcartList), true);
-		//TODO 整合redis之后，完善购物车种的已结算商品清楚，并且同步cookie
+		
+		//整合redis之后，完善购物车种的已结算商品清楚，并且同步cookie
 		 redisOperator.set(SHOPCART+":"+submitOrderVO.getUserId(),JsonUtils.objectToJson(shopcartList));	   
-		//3.向支付中心发送当前订单，用于保存支付中心的订单数据
+		 CookieUtils.setCookie(request, response, FOODIE_SHOPCART , JsonUtils.objectToJson(shopcartList), true);
+		 
+		 //3.向支付中心发送当前订单，用于保存支付中心的订单数据
 		PayOrdersVO payOrdersVO = orderVO.getPayOrdersVO();
 		payOrdersVO.setReturnUrl(payReturnUrl);
 		HttpHeaders headers = new HttpHeaders();

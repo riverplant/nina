@@ -44,7 +44,7 @@ public class RedisOperator {
 	}
 	/**
 	 * 查询所有符合给定模式
-	 * @param pattern
+	 * @param pattern:匹配模式
 	 * @return
 	 */
 	public Set<String> keys(String pattern) {

@@ -51,8 +51,9 @@ public class ShopCartController extends BaseController{
 	   if(StringUtils.isBlank(String.valueOf(userId))) {
 		   return NinaJsonResult.erorMsg("");
 	   }
-	   //TODO Redis 前端用户在登录的情况下，添加商品到购物车，会在后端同步购物车到缓存
+	   //Redis 前端用户在登录的情况下，添加商品到购物车，会在后端同步购物车到缓存
 	   //需要判断购物车中包含已经存在的商品，如果存在则累加购买数量
+	   //通过":"进行存储，可以在redis中自动实现数据的分类，例如SHOPCART:1,SHOPCART:2都会归类为SHOPCART
 	   String shopcartJson = redisOperator.get(SHOPCART+":"+userId);
 	   List<ShopcartVO>shopcartList = null;
 	   if(StringUtils.isNotBlank(shopcartJson)) {
@@ -67,6 +68,7 @@ public class ShopCartController extends BaseController{
 				   isHave = true;
 			   }
 		   } 
+		   //当redis中的购物车列表不包括新添加的货物
 		   if(!isHave) {
 			   shopcartList.add(shopcart);
 		   }
@@ -102,7 +104,7 @@ public class ShopCartController extends BaseController{
 	   if(StringUtils.isBlank(String.valueOf(itemSpecId))) {
 		   return NinaJsonResult.erorMsg("itemSpecId不能为空");
 	   }
-	   //TODO Redis 前端用户在登录的情况下，删除购物车商品，会在redis同步购物车到缓存
+	   //Redis 前端用户在登录的情况下，删除购物车商品，会在redis同步购物车到缓存
 	   String shopcartJson = redisOperator.get(SHOPCART+":"+userId);
 	   List<ShopcartVO>shopcartList = null;
 	   if(StringUtils.isNotBlank(shopcartJson)) {

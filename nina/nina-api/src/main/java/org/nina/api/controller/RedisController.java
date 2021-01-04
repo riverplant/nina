@@ -22,6 +22,7 @@ public abstract class RedisController {
     @GetMapping("/set")
 	public void set(String key, String value) {
     	//setnx age 18
+    	//redisTemplate.opsForValue()：操作String类型
     	redisTemplate.opsForValue().setIfAbsent(key, value);    	
 	}
 	

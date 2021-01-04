@@ -85,7 +85,7 @@ public class PassportController extends BaseController{
 		CookieUtils.setCookie(request, response, "user", JsonUtils.objectToJson(resultData),true);
 		
 		//TODO:生成用户Token,存入redis会话
-		//TODO:同步购物车数据
+		//同步购物车数据
 		synchShopcartData(resultData.getId(), request, response);
 		return NinaJsonResult.ok(resultData);
 	}
@@ -138,7 +138,7 @@ public class PassportController extends BaseController{
 		//设置浏览器端Cookies
 	    CookieUtils.setCookie(request, response, "user", JsonUtils.objectToJson(resultData),true);	    
 	    //TODO:生成用户Token,存入redis会话
-	    //TODO:同步购物车数据
+	    //同步购物车数据
 	  	synchShopcartData(resultData.getId(), request, response);
 		return NinaJsonResult.ok(resultData);
 	}
@@ -160,6 +160,7 @@ public class PassportController extends BaseController{
 		
 		//从Cookie中获取购物车
 		String shopcartStrCookie = CookieUtils.getCookieValue(request, FOODIE_SHOPCART,true);
+		
 		if(StringUtils.isBlank(shopcartJsonRedis)) {
 			//redis为空，cookie不为空，将cookie中的数据放入redis
 			if(StringUtils.isNotBlank(shopcartStrCookie)) {
@@ -183,15 +184,20 @@ public class PassportController extends BaseController{
 				 * 4.合并redis和cookie中的数据
 				 * 5.更新redis和cookie
 				 */
-				List<ShopcartVO> shopCartJsonRedis = JsonUtils.jsonToList(shopcartJsonRedis, ShopcartVO.class);
-				List<ShopcartVO> shopCartJsonCookie = JsonUtils.jsonToList(shopcartStrCookie, ShopcartVO.class);
+				List<ShopcartVO> shopCartListRedis = JsonUtils.jsonToList(shopcartJsonRedis, ShopcartVO.class);
+				
+				List<ShopcartVO> shopCartListCookie = JsonUtils.jsonToList(shopcartStrCookie, ShopcartVO.class);
+				
+				//定义一个待删除list
 				List<ShopcartVO> pendingDeleteList = new ArrayList<>();
-				for(ShopcartVO redisShopcart:shopCartJsonRedis) {
+				
+				for(ShopcartVO redisShopcart:shopCartListRedis) {
 					Long redisspecId = redisShopcart.getSpecId();
-					for(ShopcartVO cookeShopcart:shopCartJsonCookie) {
+					for(ShopcartVO cookeShopcart:shopCartListCookie) {
 						Long cookiespecId = cookeShopcart.getSpecId();
-						//如果相同，用cookie中的数量覆盖Redis
+						//如果相同，用cookie中的数量覆盖Redis,不累加
 						if(redisspecId.longValue() == cookiespecId.longValue()) {
+							//如果相同，用cookie中的数量覆盖Redis,不累加
 							redisShopcart.setBuyCounts(cookeShopcart.getBuyCounts());
 							//将已经用于覆盖Redis的cookeShopcart放入待删除列表
 							pendingDeleteList.add(cookeShopcart);
@@ -199,9 +205,9 @@ public class PassportController extends BaseController{
 					}
 				}
 				//从现有cookie中删除对应的覆盖过的商品
-				shopCartJsonCookie.removeAll(pendingDeleteList);
+				shopCartListCookie.removeAll(pendingDeleteList);
 				//最后将目前的list进行合并,更新后shopCartJsonRedis为最新的数据
-				shopCartJsonRedis.addAll(shopCartJsonCookie);
+				shopCartListRedis.addAll(shopCartListCookie);
 				//将最新list更新到redis和cookie
 				CookieUtils.setCookie(request, response, FOODIE_SHOPCART, JsonUtils.objectToJson(shopcartJsonRedis),true);
 				redisOperator.set(SHOPCART+":"+userId, JsonUtils.objectToJson(shopcartJsonRedis));

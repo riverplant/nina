@@ -201,12 +201,17 @@ save 900 1 ： 如果至少有一个key发生了改变，将会在900sec (15分�
 save 300 10
 save 60 10000
 stop-writes-on-bgsave-error yes 为了数据一致，在保存的过程中如果发生错误，将停止写操作
+rdbcompression yes: 使用LZF方式压缩文件，可以节省空间，但是会占用cpu性能。默认开启，保持开启就行
+rdbchecksum yes: 数据校验，会占用cpu性能。默认开启，保持开启就行
+
+
+
 ---------------------------------------------------------------------
 2.AOF 记录写操作
 同步策略：
-  no fsync at all
-  fsync every second[默认]
-  fsync every query 
+  no fsync at all 不同步
+  fsync every second[默认] 每一秒同步
+  fsync every query  每一次操作
 
 以日志的方式进行追加append
 ------------------------------------------------
@@ -214,9 +219,9 @@ stop-writes-on-bgsave-error yes 为了数据一致，在保存的过程中如果
 appendonly no :可以选择打开AOF模式或者默认选择的关闭
 appendfilename "appendonly.aof" :选择使用AOF模式后自动生成的文件
 同步策略：
-appendfsync always
-appendfsync everysec[默认使用]
-appendfsync no
+#appendfsync always 每一次写操作都记录，性能的损耗非常大
+appendfsync everysec[默认使用],对性能的损耗比较小
+#appendfsync no
 
 重写策略
 no-appendfsync-on-rewrite no: 在重写过程中，不同步新的内容
@@ -226,13 +231,15 @@ auto-aof-rewrite-min-size 64mb  触发重写的第二个条件，必须两个条
 
 如果误操作使用了flushdb 清空了数据库
 只需要关闭redis后修改 appendonly.aof
-将最后一行的flushdb删除
+将最后一行的flushall删除
 再启动redis,数据将会被恢复
 
 可以同时时候RDB和AOF， 其中RDB作为冷备份！！！！！！！！！！
 ****************持久化Persistence**************************** 
-
+master必须开启持久化!!!!!!!!!!!!!!!!!!!!!!!!
 ***********主从架构master slave**************************
+搭建主从架构--------------------------------------
+【ip addr】
 主:192.168.1.191 
 从:192.168.1.192, 192.168.1.193
 1.创建完整克隆->拷贝ling/ether:后面的mac地址
@@ -249,42 +256,92 @@ info replication: 查看redis的主从信息
 修改从:192.168.1.192, 192.168.1.193
 2.1 修改redis.conf
           搜索replication
+    //此处配置主节点的ip地址和端口, 配置后可以加入成为从节点
     #replicaof <masterip><masterport>
     replicaof 192.168.1.191 6379
     masterauth [master密码] master上必须要加密码
-    replica-read-only yes : 从节点只能读不能写，从而达到读写分离    
+    replica-read-only yes : 配置从节点只能读不能写，从而达到读写分离    
     
  3.diskless: (仅在实验性阶段)  
    repl-diskless-sync no: 无磁盘化复制  master将RDB文件写入socket,不接触磁盘
                                                                     当网速很好的情况下可以考虑使用无磁盘化复制。
 
    repl-diskless-sync-delay 5 等待延时 5秒
+   
  4.缓存过期机制
    4.1 主动定期删除:修改redis.conf
                                             搜索dynamic-hz yes
                     hz 10  每秒做10次检测【尽量不超过100】
                     
    
-   4.2 被动惰性删除:当key被用户访问请求到的时候才做一次检查，如果已经过期则从内存里删除
+   4.2 被动惰性删除【对CPU友好】:当key被用户访问请求到的时候才做一次检查，
+                                                                      如果已经过期则从内存里删除
    
- 5. MaxMemory policy:
-    allkes-lfu :当内存已满，再有新的存储进来的时候，删除之前没有过期设置的最少用到的缓存
-    noeviction:当内存已满，再有新的存储进来的时候，不删除任何存储内容，只是返回错误
-    volatile-ttl:优先删除即将过期的缓存
+ 5. MaxMemory policy: 设置内测阀值
+    allkes-lfu【推荐使用】 :当内存已满，再有新的存储进来的时候，删除之前没有过期设置的最少用到的缓存
+    noeviction【默认使用】:当内存已满，再有新的存储进来的时候，不删除任何存储内容，只是返回错误
+    volatile-ttl:优先删除【设置过过期时间】，即将过期的缓存
+    allkes-random:随机删除
     LRU:最近最少被使用
     LFU:最少频率被使用
+    
+    noeviction：旧缓存永不过期，新缓存设置不了，返回错误
+* allkeys-lru：清除最少用的旧缓存，然后保存新的缓存（推荐使用）
+* allkeys-random：在所有的缓存中随机删除（不推荐）
+* volatile-lru：在那些设置了expire过期时间的缓存中，清除最少用的旧缓存，然后保存新的缓存
+* volatile-random：在那些设置了expire过期时间的缓存中，随机删除缓存
+* volatile-ttl：在那些设置了expire过期时间的缓存中，删除即将过期的
  
  ****************哨兵********************************
- 修改sentinel.conf文件
+ 修改sentinel.conf文件【核心配置文件】
  
  scp 远程拷贝命令
  scp [被拷贝的文件名]sentinel.conf  root@192.168.1.192:/usr/local/redis/ 
- redis-sentinel + 配置文件
+ 
+设置 protected-mode no 使得其它节点都可以访问该哨兵
  
  通过指令连接哨兵
  redis-cli -p[指定端口] 26379
+ 
+ daemonize yes  启动后哨兵会在后台运行
+ 
+ pidfile /var/run/redis-sentinel.pid 设置哨兵的进程，
+                                                                                             证明哨兵和redis会使用连个不同的进程
+ logfile /usr/local/redis/sentinel/redis-sentinel.log 设置哨兵的日志
+ 
+ dir /usr/local/redis/sentinel  设置哨兵的工作空间
+ 
+sentinel monitor mymaster 127.0.0.1 6379 2
+ 【该处为哨兵的核心配置】
+ mymaster:master昵称
+ 127.0.0.1 6379 : 主master的ip地址，此处可以修改为192.168.1.191 6379
+ 2: 【quorum: 哨兵的数量】: 当该设置的数量的哨兵发现master状态为down,可以开始执行
+                                                      故障转移【将master设置为无法到达节点】，
+                                                      将其它的一个从节点设置为主节点
+ 设置哨兵密码：
+ sentinel auth-pass  [master昵称] 密码
+ 
+ 为哨兵设置master的宕机时间阀值
+ sentinel down-after-milliseconds [master昵称] [毫秒数]
+ 
+ 
+  为哨兵设置连接新master时，slaver同时的同步数量
+ sentinel parallel-syncs [master昵称] [几台slaver并行同步]
+ 
+   为哨兵设置轮询时间，当一台哨兵 没有在设定的时间内完成故障转移操作，就会转给另外一个哨兵来执行
+ sentinel failover-timeout [master昵称] [故障转移时间]
+ 
+ 
  sentinel master [master昵称] ：查看master相关信息
  
   sentinel sentinels [master昵称] ：查看master下的哨兵相关信息
+  
+  因为哨兵是集群配置，所以可以将sentinel.conf文件直接拷贝到每一个节点下
+ scp【远程拷贝指令】 sentinel.conf root@192.168.1.192:/usr/local/redis/
  
+  redis-sentinel sentinel.conf 【启动哨兵命令】
+  
+  
+  
+  
   ****************哨兵********************************
