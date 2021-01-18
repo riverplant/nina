@@ -37,16 +37,6 @@ function subscribeSocket(){
 /* 断开连接 */
 function disconnect() {
     stompClient.disconnect(function() {
-        alert("断开连接");
+        alert("disconnect..................");
     });
-}
-
-/* 发送消息并指定目标地址（这里设置的目标地址为自身订阅消息的地址，当然也可以设置为其它地址） */
-function sendMessageNoParameter() {
-    // 设置发送的内容
-    var sendContent = $("#content").val();
-    // 设置待发送的消息内容
-    var message = '{"destination": "' + SUBSCRIBE + '", "content": "' + sendContent + '"}';
-    // 发送消息
-    stompClient.send(SEND_ENDPOINT, {}, message);
 }

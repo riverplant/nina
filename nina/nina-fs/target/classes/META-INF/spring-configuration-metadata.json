@@ -1,0 +1,47 @@
+{
+  "groups": [
+    {
+      "name": "file",
+      "type": "org.nina.fs.resource.FileResources",
+      "sourceType": "org.nina.fs.resource.FileResources"
+    }
+  ],
+  "properties": [
+    {
+      "name": "file.access-key-id",
+      "type": "java.lang.String",
+      "sourceType": "org.nina.fs.resource.FileResources"
+    },
+    {
+      "name": "file.access-key-secret",
+      "type": "java.lang.String",
+      "sourceType": "org.nina.fs.resource.FileResources"
+    },
+    {
+      "name": "file.bucket-name",
+      "type": "java.lang.String",
+      "sourceType": "org.nina.fs.resource.FileResources"
+    },
+    {
+      "name": "file.endpoint",
+      "type": "java.lang.String",
+      "sourceType": "org.nina.fs.resource.FileResources"
+    },
+    {
+      "name": "file.host",
+      "type": "java.lang.String",
+      "sourceType": "org.nina.fs.resource.FileResources"
+    },
+    {
+      "name": "file.object-name",
+      "type": "java.lang.String",
+      "sourceType": "org.nina.fs.resource.FileResources"
+    },
+    {
+      "name": "file.oss-host",
+      "type": "java.lang.String",
+      "sourceType": "org.nina.fs.resource.FileResources"
+    }
+  ],
+  "hints": []
+}

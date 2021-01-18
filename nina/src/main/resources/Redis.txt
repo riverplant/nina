@@ -1,3 +1,6 @@
+RedisOperator
+
+
 /etc/init.d/redis_init_script stop
 /etc/init.d/redis_init_script start
 设计原则：
@@ -259,7 +262,13 @@ info replication: 查看redis的主从信息
     //此处配置主节点的ip地址和端口, 配置后可以加入成为从节点
     #replicaof <masterip><masterport>
     replicaof 192.168.1.191 6379
+    
     masterauth [master密码] master上必须要加密码
+          
+          【在主节点也许要设置masterauth，因为如果当前master 宕机后，
+              哨兵会设置另外一 个slaver为新的master,而原来这个master从其
+              开启后会自动切换状态为slaver， 此时它也许要同步新的master节点的数据】
+          
     replica-read-only yes : 配置从节点只能读不能写，从而达到读写分离    
     
  3.diskless: (仅在实验性阶段)  
@@ -320,6 +329,7 @@ sentinel monitor mymaster 127.0.0.1 6379 2
                                                       将其它的一个从节点设置为主节点
  设置哨兵密码：
  sentinel auth-pass  [master昵称] 密码
+ 主节点也许要设置
  
  为哨兵设置master的宕机时间阀值
  sentinel down-after-milliseconds [master昵称] [毫秒数]
@@ -330,18 +340,75 @@ sentinel monitor mymaster 127.0.0.1 6379 2
  
    为哨兵设置轮询时间，当一台哨兵 没有在设定的时间内完成故障转移操作，就会转给另外一个哨兵来执行
  sentinel failover-timeout [master昵称] [故障转移时间]
- 
- 
- sentinel master [master昵称] ：查看master相关信息
- 
-  sentinel sentinels [master昵称] ：查看master下的哨兵相关信息
   
   因为哨兵是集群配置，所以可以将sentinel.conf文件直接拷贝到每一个节点下
  scp【远程拷贝指令】 sentinel.conf root@192.168.1.192:/usr/local/redis/
  
   redis-sentinel sentinel.conf 【启动哨兵命令】
+------------------------------------------------------------  
+  通过redis-cli -p 26379 可以直接连接到哨兵，之后可以执行哨兵的相关指令
   
-  
+  sentinel master [master昵称] ：查看master相关信息
+ 
+  sentinel sentinels [master昵称] ：查看master下的哨兵相关信息
   
   
   ****************哨兵********************************
+  ***************redis集群[cluster]*******************
+  构建Redis集群，需要至少三个节点作为master, 每一个master需要配备一个slave,
+  整个集群需要6个节点，三主三从
+  
+ 1.编辑redis.conf 中的cluster相关内容，将其开启就行
+ 
+ 2.【在构建集群的时候需要将之前单机的文件
+ appendonly.aof dump.rdb两个文件删除】
+ 
+ 3.老版本的redis需要使用redis-trib.rb rubi脚本来构建集群
+ 
+ 4.新版本通过redis-cli -a 密码  --cluster 命令来创建集群
+  redis-cli --cluster create 192.168.1.201:6379  192.168.1.202:6379  192.168.1.203:6379  192.168.1.204:6379 ...
+  --cluster-replicas 1【主从的比例，这里采用一主一从】
+  
+  redis-cli -a 密码 --cluster check 【节点+端口】:查看指定的节点
+  
+  
+  5.槽节点:slots 平均分配给每一个master，用于存储数据。
+ 
+ 
+ ***************redis缓存雪崩，穿透*******************
+ //先查询redis缓存
+		String categoryinfos = redisOperator.get("subcat:"+id);
+		
+		if(StringUtils.isAllEmpty(categoryinfos)){
+			list = categoryService.querySubCategory(id);
+			if(list != null && list.size() >0) {
+				//将数据库返回内容放入redis缓存
+				redisOperator.set("subcat:"+id, JsonUtils.objectToJson(list));		
+			}else {
+				//如果数据库查询结果为空，则存入redis一个空结果并且设置过期时间，
+				//用来防止缓存穿透
+				redisOperator.set("subcat:"+id, JsonUtils.objectToJson(list),5*60);
+			}
+			
+布隆过滤器:在redis之前进行一次拦截
+0:不存在
+1：存在
+
+因为会有误差，用布隆过滤器去判断一个键值肯定是不存在，是可以判断的，
+但是去判断一个键值是肯定存在的，是无法判断的。
+
+
+//雪崩
+雪崩:在某一个时间点缓存中大量的key失效，这个时候如果有大量的请求进入，全部打在数据库上，会引起雪崩。
+1.永不过期
+2.过期时间错开
+3.多缓存结合
+
+
+
+ 
+ 
+ 
+ 
+  
+  

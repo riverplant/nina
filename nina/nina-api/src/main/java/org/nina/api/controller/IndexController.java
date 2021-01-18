@@ -94,11 +94,22 @@ public class IndexController {
 			return NinaJsonResult.erorMsg("分类不存在");
 		}
 		List<Object>list = new ArrayList<>();
+		//先查询redis缓存
 		String categoryinfos = redisOperator.get("subcat:"+id);
+		
 		if(StringUtils.isAllEmpty(categoryinfos)){
 			list = categoryService.querySubCategory(id);
-			//将数据库返回内容放入redis缓存
-			redisOperator.set("subcat:"+id, JsonUtils.objectToJson(list));	
+			if(list != null && list.size() >0) {
+				//将数据库返回内容放入redis缓存
+				redisOperator.set("subcat:"+id, JsonUtils.objectToJson(list));		
+			}else {
+				//如果数据库查询结果为空，则存入redis一个空结果并且设置过期时间，
+				//用来防止缓存穿透
+				redisOperator.set("subcat:"+id, JsonUtils.objectToJson(list),5*60);
+			}
+			
+			
+		
 		}else {
 			list = JsonUtils.jsonToList(categoryinfos, Object.class);
 		}	

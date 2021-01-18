@@ -21,7 +21,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping("/file")
-public class FileController {
+public class FileController extends BaseController{
 	/**
 	 * 
 	 * @param file :参数名与MockMultipartFile构造第一个参数名保持一致

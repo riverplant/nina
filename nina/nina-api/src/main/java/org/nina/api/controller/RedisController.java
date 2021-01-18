@@ -1,5 +1,9 @@
 package org.nina.api.controller;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -29,6 +33,16 @@ public abstract class RedisController {
 	@GetMapping("/get")
 	public Object get(String key) {
 		return redisTemplate.opsForValue().get(key);
+	}
+	/**
+	 * mget 批量查询
+	 * @param keys
+	 * @return
+	 */
+	@GetMapping("/mget")
+	public List<Object> mget(String... keys) {
+		List<String> params = Arrays.asList(keys);
+		return redisTemplate.opsForValue().multiGet(params);
 	}
 	
 	@DeleteMapping("/delete")
