@@ -1,0 +1,107 @@
+Elastic search
+分布式搜索引擎:
+【空格支持，拆词查询， 搜索内容高亮, 海量数据查库】
+
+搜索引擎:数据源，通过爬虫获得数据，或者是数据库
+
+分布式存储与搜索:Lucene基于java  Solr基于Lucene[通过zookeeper实现集群]
+
+Elastic search基于Lucene
+
+-----------------------------核心术语---------------------------------
+1.索引 index: 索引库，相当于数据库中的表
+
+2.类型 type: 表的逻辑类型【数据类型】| 已经不使用!!!!!!!!!!!!!!!!!!
+
+3.文档 document: 行,每一行都是一个文档【表中的记录|Json】
+
+
+4.字段 fields: 列，每一列都是一个字段 【属性】
+----------------------------------------------------------
+stu_index【索引库1】 :根据不同的索引建设不同的索引库
+
+{
+ id:1001,【字段1】
+ name: jason,【字段2】         【文档1】
+ age: 18  【字段3】
+}
+
+{
+ id:1002,【字段1】
+ name: jason,【字段2】         【文档2】
+ age: 18  【字段3】
+}
+
+{
+ id:1003,【字段1】
+ name: jason,【字段2】         【文档3】
+ age: 18  【字段3】
+}
+
+--------------------------------------------------------------
+
+5.映射 mapping 表结构,字段定义【是否主键，类型，长度，是否非空...】
+
+6.近实时 NRT: near real time  
+
+7.节点 node：  每一台服务器
+
+8.shard【分片】 replica【备份】  数据分片和备份
+
+9.倒排索引:   
+  9.1 正排索引: 按照主键的顺序来获取文档内容,以key -> value
+  9.2 倒排索引: 将语句的内容进行分词，把所有分开的词所对应的所有文档的位置，以文档ids进行展示
+                                    【将用户输入的搜索内容切开，分成多个词，将每个词在所有文档中进行搜索，
+                                    返回所有包含该单词的文档的id】 以value -> key
+                                     该结果还可以获得该词出现的频率
+                                    搜索结果为:     【词频TF ： 位置POS】
+                                    例如切出来的词【追风】 ---> 查询结果为 【1:1:<1>,2:2:<2,4>, ...】
+                                    追风 在文档表中第1条记录中出现了1次，位置是1，在第2条记录中出现了2次，位置是2和4, ...
+
+
+-----------------安装---------------------------------------
+L:\elasticsearch-7.10.2-windows-x86_64\elasticsearch-7.10.2\config\elasticsearch.yml
+修改配置文件:            
+1.cluster.name: riverplant-elasticsearch
+2.node.name: es-node1
+3.path.data: L:\\/elasticsearch-7.10.2-windows-x86_64\\/elasticsearch-7.10.2\\/data
+4.path.logs: L:\\/elasticsearch-7.10.2-windows-x86_64\\/elasticsearch-7.10.2\\/logs
+5.network.host: 0.0.0.0
+6.http.port: 9200
+7.cluster.initial_master_nodes: ["es-node1"]              
+ 
+修改配置文件jvm.options
+-Xms1g
+-Xmx1g   可以修改内存为128M
+
+需要创建一个新的用户才可以启动ES
+useradd esuser
+chmod -R esuser L:\elasticsearch-7.10.2-windows-x86_64\elasticsearch-7.10.2
+
+通过后台启动: ./elasticsearch -d
+
+chown -R esuser:esuser L:\elasticsearch-7.10.2-windows-x86_64\elasticsearch-7.10.2
+
+使用root用戶修改各种启动参数：
+1. vim /etc/security/limits.conf
+
+添加：
+soft nofile 65536
+hard nofile 131072
+soft npro   2048
+hard npro   4096
+
+2. vim /etc/sysctl.conf
+
+添加:
+vm.max_map_count=262145
+
+保存后刷新文件:
+sysctl -p
+
+安装elasticsearch-head
+
+
+
+
+
